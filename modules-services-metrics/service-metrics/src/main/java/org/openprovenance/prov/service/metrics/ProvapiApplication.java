@@ -2,10 +2,11 @@
 package org.openprovenance.prov.service.metrics;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
-import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import io.swagger.v3.rest.integration.resources.AcceptHeaderOpenApiResource;
+import io.swagger.v3.rest.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -99,8 +100,8 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 		final ProvFactory factory = InteropFramework.getDefaultFactory();
 
         try {
-            logger.info("ProvapiApplication constructor ... start" + new ObjectMapper().writeValueAsString(sc)) ;
-        } catch (JsonProcessingException e) {
+            logger.info("ProvapiApplication constructor ... start" + JsonMapper.builderWithJackson2Defaults().build().writeValueAsString(sc)) ;
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
 
@@ -126,6 +127,8 @@ public class ProvapiApplication extends Application implements ApiUriFragments {
 
 
 		singletons.add(new OpenApiResource());
+		// Jackson 3: the JSON provider uses a mapper with Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2)
+		singletons.add(new org.openprovenance.prov.service.core.rest.JsonMapperResolver());
 		singletons.add(new AcceptHeaderOpenApiResource());
 		
 

@@ -1,10 +1,10 @@
 package org.openprovenance.prov.scala.xplain
 
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import tools.jackson.core.JsonGenerator
+import tools.jackson.databind.{ValueSerializer, SerializationContext}
 
-class SNLGSerializer extends JsonSerializer[String] {
-  override def serialize(str: String, jsonGenerator: JsonGenerator, serializerProvider: SerializerProvider): Unit = {
+class SNLGSerializer extends ValueSerializer[String] {
+  override def serialize(str: String, jsonGenerator: JsonGenerator, serializerProvider: SerializationContext): Unit = {
     jsonGenerator.writeRawValue(str)
   }
 }

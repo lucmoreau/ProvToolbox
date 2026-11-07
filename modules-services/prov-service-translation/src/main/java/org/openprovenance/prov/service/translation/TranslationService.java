@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.translation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,7 +40,6 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 
-
 @Path("")
 public class TranslationService implements Constants, InteropMediaType, SwaggerTags, ApiUriFragments {
 
@@ -71,7 +71,6 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
                        @ApiResponse( responseCode = "200", 
                                      content={//@Content(mediaType=MEDIA_TEXT_HTML),
                                               @Content(mediaType=MEDIA_TEXT_PROVENANCE_NOTATION),
-                                              @Content(mediaType=MEDIA_APPLICATION_PROVENANCE_XML),
                                               @Content(mediaType=MEDIA_APPLICATION_JSON),
                                               @Content(mediaType=MEDIA_APPLICATION_JSONLD),
                                               @Content(mediaType=MEDIA_IMAGE_SVG_XML),
@@ -85,7 +84,6 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
                        @ApiResponse( responseCode = "406", description = "Not Acceptable")})
     @Produces({
             MEDIA_TEXT_PROVENANCE_NOTATION,
-            MEDIA_APPLICATION_PROVENANCE_XML,
             MEDIA_APPLICATION_JSON,
             MEDIA_APPLICATION_JSONLD,
             MEDIA_IMAGE_SVG_XML,
@@ -118,7 +116,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
                                                   name = "extension",
                                                   description = "serialization type, expressed as file extension",
                                                   example = "provn",
-                                                  schema=@Schema(allowableValues={"json", "provn", "provx", "jsonld", "svg", "png", "pdf", "jpg","jpeg"}),
+                                                  schema=@Schema(allowableValues={"json", "provn", "jsonld", "svg", "png", "pdf", "jpg","jpeg"}),
                                                   required = true)
                                               @PathParam("extension") String extension,
                                           @Parameter(
@@ -231,7 +229,7 @@ public class TranslationService implements Constants, InteropMediaType, SwaggerT
         Rules rules= rulesFactory.newRules();
         Object o=rules.computeMetrics(doc, utils.getProvFactory());
 
-        StreamingOutput promise= out -> new ObjectMapper().writeValue(out, o);
+        StreamingOutput promise= out -> JsonMapper.builderWithJackson2Defaults().build().writeValue(out, o);
 
         return ServiceUtils.composeResponseOK(promise).type(MEDIA_APPLICATION_JSON).build();
 

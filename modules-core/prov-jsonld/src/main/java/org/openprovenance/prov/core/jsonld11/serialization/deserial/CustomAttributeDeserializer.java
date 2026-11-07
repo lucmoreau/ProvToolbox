@@ -1,8 +1,9 @@
 package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.jsonld11.AttributeTypedValue;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.model.Attribute;
@@ -35,13 +36,13 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
     }
 
     @Override
-    public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
+    public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) {
         if (jp.isExpectedStartObjectToken()) {
-            final AttributeTypedValue valueAndType=jp.readValueAs(AttributeTypedValue.class);
+            final AttributeTypedValue valueAndType=deserializationContext.readValue(jp, AttributeTypedValue.class);
             final QualifiedName elementName = (QualifiedName) deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
             return deserialize_TypedValue(elementName,valueAndType,deserializationContext);
         } else {
-            return deserialize(jp.getText(), deserializationContext);
+            return deserialize(jp.getString(), deserializationContext);
         }
     }
 
@@ -64,12 +65,12 @@ public class CustomAttributeDeserializer extends StdDeserializer<Attribute> impl
     }
 
 
-    private final Attribute deserialize_TypedValue(QualifiedName elementName, AttributeTypedValue valueAndType, DeserializationContext deserializationContext) throws IOException {
+    private final Attribute deserialize_TypedValue(QualifiedName elementName, AttributeTypedValue valueAndType, DeserializationContext deserializationContext) {
 
         if (valueAndType.id != null) {
             // a node reference {"@id": "ex:shed"}: the IRI, so a qualified name, under any key
             if (valueAndType.value != null || valueAndType.typex != null || valueAndType.language != null) {
-                throw new IOException("a node reference takes no @value, @type or @language: " + elementName);
+                throw DatabindException.from(deserializationContext, "a node reference takes no @value, @type or @language: " + elementName);
             }
             return qualifiedName(elementName, valueAndType.id);
         }

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.core.json.test;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.core.json.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.json.serialization.ProvSerialiser;
@@ -80,9 +81,9 @@ public class OpenprovAttributesJsonTest extends TestCase {
         JsonNode att = json.get("wasAttributedTo").get("ex:att");
         assertEquals("{\"$\":\"ex:asc1\",\"type\":\"prov:QUALIFIED_NAME\"}", att.get("openprov:association").toString());
         assertNull(att.get("openprov:hadAssociation"));
-        assertEquals("ex:gen0", json.get("hadMember").get("ex:mem").get("openprov:collectionGeneration").get("$").asText());
-        assertEquals("ex:e0", json.get("specializationOf").get("ex:spe").get("openprov:previousEntity").get("$").asText());
-        assertEquals("ex:e1", json.get("wasInformedBy").get("ex:com").get("openprov:entity").get("$").asText());
+        assertEquals("ex:gen0", json.get("hadMember").get("ex:mem").get("openprov:collectionGeneration").get("$").asString(""));
+        assertEquals("ex:e0", json.get("specializationOf").get("ex:spe").get("openprov:previousEntity").get("$").asString(""));
+        assertEquals("ex:e1", json.get("wasInformedBy").get("ex:com").get("openprov:entity").get("$").asString(""));
         assertFalse(json.toString(), json.toString().contains("openprov:had"));
     }
 
@@ -139,7 +140,7 @@ public class OpenprovAttributesJsonTest extends TestCase {
         ByteArrayOutputStream fromTerms = new ByteArrayOutputStream(), fromProperties = new ByteArrayOutputStream();
         new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser().serialiseDocument(fromTerms, terms, false);
         new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser().serialiseDocument(fromProperties, properties, false);
-        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        tools.jackson.databind.ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
         assertEquals(mapper.readTree(fromProperties.toByteArray()), mapper.readTree(fromTerms.toByteArray()));
         assertFalse(fromTerms.toString(), fromTerms.toString().contains("openprov:previousEntity") || fromTerms.toString().contains("openprov:entity"));
         Document back = new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser().deserialiseDocument(new ByteArrayInputStream(fromTerms.toByteArray()));
@@ -158,14 +159,14 @@ public class OpenprovAttributesJsonTest extends TestCase {
         Document fromJsonld = new org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser().deserialiseDocument(new ByteArrayInputStream(jsonld.toByteArray()));
         assertEquals(fromProvn.getStatementOrBundle(), fromJson.getStatementOrBundle());
         assertEquals(fromProvn.getStatementOrBundle(), fromJsonld.getStatementOrBundle());
-        JsonNode ld = new com.fasterxml.jackson.databind.ObjectMapper().readTree(jsonld.toByteArray());
-        assertEquals("https://openprovenance.org/ns/openprov.jsonld", ld.get("@context").get(1).asText());
+        JsonNode ld = JsonMapper.builderWithJackson2Defaults().build().readTree(jsonld.toByteArray());
+        assertEquals("https://openprovenance.org/ns/openprov.jsonld", ld.get("@context").get(1).asString(""));
         assertEquals(List.of(), org.openprovenance.prov.core.test.Schemas.violations(org.openprovenance.prov.core.test.Schemas.schemaFor(ld), ld));
         for (JsonNode n : ld.get("@graph")) {
-            if ("Attribution".equals(n.get("@type").asText())) assertEquals("ex:asc1", n.get("association").get(0).asText());
-            if ("Communication".equals(n.get("@type").asText())) assertEquals("ex:e1", n.get("entity").get(0).asText());
-            if ("Start".equals(n.get("@type").asText())) assertEquals("ex:gen1", n.get("generation").get(0).asText());
-            if ("End".equals(n.get("@type").asText())) assertEquals("ex:gen2", n.get("generation").get(0).asText());
+            if ("Attribution".equals(n.get("@type").asString(""))) assertEquals("ex:asc1", n.get("association").get(0).asString(""));
+            if ("Communication".equals(n.get("@type").asString(""))) assertEquals("ex:e1", n.get("entity").get(0).asString(""));
+            if ("Start".equals(n.get("@type").asString(""))) assertEquals("ex:gen1", n.get("generation").get(0).asString(""));
+            if ("End".equals(n.get("@type").asString(""))) assertEquals("ex:gen2", n.get("generation").get(0).asString(""));
         }
     }
 }

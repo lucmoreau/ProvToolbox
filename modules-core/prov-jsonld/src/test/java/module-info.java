@@ -1,5 +1,5 @@
 module prov.jsonld.test {
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.databind;
     requires java.xml;
     requires junit;
     requires org.apache.logging.log4j;

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +14,7 @@ import org.openprovenance.prov.template.compiler.past.checker.TypeRegistry;
 import org.openprovenance.prov.template.compiler.past.emitter.Poet;
 import org.openprovenance.prov.template.compiler.past.emitter.RustCodeGenerator;
 import org.openprovenance.prov.template.compiler.past.emitter.RustProjectGenerator;
+import tools.jackson.core.JacksonException;
 
 import java.io.File;
 import java.io.IOException;
@@ -249,8 +251,8 @@ public class SpecificationFile {
                 return true;
             } catch (RuntimeException | IOException e) {
                 try {
-                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
-                } catch (IOException ex) {
+                    JsonMapper.builderWithJackson2Defaults().build().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
+                } catch (JacksonException ex) {
                     throw new RuntimeException(ex);
                 }
                 throw new RuntimeException(e);
@@ -271,8 +273,8 @@ public class SpecificationFile {
             } catch (RuntimeException | IOException e) {
                 try {
                     e.printStackTrace();
-                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
-                } catch (IOException ex) {
+                    JsonMapper.builderWithJackson2Defaults().build().writerWithDefaultPrettyPrinter().writeValue(System.out, pastClass);
+                } catch (JacksonException ex) {
                     throw new RuntimeException(ex);
                 }
                 throw new RuntimeException(e);

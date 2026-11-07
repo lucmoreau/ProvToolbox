@@ -1,12 +1,10 @@
 package org.openprovenance.prov.core.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import tools.jackson.core.JsonGenerator;
 import org.openprovenance.prov.model.OpenprovTerms;
 import org.openprovenance.prov.vanilla.QualifiedName;
+import tools.jackson.databind.SerializationContext;
 import org.openprovenance.prov.model.StatementOrBundle.Kind;
-
-import java.io.IOException;
 
 /** The attribute keys of one kind of relation: the bare term the openprov context scopes to it, else what any key is. */
 public abstract class ScopedKeySerializer extends CustomKeySerializer {
@@ -18,13 +16,13 @@ public abstract class ScopedKeySerializer extends CustomKeySerializer {
     }
 
     @Override
-    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         String term = OpenprovTerms.isOpenprov(q) ? OpenprovTerms.shownAs(kind, q.getLocalPart()) : null;
         if (term == null) {
             super.serialize(q, jsonGenerator, serializerProvider);
         } else {
             serializerProvider.setAttribute(ID_COERCED_KEY, true);  // every scoped term is "@type": "@id"
-            jsonGenerator.writeFieldName(term);
+            jsonGenerator.writeName(term);
         }
     }
 

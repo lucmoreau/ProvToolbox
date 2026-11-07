@@ -1,11 +1,9 @@
 package org.openprovenance.prov.core.xml.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import org.openprovenance.prov.vanilla.QualifiedName;
-
-import java.io.IOException;
+import tools.jackson.databind.SerializationContext;
 
 
 public class CustomMapSerializer extends StdSerializer<QualifiedName> {
@@ -21,7 +19,7 @@ public class CustomMapSerializer extends StdSerializer<QualifiedName> {
     }
 
     @Override
-    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
 
         serializerProvider.setAttribute(CONTEXT_KEY_FOR_MAP,q);
 

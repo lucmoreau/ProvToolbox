@@ -1,7 +1,7 @@
 package org.openprovenance.prov.core.jsonld11;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
 import org.openprovenance.prov.core.jsonld11.serialization.deserial.CustomQualifiedNameDeserializer;
 
 public interface JLD_Identifiable extends org.openprovenance.prov.model.Identifiable {

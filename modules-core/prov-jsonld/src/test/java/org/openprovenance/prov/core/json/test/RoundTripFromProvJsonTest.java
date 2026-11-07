@@ -101,7 +101,7 @@ public class RoundTripFromProvJsonTest extends TestCase {
         assertTyped(others.get("ratio"), "0.75", name.XSD_DECIMAL);
         assertTyped(others.get("big"), "12345678901234567890", name.XSD_INTEGER);
         // written back typed, a string as a string
-        com.fasterxml.jackson.databind.JsonNode e1 = Schemas.read("target/issue-232.json").get("entity").get("e1");
+        tools.jackson.databind.JsonNode e1 = Schemas.read("target/issue-232.json").get("entity").get("e1");
         assertEquals("\"hello\"", e1.get("name").toString());
         assertEquals("{\"$\":\"42\",\"type\":\"xsd:int\"}", e1.get("count").toString());
         assertEquals("{\"$\":\"true\",\"type\":\"xsd:boolean\"}", e1.get("flag").toString());
@@ -122,7 +122,7 @@ public class RoundTripFromProvJsonTest extends TestCase {
         assertEquals(name.PROV_LANG_STRING, tags.get(4).getType());
         assertEquals("fr", ((LangString) tags.get(4).getValue()).getLang());
         // written back as one array of five, in order; a typed xsd:string is a plain string
-        com.fasterxml.jackson.databind.JsonNode tag = Schemas.read("target/issue-233.json").get("entity").get("e1").get("tag");
+        tools.jackson.databind.JsonNode tag = Schemas.read("target/issue-233.json").get("entity").get("e1").get("tag");
         assertTrue(tag.isArray());
         assertEquals(5, tag.size());
         assertEquals("\"hello\"", tag.get(0).toString());
@@ -145,7 +145,7 @@ public class RoundTripFromProvJsonTest extends TestCase {
         assertEquals("http://example.org/", e1.getId().getNamespaceURI());
         assertTrue(e1.getOther().isEmpty());
         // written back under its identifier, without any @id, its entity inside
-        com.fasterxml.jackson.databind.JsonNode b1 = Schemas.read("target/issue-234.json").get("bundle").get("ex:bundle1");
+        tools.jackson.databind.JsonNode b1 = Schemas.read("target/issue-234.json").get("bundle").get("ex:bundle1");
         assertNotNull(b1);
         assertNull(b1.get("@id"));
         assertEquals("{}", b1.get("entity").get("ex:e1").toString());
@@ -158,7 +158,7 @@ public class RoundTripFromProvJsonTest extends TestCase {
         assertEquals("https://example.org/", bundle.getId().getNamespaceURI());
         assertEquals("bundleId", bundle.getId().getLocalPart());
         assertEquals("entityId", ((Entity) bundle.getStatement().get(0)).getId().getLocalPart());
-        com.fasterxml.jackson.databind.JsonNode b = Schemas.read("target/issue-222.json").get("bundle").get("ex:bundleId");
+        tools.jackson.databind.JsonNode b = Schemas.read("target/issue-222.json").get("bundle").get("ex:bundleId");
         assertNull(b.get("@id"));
         assertEquals("{}", b.get("entity").get("ex:entityId").toString());
     }

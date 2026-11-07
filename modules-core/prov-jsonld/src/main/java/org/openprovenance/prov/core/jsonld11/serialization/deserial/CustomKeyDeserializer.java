@@ -1,7 +1,7 @@
 package org.openprovenance.prov.core.jsonld11.serialization.deserial;
 
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.KeyDeserializer;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.KeyDeserializer;
 import org.openprovenance.prov.model.QualifiedName;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ public class CustomKeyDeserializer extends KeyDeserializer {
     public static final CustomQualifiedNameDeserializer customQualifiedNameDeserializer = new CustomQualifiedNameDeserializer();
 
     @Override
-    public Object deserializeKey(String s, DeserializationContext deserializationContext) throws IOException {
+    public Object deserializeKey(String s, DeserializationContext deserializationContext) {
         final QualifiedName qn = customQualifiedNameDeserializer.deserialize(s, deserializationContext);
         deserializationContext.setAttribute(PROV_ATTRIBUTE_CONTEXT_KEY,qn);
         deserializationContext.setAttribute(ID_COERCED_CONTEXT_KEY, ID_COERCED_ATTRIBUTE_TERMS.contains(s));

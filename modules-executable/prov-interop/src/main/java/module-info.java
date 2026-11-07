@@ -1,5 +1,5 @@
 module prov.interop {
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.databind;
     requires jakarta.ws.rs;
     requires org.apache.commons.cli;
     requires org.apache.logging.log4j;
@@ -10,7 +10,6 @@ module prov.interop {
     requires prov.template.compiler;
     requires prov.jsonld;
     requires prov.dot;
-    requires prov.jsonld.xml;
 
     exports org.openprovenance.prov.interop;
 

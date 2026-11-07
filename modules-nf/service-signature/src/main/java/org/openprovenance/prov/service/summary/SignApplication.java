@@ -2,8 +2,8 @@
 package org.openprovenance.prov.service.summary;
 
 
-import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
-import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import io.swagger.v3.rest.integration.resources.AcceptHeaderOpenApiResource;
+import io.swagger.v3.rest.integration.resources.OpenApiResource;
 import org.jboss.resteasy.plugins.interceptors.CorsFilter;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.service.core.PostService;
@@ -53,6 +53,8 @@ public class SignApplication extends Application {
         singletons.add(new NFXMLDocumentMessageBodyWriter());
         singletons.add(new ByteArrayMessageBodyWriter());
         singletons.add(new OpenApiResource());
+        // Jackson 3: the JSON provider uses a mapper with Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2)
+        singletons.add(new org.openprovenance.prov.service.core.rest.JsonMapperResolver());
         singletons.add(new AcceptHeaderOpenApiResource());
 
      //   singletons.add(new JacksonJsonProvider());

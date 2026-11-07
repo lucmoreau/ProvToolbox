@@ -1,14 +1,15 @@
 package org.openprovenance.prov.scala.jsonld11.serialization;
 
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.ArrayType;
-import com.fasterxml.jackson.databind.type.CollectionType;
-import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import tools.jackson.core.Version;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.type.ArrayType;
+import tools.jackson.databind.type.CollectionType;
+import tools.jackson.databind.type.MapType;
+import tools.jackson.databind.type.TypeFactory;
 import org.openprovenance.prov.model.ProvUtilities;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.scala.immutable.ProvFactory;
@@ -17,9 +18,9 @@ import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomAttri
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomKindDeserializer;
 import org.openprovenance.prov.scala.jsonld11.serialization.deserial.CustomNamespaceDeserializer;
 import org.openprovenance.prov.vanilla.Document;
+import tools.jackson.core.JacksonException;
 import org.openprovenance.prov.model.Namespace;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,8 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
     }
 
     public org.openprovenance.prov.model.Document deserialiseDocument (InputStream in) {
-        ObjectMapper mapper = new ObjectMapper();
+        // Jackson 3: configured on the builder, then built; Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2)
+        JsonMapper.Builder builder = JsonMapper.builderWithJackson2Defaults();
 
         SimpleModule module =
                 new SimpleModule("CustomKindSerializer", new Version(1, 0, 0, null, null, null));
@@ -42,9 +44,9 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
 
 
 
-        TypeFactory typeFactory = mapper.getTypeFactory();
+        TypeFactory typeFactory = builder.typeFactory();
         CollectionType setType = typeFactory.constructCollectionType(Set.class, org.openprovenance.prov.model.Attribute.class);
-        JavaType qnType = mapper.getTypeFactory().constructType(org.openprovenance.prov.model.QualifiedName.class);
+        JavaType qnType = typeFactory.constructType(org.openprovenance.prov.model.QualifiedName.class);
         MapType mapType = typeFactory.constructMapType(HashMap.class, qnType, setType);
         module.addDeserializer(Map.class,new CustomAttributeMapDeserializer(mapType));
 
@@ -59,15 +61,18 @@ public class ProvDeserialiser extends org.openprovenance.prov.core.json.serializ
 
         module.addDeserializer(Set.class,new CustomAttributeSetDeserializer(setType));
 
-        provMixin().addProvMixin(mapper);
+        provMixin().addProvMixin(builder);
 
 
-        mapper.registerModule(module);
+        builder.addModule(module);
+        // Jackson 3: let PROV attribute keys reach the any-setter again (see AnySetterAttributesModule in prov-jsonld)
+        builder.addModule(new org.openprovenance.prov.core.jsonld11.serialization.deserial.AnySetterAttributesModule());
+        ObjectMapper mapper = builder.build();
 
         Document doc= null;
         try {
             doc = mapper.readValue(in, Document.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
         }

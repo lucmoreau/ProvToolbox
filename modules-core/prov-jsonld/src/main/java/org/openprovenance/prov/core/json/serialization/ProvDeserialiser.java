@@ -1,10 +1,12 @@
 package org.openprovenance.prov.core.json.serialization;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.model.DateTimeOption;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.ProvFactory;
+import tools.jackson.core.JacksonException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +22,7 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
     private final ProvJsonReader reader;
 
     public ProvDeserialiser() {
-        this(new ObjectMapper());
+        this(JsonMapper.builderWithJackson2Defaults().build()); // D2: Jackson 2 defaults
     }
 
     public ProvDeserialiser(ObjectMapper mapper) {
@@ -45,7 +47,7 @@ public class ProvDeserialiser implements org.openprovenance.prov.model.ProvDeser
     public org.openprovenance.prov.model.Document deserialiseDocument(InputStream in) {
         try {
             return deserialiseDocument(mapper.readTree(in));
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new UncheckedException(e);
         }
     }

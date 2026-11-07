@@ -1,6 +1,11 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.4.0-SNAPSHOT`
+`2.5.0`
+* Jackson 3 (3.2.4, `tools.jackson`) instead of Jackson 2 (requires Java 17): public APIs taking Jackson types change, e.g. prov-jsonld's ProvSerialiser/ProvDeserialiser take a `MapperBuilder`, and `ObjectMapper`s are now `tools.jackson.databind.ObjectMapper`; JSON output unchanged (mappers built with Jackson 2 defaults); json-schema-validator 3.0.8, swagger-core 3.0.0 (`swagger-rest`), mongojack 6.0.0, zjsonpatch now `io.github.vishwakarma:zjsonpatch` 0.6.4; pac4j and Spring Boot 2.7 (service-templates tests) still bring Jackson 2. See docs/JACKSON3_MIGRATION.md
+* PROV-XML support dropped (prov-jsonld-xml retired, no PROVX input/output in prov-interop, services no longer offer application/provenance+xml)
+
+
+`2.4.0`
 * prov-n: PROV-N is read with the ANTLR 4 parser (ProvN.g4, ProvNReader): ProvDeserialiser, hence InteropFramework and the services, and Utility.readDocument/convertSyntaxTreeToJavaBean. A document that is not valid PROV-N is rejected with a ProvNSyntaxException listing all errors, where the ANTLR 3 parser recovered from errors and only logged them; see ProvDeserialiser for the other differences. The ANTLR 3 parser remains only behind the deprecated methods of Utility that expose it, and TreeTraversal, to be removed
 * prov-template-compiler: generated query invokers no longer write a String input into the composed SQL unquoted: an input without "@sql.type" is passed as nullableTEXT (a raw xsd:string such as transporting's ilocation or weighing's unit failed with 'column "x" does not exist' and allowed SQL injection), a String input whose "@sql.type" has no converter fails generation, and the timestamptz, date and json converters escape quotes; the Python and JavaScript emitters escape string constants (the generated Python QueryInvokers did not parse)
 * prov-n, prov-model: string literals round trip in PROV-N: all escape sequences are decoded on reading (\t, \b, \n, \r, \f, \\, \", \', where only \" was, so that backslashes multiplied at each read and write), a line break in a value with a language or without a datatype is written \n, where it made the output invalid, and a multi-line value keeps its datatype

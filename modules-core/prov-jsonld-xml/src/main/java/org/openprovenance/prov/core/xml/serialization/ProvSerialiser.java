@@ -2,13 +2,11 @@ package org.openprovenance.prov.core.xml.serialization;
 
 import com.ctc.wstx.stax.WstxInputFactory;
 import com.ctc.wstx.stax.WstxOutputFactory;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.core.Version;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.dataformat.xml.XmlFactory;
+import tools.jackson.dataformat.xml.XmlMapper;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLOutputFactory2;
 import org.codehaus.stax2.XMLStreamWriter2;
@@ -18,6 +16,9 @@ import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.vanilla.QualifiedName;
 import org.openprovenance.prov.vanilla.TypedValue;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
+import tools.jackson.databind.ser.std.SimpleFilterProvider;
 import org.openprovenance.prov.core.xml.serialization.stax.ElementEraserXMLStreamWriter2;
 import org.openprovenance.prov.core.xml.serialization.stax.NamespaceXMLStreamWriter2;
 import org.openprovenance.prov.model.Document;
@@ -26,7 +27,6 @@ import org.openprovenance.prov.model.exception.UncheckedException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
@@ -66,7 +66,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         setNamespace(document.getNamespace());
         try {
             mapper.writeValue(out,document);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
         }
@@ -77,25 +77,20 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         setNamespace(new Namespace());
         try {
             mapper.writeValue(out,document);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
         }
     }
 
     public XmlMapper getMapper(boolean formatted) {
-        XmlMapper mapper = getXmlMapper();
-
-        if (formatted) mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        SimpleModule module = makeModule();
-        mapper.registerModule(module);
-
-        SimpleFilterProvider filterProvider = makeFilter();
-        mapper.setFilterProvider(filterProvider);
-
-        provMixin.addProvMixin(mapper);
-        return mapper;
+        // Jackson 3: mappers are immutable, so everything is configured on the builder, then built
+        XmlMapper.Builder builder = getXmlMapperBuilder();
+        if (formatted) builder.enable(SerializationFeature.INDENT_OUTPUT);
+        builder.addModule(makeModule());
+        builder.filterProvider(makeFilter());
+        provMixin.addProvMixin(builder);
+        return builder.build();
     }
 
     public SimpleFilterProvider makeFilter() {
@@ -119,7 +114,7 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
         return module;
     }
 
-    public XmlMapper getXmlMapper() {
+    public XmlMapper.Builder getXmlMapperBuilder() {
         XMLInputFactory2 inputFactory2 =  new WstxInputFactory();
         XMLOutputFactory2 outputFactory2 = new WstxOutputFactory() {
             @Override
@@ -137,10 +132,12 @@ public class ProvSerialiser implements org.openprovenance.prov.model.ProvSeriali
 
         outputFactory2.setProperty(XMLOutputFactory2.P_AUTOMATIC_NS_PREFIX,Boolean.TRUE);
         outputFactory2.configureForRobustness();
-        XmlFactory xmlFactory = new XmlFactory(inputFactory2,outputFactory2);
-
-
-        return new XmlMapper(xmlFactory);
+        // Jackson 2 defaults for the factory and the mapper keep the output unchanged (docs/JACKSON3_MIGRATION.md, D2)
+        XmlFactory xmlFactory = XmlFactory.builderWithJackson2Defaults()
+                .xmlInputFactory(inputFactory2)
+                .xmlOutputFactory(outputFactory2)
+                .build();
+        return XmlMapper.builder(xmlFactory).configureForJackson2();
     }
 
 

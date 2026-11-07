@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.core.ttf;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +12,7 @@ import org.openprovenance.prov.template.core.exception.SchemaCheckException;
 import org.openprovenance.prov.template.utils.TemplateExtension;
 import org.openprovenance.prov.template.utils.TemplateIndex;
 import org.openprovenance.prov.template.utils.TemplateIndexPath;
+import tools.jackson.core.JacksonException;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -31,7 +33,7 @@ public class BatchExecutor {
     private final Map<String, org.openprovenance.prov.model.ProvDeserialiser> deserializerMap;
     static Logger logger = LogManager.getLogger(BatchExecutor.class);
     static final ProvFactory pf= org.openprovenance.prov.vanilla.ProvFactory.getFactory();
-    final ObjectMapper om = new ObjectMapper();
+    final ObjectMapper om = JsonMapper.builderWithJackson2Defaults().build();
 
 
     public BatchExecutor() {
@@ -89,7 +91,7 @@ public class BatchExecutor {
     public static TemplateTasksBatch load(String configurationPath, ObjectMapper objectMapper) {
         try {
             return objectMapper.readValue(new File(configurationPath), TemplateTasksBatch.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }

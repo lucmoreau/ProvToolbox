@@ -1,7 +1,8 @@
 package org.openprovenance.prov.service.core.readers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
@@ -39,7 +40,7 @@ public class JsonOrCsvMessageBodyReader implements MessageBodyReader<JsonOrCsv> 
 
 
 
-    ObjectMapper om=new ObjectMapper();
+    ObjectMapper om=JsonMapper.builderWithJackson2Defaults().build();
     @Override
     public boolean isReadable(Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType) {
         final boolean b = (mediaType.toString().startsWith(InteropMediaType.MEDIA_TEXT_CSV))

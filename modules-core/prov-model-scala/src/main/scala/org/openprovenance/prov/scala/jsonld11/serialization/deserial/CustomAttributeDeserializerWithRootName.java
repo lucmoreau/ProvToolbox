@@ -1,10 +1,9 @@
 package org.openprovenance.prov.scala.jsonld11.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.scala.immutable.ProvFactory;
 import org.openprovenance.prov.model.Attribute;
@@ -37,17 +36,17 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
     }
 
     @Override
-    public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        JsonNode node = jp.getCodec().readTree(jp);
+    public Attribute deserialize(JsonParser jp, DeserializationContext deserializationContext) {
+        JsonNode node = deserializationContext.readTree(jp) /* jackson 3: the ongoing context, see catalogue #21 */;
 
         return deserialize(node, deserializationContext);
 
 
     }
 
-    public Attribute deserialize(JsonNode node, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Attribute deserialize(JsonNode node, DeserializationContext deserializationContext) {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
-        Map.Entry<String, JsonNode> pair=node.fields().next();
+        Map.Entry<String, JsonNode> pair=node.properties().iterator().next();
 
         QualifiedName elementName=ns.stringToQualifiedName(pair.getKey(),pf);
         deserializationContext.setAttribute(CustomKeyDeserializer.ID_COERCED_CONTEXT_KEY, ID_COERCED_ATTRIBUTE_TERMS.contains(pair.getKey()));
@@ -61,7 +60,7 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
      * A bare string is what a JSON-LD processor makes of it: an IRI, so a qualified name, under a key the context
      * coerces to {@code @id}; a string under any other key (https://github.com/openprov/prov-jsonld/issues/7).
      */
-    public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Attribute deserialize(QualifiedName elementName,  String astring, DeserializationContext deserializationContext) {
         if (Boolean.TRUE.equals(deserializationContext.getAttribute(CustomKeyDeserializer.ID_COERCED_CONTEXT_KEY))) {
             return qualifiedName(elementName, astring, deserializationContext);
         }
@@ -77,26 +76,26 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
 
 
 
-    public Attribute deserialize(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Attribute deserialize(QualifiedName elementName, JsonNode vObj, DeserializationContext deserializationContext) {
         Namespace ns= (Namespace) deserializationContext.getAttribute(CustomNamespaceDeserializer.CONTEXT_KEY_NAMESPACE);
 
-        if (vObj.isTextual()) {
-            return deserialize(elementName, vObj.textValue(), deserializationContext);
+        if (vObj.isString()) {
+            return deserialize(elementName, vObj.stringValue(null), deserializationContext);
 
         } else if (!vObj.isObject()) {
             throw new UnsupportedOperationException("vObj can only be object");
 
         } else if (vObj.has(PROPERTY_AT_ID)) {
             // a node reference {"@id": "ex:shed"}: the IRI, so a qualified name, under any key
-            if (vObj.size() != 1 || !vObj.get(PROPERTY_AT_ID).isTextual()) {
-                throw new IOException("a node reference takes no @value, @type or @language: " + elementName);
+            if (vObj.size() != 1 || !vObj.get(PROPERTY_AT_ID).isString()) {
+                throw tools.jackson.databind.DatabindException.from(deserializationContext, "a node reference takes no @value, @type or @language: " + elementName); // jackson 3: unchecked
             }
-            return qualifiedName(elementName, vObj.get(PROPERTY_AT_ID).textValue(), deserializationContext);
+            return qualifiedName(elementName, vObj.get(PROPERTY_AT_ID).stringValue(null), deserializationContext);
 
         } else {
 
             JsonNode typeRaw = vObj.get(PROPERTY_AT_TYPE);
-            String type = (typeRaw == null) ? null : typeRaw.textValue();
+            String type = (typeRaw == null) ? null : typeRaw.stringValue(null);
 
             JsonNode value = vObj.get(PROPERTY_AT_VALUE);
 
@@ -107,14 +106,14 @@ public class CustomAttributeDeserializerWithRootName extends StdDeserializer<Att
                 //System.out.println(" This is an object " + value);
                 // JsonNode theValue=value.get(Constants.PROPERTY_STRING_VALUE);
                 JsonNode theLang = vObj.get(Constants.PROPERTY_STRING_LANG);
-                valueObject = pf.newInternationalizedString(value.textValue(), (theLang == null) ? null : theLang.textValue());
+                valueObject = pf.newInternationalizedString(value.stringValue(null), (theLang == null) ? null : theLang.stringValue(null));
 
                 typeQN = (theLang == null) ? XSD_STRING : PROV_INTERNATIONALIZED_STRING;
             } else if (type.equals("prov:QUALIFIED_NAME")) {
-                valueObject = ns.stringToQualifiedName(value.textValue(), pf);
+                valueObject = ns.stringToQualifiedName(value.stringValue(null), pf);
                 typeQN = ns.stringToQualifiedName(type, pf);
             } else {
-                valueObject = value.textValue();
+                valueObject = value.stringValue(null);
                 ; //TODO: should not be checking qname but uri
                 typeQN = ns.stringToQualifiedName(type, pf);
             }

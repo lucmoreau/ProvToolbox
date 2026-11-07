@@ -1,6 +1,6 @@
 module prov.service.core {
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
     requires io.swagger.v3.oas.annotations;
     requires jakarta.servlet;
     requires jakarta.ws.rs;

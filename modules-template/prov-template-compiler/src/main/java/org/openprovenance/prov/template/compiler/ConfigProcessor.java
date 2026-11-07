@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.squareup.javapoet.TypeVariableName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,6 +23,7 @@ import org.openprovenance.prov.template.utils.TemplateIndexPath;
 import org.openprovenance.prov.template.utils.ProvVariables;
 import org.openprovenance.prov.template.utils.StatementChecker;
 import org.openprovenance.prov.template.utils.VariableChecker;
+import tools.jackson.core.JacksonException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -51,7 +53,8 @@ public class ConfigProcessor implements Constants {
     private final CompilerIntegrator compilerIntegrator;
     private final CompilerBuilderInterface compilerBuilderInterface;
     boolean withMain=true; // TODO need to be updatable via command line
-    public static final ObjectMapper objectMapper = new ObjectMapper();
+    // Jackson 3: built once with the descriptor deserializer (was added to this shared mapper in the constructor)
+    public static final ObjectMapper objectMapper = new DescriptorUtils().setupDeserializer(JsonMapper.builderWithJackson2Defaults()).build();
     private final CompilerUtil compilerUtil;
     private final CompilerLogger compilerLogger ;
     private final CompilerTemplateBuilders compilerTemplateBuilders ;
@@ -101,7 +104,6 @@ public class ConfigProcessor implements Constants {
 
     static {
         descriptorUtils = new DescriptorUtils();
-        descriptorUtils.setupDeserializer(objectMapper);
     }
 
     private Optional<StatementChecker> statementChecker;
@@ -285,7 +287,7 @@ public class ConfigProcessor implements Constants {
             doGenerateClientAndProject(configs, locations, cli_lib, cli_dir, cli_src_dir);
 
 
-        } catch (IOException e) {
+        } catch (JacksonException | IOException e) {
             e.printStackTrace();
         }
         return 0;

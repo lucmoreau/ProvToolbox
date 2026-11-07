@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -117,7 +118,7 @@ public class QueryService {
             String theQuery = substituteParams(sql.get(), parameters);
             logger.info("Query (after substitution): " + theQuery);
             List<Object[]> resultRecords = templateQuery.queryFromSql(theQuery, true);
-            StreamingOutput promise = (out) -> new ObjectMapper().writeValue(out, resultRecords);
+            StreamingOutput promise = (out) -> JsonMapper.builderWithJackson2Defaults().build().writeValue(out, resultRecords);
 
             return ServiceUtils
                     .composeResponseOK(promise)
@@ -291,7 +292,7 @@ public class QueryService {
                 }
             }
         }
-        StreamingOutput promise = (out) -> new ObjectMapper().writeValue(out, queries);
+        StreamingOutput promise = (out) -> JsonMapper.builderWithJackson2Defaults().build().writeValue(out, queries);
         return  ServiceUtils.composeResponseOK(promise).build();
     }
 
@@ -307,7 +308,7 @@ public class QueryService {
             return ServiceUtils.composeResponseOK("[]").build();
         }
         Set<String> relations=templateQuery.getRelations();
-        StreamingOutput promise = (out) -> new ObjectMapper().writeValue(out, relations);
+        StreamingOutput promise = (out) -> JsonMapper.builderWithJackson2Defaults().build().writeValue(out, relations);
         return  ServiceUtils.composeResponseOK(promise).build();
     }
 

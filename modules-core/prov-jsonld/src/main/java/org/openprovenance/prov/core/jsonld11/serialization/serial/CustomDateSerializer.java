@@ -1,11 +1,10 @@
 package org.openprovenance.prov.core.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.databind.SerializationContext;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.IOException;
 
 
 final public class CustomDateSerializer extends StdSerializer<XMLGregorianCalendar> {
@@ -19,7 +18,7 @@ final public class CustomDateSerializer extends StdSerializer<XMLGregorianCalend
     }
 
     @Override
-    final public void serialize(XMLGregorianCalendar d, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    final public void serialize(XMLGregorianCalendar d, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         String s=d.toString();
         jsonGenerator.writeString(s);
     }

@@ -1,8 +1,10 @@
 package org.openprovenance.prov.service.xplain.readers;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.ArrayType;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.cfg.MapperBuilder;
+import tools.jackson.databind.type.ArrayType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
@@ -30,17 +32,16 @@ public class PhraseEnvironmentReader implements MessageBodyReader<PhraseEnvironm
     private final ObjectMapper objectMapper;
 
     public PhraseEnvironmentReader() {
-
-
-        this.objectMapper = SpecLoader.mapper();
-        this.deserialiser=new CustomDeserialiser(this.objectMapper);
-
-
+        /* Jackson 3: mappers are immutable. With Jackson 2, the PROV deserialisers were added to
+         * SpecLoader's shared mapper; now they are added to a copy of it (rebuild()), whose mapper
+         * reads the whole phrase environment, the PROV document included. */
+        this.deserialiser=new CustomDeserialiser(SpecLoader.mapper().rebuild());
+        this.objectMapper = deserialiser.getMapper();
     }
     
     static class CustomDeserialiser extends ProvDeserialiser {
-        CustomDeserialiser(ObjectMapper om) {
-            super(om);
+        CustomDeserialiser(MapperBuilder<?, ?> builder) {
+            super(builder);
         }
 
         @Override
@@ -74,7 +75,7 @@ public class PhraseEnvironmentReader implements MessageBodyReader<PhraseEnvironm
 
         try {
             return objectMapper.readValue(inputStream, PhraseEnvironment.class);
-        } catch (com.fasterxml.jackson.databind.JsonMappingException re) {
+        } catch (JacksonException re) {
             logger.throwing(re);
             throw re;
         }

@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
@@ -36,7 +38,7 @@ public abstract class CoreValidateTester extends TestCase {
     static Logger logger = LogManager.getLogger(CoreValidateTester.class);
 
     protected static Set<String> checkedSet = new HashSet<String> ();
-    private ObjectMapper objectMapper=new ObjectMapper();
+    private ObjectMapper objectMapper=JsonMapper.builderWithJackson2Defaults().build();
 
 
 

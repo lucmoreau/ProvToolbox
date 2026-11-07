@@ -1,7 +1,7 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanKind;
@@ -13,6 +13,7 @@ import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.sql.CompilerSqlComposer;
 import org.openprovenance.prov.template.compiler.util.CompilerException;
 import org.openprovenance.prov.template.descriptors.*;
+import tools.jackson.core.JacksonException;
 
 import javax.lang.model.element.Modifier;
 import java.io.*;
@@ -45,7 +46,7 @@ public class CompilerSQL {
     private final CompilerUtil compilerUtil;
     private final ProvFactory pFactory;
     private final PastFactory pastFactory;
-    ObjectMapper om = new ObjectMapper();
+    ObjectMapper om = JsonMapper.builderWithJackson2Defaults().build();
     private final String tableKey;
 
     public CompilerSQL(ProvFactory pFactory, String tableKey) {
@@ -489,7 +490,7 @@ public class CompilerSQL {
 
         try {
             System.out.println("Generated linker table for " + om.writeValueAsString(locations.getLinkerTableDeclarations()));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }

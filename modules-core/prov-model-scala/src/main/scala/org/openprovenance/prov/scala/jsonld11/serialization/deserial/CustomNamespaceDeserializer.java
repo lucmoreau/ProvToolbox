@@ -1,14 +1,12 @@
 package org.openprovenance.prov.scala.jsonld11.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.model.Namespace;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 
@@ -24,23 +22,23 @@ public class CustomNamespaceDeserializer extends StdDeserializer<Namespace> {
     }
 
     @Override
-    public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+    public Namespace deserialize(JsonParser jp, DeserializationContext deserializationContext) {
         
 
           Namespace ns=new Namespace();
 
-          JsonNode x=jp.getCodec().readTree(jp);
+          JsonNode x=deserializationContext.readTree(jp) /* jackson 3: the ongoing context, see catalogue #21 */;
           if (x.isArray()) {
               for (int i=0; i < x.size(); i++) {
                   JsonNode n=x.get(i);
                   if (n.isObject()) {
-                      for (Iterator<String> it = n.fieldNames(); it.hasNext(); ) {
+                      for (Iterator<String> it = n.propertyNames().iterator(); it.hasNext(); ) {
                           String field = it.next();
                           JsonNode value=n.get(field);
                           if (value.isObject()) {
                              // ignore, it's a JSONLD Mapping
                           } else {
-                              String s=value.textValue();
+                              String s=value.stringValue(null);
                               //System.out.println("[" + field + "]" + "[" + s + "]");
                               if ("@namespace".equals(field)) {
                                   ns.setDefaultNamespace(s);

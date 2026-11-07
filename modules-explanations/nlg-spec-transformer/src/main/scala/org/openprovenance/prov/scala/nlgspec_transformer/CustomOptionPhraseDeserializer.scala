@@ -1,17 +1,17 @@
 package org.openprovenance.prov.scala.nlgspec_transformer
 
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.{DeserializationContext, JsonDeserializer}
+import tools.jackson.core.JsonParser
+import tools.jackson.databind.{DeserializationContext, ValueDeserializer}
 import org.openprovenance.prov.scala.nlgspec_transformer.defs.StringPhrase
 import org.openprovenance.prov.scala.nlgspec_transformer.specTypes.Phrase
 
-class CustomOptionPhraseDeserializer extends JsonDeserializer [Option[Phrase]]  {
+class CustomOptionPhraseDeserializer extends ValueDeserializer [Option[Phrase]]  {
   override def deserialize(jsonParser: JsonParser, deserializationContext: DeserializationContext): Option[Phrase] = {
     if (jsonParser.isExpectedStartObjectToken) {
-      val value: Phrase =jsonParser.readValueAs(classOf[Phrase])
+      val value: Phrase =deserializationContext.readValue(jsonParser, classOf[Phrase])
       Some(value)
     } else {
-      val s = jsonParser.readValueAs(classOf[String])
+      val s = deserializationContext.readValue(jsonParser, classOf[String])
       Some(new StringPhrase(s))
     }
   }

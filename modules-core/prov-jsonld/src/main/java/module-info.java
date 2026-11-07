@@ -1,7 +1,7 @@
 module prov.jsonld {
     requires com.fasterxml.jackson.annotation;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
     requires java.datatransfer;
     requires java.xml;
     requires org.apache.logging.log4j;

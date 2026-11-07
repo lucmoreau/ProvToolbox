@@ -1,6 +1,6 @@
 package org.openprovenance.prov.core.xml.serialization.deserial;
 
-import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import org.openprovenance.prov.vanilla.ProvFactory;
 import org.openprovenance.prov.core.xml.serialization.ProvDeserialiser;
 import org.openprovenance.prov.model.Namespace;

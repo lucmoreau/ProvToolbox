@@ -1,14 +1,15 @@
 package org.openprovenance.prov.template.core.ttf;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaFactory;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import com.networknt.schema.Schema;
 import com.networknt.schema.SchemaLocation;
-import com.networknt.schema.SchemaValidatorsConfig;
-import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.SchemaRegistry;
+import com.networknt.schema.SchemaRegistryConfig;
+import com.networknt.schema.SpecificationVersion;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
+import tools.jackson.core.JacksonException;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,13 +34,13 @@ public final class SchemaCheck {
     public static final String DEFAULT = "default";
     public static final String QN = Constants.JSONLD_SCHEMA_QN_SUFFIX;
 
-    static final ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     /** Formats are annotations: {@code format: date-time} is not asserted, as in prov-jsonld's own checks. */
-    static final SchemaValidatorsConfig CONFIG = SchemaValidatorsConfig.builder().formatAssertionsEnabled(false).build();
+    static final SchemaRegistryConfig CONFIG = SchemaRegistryConfig.builder().formatAssertionsEnabled(false).build();
 
     /** One compiled schema per version and kind (spec or openprov); tasks may run concurrently. */
-    static final Map<String, JsonSchema> schemas = new ConcurrentHashMap<>();
+    static final Map<String, Schema> schemas = new ConcurrentHashMap<>();
 
     private SchemaCheck() {
     }
@@ -77,17 +78,18 @@ public final class SchemaCheck {
     public static List<String> violations(File file, String version) throws IOException {
         JsonNode document = mapper.readTree(file);
         return schema(version, citesOpenprov(document)).validate(document).stream()
-                .map(ValidationMessage::getMessage).distinct().sorted().collect(Collectors.toList());
+                // json-schema-validator 3.x: toString() is 1.x's getMessage() (with the instance location)
+                .map(com.networknt.schema.Error::toString).distinct().sorted().collect(Collectors.toList());
     }
 
     static boolean citesOpenprov(JsonNode document) {
         for (JsonNode c : document.path("@context")) {
-            if (c.isTextual() && Constants.OPENPROV_CONTEXT_URL.equals(c.asText())) return true;
+            if (c.isString() && Constants.OPENPROV_CONTEXT_URL.equals(c.asString(""))) return true;
         }
-        return Constants.OPENPROV_CONTEXT_URL.equals(document.path("@context").asText());
+        return Constants.OPENPROV_CONTEXT_URL.equals(document.path("@context").asString(""));
     }
 
-    static JsonSchema schema(String version, boolean openprov) {
+    static Schema schema(String version, boolean openprov) {
         return schemas.computeIfAbsent(version + (openprov ? "/openprov" : "/spec"), k -> {
             // the schemas known by their published URLs, so the openprov schema's references resolve to this version;
             // a strict variant has its own $id, against which its internal references resolve: known by both
@@ -96,16 +98,18 @@ public final class SchemaCheck {
             known.put(Constants.JSONLD_SCHEMA_URL, spec);
             known.put(Constants.OPENPROV_SCHEMA_URL, read(Constants.openprovSchemaResource(version)));
             known.put(id(spec), spec);
-            JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7, builder ->
-                    builder.schemaLoaders(loaders -> loaders.schemas(known)));
-            return factory.getSchema(SchemaLocation.of(openprov ? Constants.OPENPROV_SCHEMA_URL : id(spec)), CONFIG);
+            // json-schema-validator 3.x: a registry (was JsonSchemaFactory) with the preloaded resources
+            SchemaRegistry registry = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_7, builder -> builder
+                    .schemaRegistryConfig(CONFIG)
+                    .resourceLoaders(loaders -> loaders.resources(known)));
+            return registry.getSchema(SchemaLocation.of(openprov ? Constants.OPENPROV_SCHEMA_URL : id(spec)));
         });
     }
 
     static String id(String schema) {
         try {
-            return mapper.readTree(schema).path("$id").asText(Constants.JSONLD_SCHEMA_URL);
-        } catch (IOException e) {
+            return mapper.readTree(schema).path("$id").asString(Constants.JSONLD_SCHEMA_URL);
+        } catch (JacksonException e) {
             throw new IllegalStateException("schema not parsable", e);
         }
     }

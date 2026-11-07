@@ -1,9 +1,10 @@
 package org.openprovenance.prov.service.core.writers;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.util.DefaultPrettyPrinter;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectWriter;
+import tools.jackson.databind.node.ObjectNode;
 import org.openprovenance.prov.model.interop.InteropMediaType;
 
 import jakarta.ws.rs.Produces;
@@ -21,8 +22,8 @@ import java.lang.reflect.Type;
 @Produces({ InteropMediaType.MEDIA_APPLICATION_JSON })
 public class NodeMessageBodyWriter implements MessageBodyWriter<ObjectNode> {
     
-    private static ObjectMapper mapper = new ObjectMapper();
-    private static ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+    private static ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
+    private static ObjectWriter writer = mapper.writer().with(new DefaultPrettyPrinter()); // Jackson 3: was mapper.writer(PrettyPrinter)
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType,

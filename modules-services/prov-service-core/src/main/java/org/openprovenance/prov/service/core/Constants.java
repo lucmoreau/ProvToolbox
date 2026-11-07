@@ -12,8 +12,8 @@ public interface Constants {
     String PROVAPI = "provapi";
     
 
-    String ALLOWABLE_INPUT_DOCUMENT_EXTENSIONS = "ttl,provn,provx,json,rdf,trig,jsonld";
-    String ALLOWABLE_OUTPUT_DOCUMENT_EXTENSIONS = "ttl,provn,provx,json,rdf,trig,svg,png,pdf,jpg,jpeg,jsonld";
+    String ALLOWABLE_INPUT_DOCUMENT_EXTENSIONS = "ttl,provn,json,rdf,trig,jsonld";
+    String ALLOWABLE_OUTPUT_DOCUMENT_EXTENSIONS = "ttl,provn,json,rdf,trig,svg,png,pdf,jpg,jpeg,jsonld";
     List<String> translationExtensions = Arrays.asList(ALLOWABLE_OUTPUT_DOCUMENT_EXTENSIONS.split(","));
 
 

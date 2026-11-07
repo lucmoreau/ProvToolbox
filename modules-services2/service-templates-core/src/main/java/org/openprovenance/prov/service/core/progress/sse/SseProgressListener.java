@@ -1,7 +1,8 @@
 package org.openprovenance.prov.service.core.progress.sse;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +43,7 @@ public final class SseProgressListener implements ProgressListener {
     private final ObjectMapper om;
 
     public SseProgressListener(SseEventSink sink, Sse sse) {
-        this(sink, sse, new ObjectMapper());
+        this(sink, sse, JsonMapper.builderWithJackson2Defaults().build());
     }
 
     public SseProgressListener(SseEventSink sink, Sse sse, ObjectMapper om) {
@@ -103,7 +104,7 @@ public final class SseProgressListener implements ProgressListener {
             // can race ahead of the actual write and discard queued events.
             sink.send(sse.newEventBuilder().name(eventName).data(json).build())
                 .toCompletableFuture().join();
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             // Should not happen for a Map of primitives/Strings, but keep
             // the work thread alive even if it does.
             logger.warn("SseProgressListener: failed to serialise {} event: {}", eventName, e.toString());

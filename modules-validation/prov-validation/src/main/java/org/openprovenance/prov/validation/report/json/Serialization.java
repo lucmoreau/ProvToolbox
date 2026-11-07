@@ -1,7 +1,6 @@
 package org.openprovenance.prov.validation.report.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.openprovenance.prov.validation.report.ValidationReport;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class Serialization {
         //mapper.addMixIn(ValidationReport.class,  ValidationReportInterface.class);
         mapper.writeValue(out,report);
     }
-    public static String serializeValidationReportAsString(ValidationReport report) throws JsonProcessingException {
+    public static String serializeValidationReportAsString(ValidationReport report) {
         ObjectMapper mapper=getValidationReportMapper();
         //ObjectMapper mapper= new ProvSerialiser().getMapper();
         //mapper.addMixIn(ValidationReport.class,  ValidationReportInterface.class);

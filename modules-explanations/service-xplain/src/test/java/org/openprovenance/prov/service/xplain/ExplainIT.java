@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.xplain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -232,7 +233,7 @@ public class ExplainIT extends TestCase {
         tap.setTemplate(template);
 
 
-        StreamingOutput promise=out -> new ObjectMapper().writeValue(out,tap);
+        StreamingOutput promise=out -> JsonMapper.builderWithJackson2Defaults().build().writeValue(out,tap);
 
         Response response=target.request().post(Entity.entity(promise, MediaType.APPLICATION_JSON_TYPE));
 

@@ -1,9 +1,10 @@
 package org.openprovenance.prov.core.json.serialization;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.QualifiedNameException;
 
@@ -27,7 +28,7 @@ import java.util.*;
  */
 public class ProvJsonWriter implements ProvJsonVocabulary {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build(); // D2
     private final ProvFactory factory;
     private final Name name;
     private int blankCounter = 0;
@@ -218,7 +219,7 @@ public class ProvJsonWriter implements ProvJsonVocabulary {
 
     /** The core properties must agree; the attribute values of the second join those of the first. */
     private void merge(ObjectNode into, ObjectNode record, String id) {
-        Iterator<Map.Entry<String, JsonNode>> fields = record.fields();
+        Iterator<Map.Entry<String, JsonNode>> fields = record.properties().iterator();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> field = fields.next();
             JsonNode existing = into.get(field.getKey());

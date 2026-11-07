@@ -1,7 +1,9 @@
 package org.openprovenance.prov.service.security.pac;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pac4j.core.context.WebContext;
@@ -41,7 +43,7 @@ public class GitHubTokenAuthenticator implements Authenticator {
     private final String clientName;
     private final long ttlMillis;
     private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-    private final ObjectMapper om = new ObjectMapper();
+    private final ObjectMapper om = JsonMapper.builderWithJackson2Defaults().build();
     private final Map<String, Entry> cache = new ConcurrentHashMap<>();
 
     static class Entry {
@@ -114,8 +116,8 @@ public class GitHubTokenAuthenticator implements Authenticator {
             if (id == null || !id.canConvertToLong() || login == null) {
                 throw new CredentialsException("GitHub /user response has no id or login");
             }
-            return GitHubProfiles.profile(id.asText(), login.asText(), null, clientName);
-        } catch (IOException e) {
+            return GitHubProfiles.profile(id.asString(), login.asString(""), null, clientName); // Jackson 3: asString (was asText)
+        } catch (JacksonException e) { // Jackson 3: unchecked (was IOException)
             throw new CredentialsException("GitHub /user response is not JSON");
         }
     }

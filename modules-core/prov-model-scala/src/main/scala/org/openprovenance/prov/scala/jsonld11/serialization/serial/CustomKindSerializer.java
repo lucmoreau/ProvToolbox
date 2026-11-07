@@ -1,11 +1,9 @@
 package org.openprovenance.prov.scala.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import org.openprovenance.prov.model.StatementOrBundle;
-
-import java.io.IOException;
+import tools.jackson.databind.SerializationContext;
 
 
 public class CustomKindSerializer extends StdSerializer<StatementOrBundle.Kind> {
@@ -18,7 +16,7 @@ public class CustomKindSerializer extends StdSerializer<StatementOrBundle.Kind> 
         super(t);
     }
     @Override
-    public void serialize(StatementOrBundle.Kind kind, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(StatementOrBundle.Kind kind, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         String s=null;
         switch (kind) {
             case PROV_ENTITY:

@@ -1,8 +1,10 @@
 package org.openprovenance.prov.template.utils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -173,9 +175,9 @@ public final class TemplateIndex {
     private static ObjectMapper createMapperFor(String fileName) {
         String lower = fileName.toLowerCase();
         if (lower.endsWith(".json")) {
-            return new ObjectMapper();
+            return JsonMapper.builderWithJackson2Defaults().build();
         } else {
-            return new ObjectMapper(new YAMLFactory());
+            return YAMLMapper.builder().configureForJackson2().build(); // D2 (YAMLMapper has no builderWithJackson2Defaults)
         }
     }
 
@@ -257,7 +259,7 @@ public final class TemplateIndex {
 
         // write back using same format (pretty for JSON)
         try (BufferedWriter w = Files.newBufferedWriter(source, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-            if (mapper.getFactory() instanceof YAMLFactory) {
+            if (mapper instanceof YAMLMapper) { // jackson 3: no getFactory()
                 mapper.writeValue(w, index);
             } else {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(w, index);

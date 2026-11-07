@@ -1,6 +1,7 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -67,13 +68,16 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
         MongoDatabase db = mongoClient.getDatabase(dbname);
         this.db=db;
 
-        this.mapper=new ObjectMapper();
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
+        // Jackson 3: mappers are immutable. The PROV serialiser and deserialiser both configure this
+        // builder (as they configured the shared mapper with Jackson 2); the mapper given to MongoJack is
+        // then built from it, with the MongoJack module. Jackson 2 defaults (docs/JACKSON3_MIGRATION.md, D2).
+        JsonMapper.Builder builder=JsonMapper.builderWithJackson2Defaults();
 
-        this.serialiser=new ProvSerialiser(mapper, false);
-        serialiser.customize(mapper);
+        this.serialiser=new ProvSerialiser(builder, false);
 
-        this.deserialiser=new ProvDeserialiser(mapper);
+        this.deserialiser=new ProvDeserialiser(builder);
+
+        this.mapper=org.mongojack.internal.MongoJackModule.configure(builder.build());
 
         MongoCollection<DocumentWrapper> collection=db.getCollection(COLLECTION_DOCUMENTS,DocumentWrapper.class);
         this.documentCollection = JacksonMongoCollection.builder().withObjectMapper(mapper).build(collection,DocumentWrapper.class, UuidRepresentation.STANDARD);
@@ -81,11 +85,12 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     }
 
     JacksonMongoCollection<DocumentWrapper> newDocumentCollection(DateTimeOption dateTimeOption, TimeZone optionalTimeZone) {
-        ObjectMapper mapper=new ObjectMapper();
-        mapper.registerModule(org.mongojack.internal.MongoJackModule.DEFAULT_MODULE_INSTANCE);
+        JsonMapper.Builder builder=JsonMapper.builderWithJackson2Defaults();
 
-        // this call updates the mapper with custom deserialisers
-        ProvDeserialiser deserialiser=new ProvDeserialiser(mapper, dateTimeOption, optionalTimeZone);
+        // this call configures the builder with the custom deserialisers
+        new ProvDeserialiser(builder, dateTimeOption, optionalTimeZone);
+
+        ObjectMapper mapper=org.mongojack.internal.MongoJackModule.configure(builder.build());
 
         MongoCollection<DocumentWrapper> collection=db.getCollection(COLLECTION_DOCUMENTS,DocumentWrapper.class);
         return JacksonMongoCollection.builder().withObjectMapper(mapper).build(collection,DocumentWrapper.class,UuidRepresentation.STANDARD);
@@ -96,8 +101,7 @@ public class MongoDocumentResourceStorage implements ResourceStorage, Constants 
     public String newStore(Formats.ProvFormat format) throws IOException {
         DocumentWrapper dw=new DocumentWrapper();
         documentCollection.insert(dw);
-        String id = dw.getId();
-        return id;
+        return dw.getId();
     }
 
     InteropFramework interop= new InteropFramework(factory);

@@ -53,9 +53,6 @@ public class DateIT extends TestCase implements ApiUriFragments {
     public void testTranslationWithDate3(){
         doTestAction("src/test/resources/dates/date_with_tz_offset.json", "json", 1);
     }
-    public void testTranslationWithDate4(){
-       doTestAction("src/test/resources/dates/date_with_tz_offset.provx", "provx", 1);
-    }
 
     public void testTranslationWithDate1b(){
         doTestAction("src/test/resources/dates/date_with_tz_offset.provn", "provn", 2);
@@ -85,47 +82,39 @@ public class DateIT extends TestCase implements ApiUriFragments {
         String location_report_json = contentNegotiation(location, MEDIA_APPLICATION_JSON, "location_json");
         String location_report_jsonld = contentNegotiation(location, MEDIA_APPLICATION_JSONLD, "location_jsonld");
         String location_report_provn = contentNegotiation(location, MEDIA_TEXT_PROVENANCE_NOTATION, "location_provn");
-        String location_report_provx = contentNegotiation(location, MEDIA_APPLICATION_PROVENANCE_XML, "location_provx");
 
         logger.info("location_report_json " + location_report_json);
         logger.info("location_report_jsonld " + location_report_jsonld);
         logger.info("location_report_provn " + location_report_provn);
-        logger.info("location_report_provx " + location_report_provx);
 
         logger.info("Reading document with PRESERVE ...");
 
         Document doc1 = readDocument(location, MEDIA_APPLICATION_JSONLD,         ".jsonld", PRESERVE, null);
         Document doc2 = readDocument(location, MEDIA_TEXT_PROVENANCE_NOTATION,   ".provn", PRESERVE, null);
-        Document doc3 = readDocument(location, MEDIA_APPLICATION_PROVENANCE_XML, ".provx", PRESERVE, null);
         Document doc4 = readDocument(location, MEDIA_APPLICATION_JSON,           ".json", PRESERVE, null);
 
         checkDates_preserve(doc1, "preserve: jsonld");
         checkDates_preserve(doc2, "preserve: provn");
-        checkDates_preserve(doc3, "preserve: provx");
         checkDates_preserve(doc4, "preserve: json");
 
         logger.info("Reading document with UTC ...");
 
         doc1 = readDocument(location, MEDIA_APPLICATION_JSONLD,         ".jsonld", UTC, null);
         doc2 = readDocument(location, MEDIA_TEXT_PROVENANCE_NOTATION,   ".provn", UTC, null);
-        doc3 = readDocument(location, MEDIA_APPLICATION_PROVENANCE_XML, ".provx", UTC, null);
         doc4 = readDocument(location, MEDIA_APPLICATION_JSON,           ".json", UTC, null);
 
         checkDates_utc(doc1, "UTC: jsonld");
         checkDates_utc(doc2, "UTC: provn");
-        checkDates_utc(doc3, "UTC: provx");
         checkDates_utc(doc4, "UTC: json");
 
         logger.info("Reading document with TIMEZONE Japan ...");
 
         doc1 = readDocument(location, MEDIA_APPLICATION_JSONLD,         ".jsonld", TIMEZONE, "Japan");
         doc2 = readDocument(location, MEDIA_TEXT_PROVENANCE_NOTATION,   ".provn", TIMEZONE, "Japan");
-        doc3 = readDocument(location, MEDIA_APPLICATION_PROVENANCE_XML, ".provx", TIMEZONE, "Japan");
         doc4 = readDocument(location, MEDIA_APPLICATION_JSON,           ".json", TIMEZONE, "Japan");
 
         checkDates_japan(doc1, "UTC: jsonld");
         checkDates_japan(doc2, "UTC: provn");
-        checkDates_japan(doc3, "UTC: provx");
         checkDates_japan(doc4, "UTC: json");
 
     }

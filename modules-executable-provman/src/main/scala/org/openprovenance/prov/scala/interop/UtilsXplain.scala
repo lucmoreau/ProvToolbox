@@ -1,8 +1,5 @@
 package org.openprovenance.prov.scala.interop
 
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.json.JsonMapper
-import com.fasterxml.jackson.module.scala.{ClassTagExtensions, DefaultScalaModule}
 import org.openprovenance.prov.scala.iface.{Explainer, Narrative, Narrator, QueryEngine}
 import org.openprovenance.prov.scala.immutable.{Document, Statement}
 import org.openprovenance.prov.scala.interop.CommandLine.{output, outputer}
@@ -84,13 +81,13 @@ class UtilsXplain(narrator: Narrator, explainer: Explainer, queryEngine: QueryEn
 
 
   private def exportToJson(outw: java.io.Writer, any: AnyRef): Unit = {
-    TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT);
-    TypePropagator.om.writeValue(outw, any)
+    TypePropagator.om.writerWithDefaultPrettyPrinter().writeValue(outw, any) // jackson 3: no mutation of the shared mapper
   }
 
   private def exportToJson(out: Output, records: AnyRef): Unit = {
-    val om=JsonMapper.builder().addModule(DefaultScalaModule).build() :: ClassTagExtensions
-    new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(om,false).getMapper.writeValue(out.asInstanceOf[FileOutput].f, records)
+    // Jackson 3: prov-jsonld's serialiser configures a builder (Jackson 2 defaults, D2), with Jackson 3's Scala module
+    val builder=tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().addModule(tools.jackson.module.scala.DefaultScalaModule)
+    new org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser(builder,false).getMapper.writeValue(out.asInstanceOf[FileOutput].f, records)
     //new ProvSerialiser(om,false).customize2(om).writeValue(out.asInstanceOf[FileOutput].f, records)
     // FIXME: which serializtion to use? None seems suitable.
     //om.writeValue(out.asInstanceOf[FileOutput].f, records)

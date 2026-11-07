@@ -1,6 +1,7 @@
 package org.openprovenance.prov.storage.mongodb;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 
 import org.openprovenance.prov.template.core.Bindings;
@@ -13,7 +14,7 @@ public class MongoBindingsDbTest extends TestCase {
     public static final String EX_NS = "http://example.org";
     public static final String EX_PREFIX = "ex";
 
-    ObjectMapper mapper=new ObjectMapper();
+    ObjectMapper mapper=JsonMapper.builderWithJackson2Defaults().build();
 
     public void testMongoStorage() throws IOException {
 

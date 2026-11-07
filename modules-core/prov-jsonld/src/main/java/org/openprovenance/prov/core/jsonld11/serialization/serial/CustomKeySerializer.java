@@ -1,12 +1,10 @@
 package org.openprovenance.prov.core.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.vanilla.QualifiedName;
-
-import java.io.IOException;
+import tools.jackson.databind.SerializationContext;
 
 import static org.openprovenance.prov.core.jsonld11.serialization.Constants.ID_COERCED_ATTRIBUTE_TERMS;
 import static org.openprovenance.prov.model.NamespacePrefixMapper.PROV_NS;
@@ -27,7 +25,7 @@ public class CustomKeySerializer extends StdSerializer<QualifiedName> {
     }
 
     @Override
-    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         String s;
         if (q.getPrefix()==null || PROV_NS.equals(q.getNamespaceURI())) {
             s = q.getLocalPart();
@@ -35,6 +33,6 @@ public class CustomKeySerializer extends StdSerializer<QualifiedName> {
             s = q.getPrefix() + ":" + q.getLocalPart();
         }
         serializerProvider.setAttribute(ID_COERCED_KEY, PROV_NS.equals(q.getNamespaceURI()) && ID_COERCED_ATTRIBUTE_TERMS.contains(s));
-        jsonGenerator.writeFieldName(s);
+        jsonGenerator.writeName(s);
     }
 }

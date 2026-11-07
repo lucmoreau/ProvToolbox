@@ -1,7 +1,8 @@
 package org.openprovenance.prov.core.jsonld11.test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
@@ -38,7 +39,7 @@ public class ProvJsonld7Test extends TestCase {
     static final String EX = "http://example.org/";
     static final String FOAF = "http://xmlns.com/foaf/0.1/";
     static final ProvFactory pf = new org.openprovenance.prov.vanilla.ProvFactory();
-    static final ObjectMapper mapper = new ObjectMapper();
+    static final ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
 
     static final String DIR = "src/test/resources/prov-jsonld-7/";
 
@@ -96,7 +97,7 @@ public class ProvJsonld7Test extends TestCase {
 
     /** The agent's node in the document as written. */
     static JsonNode writtenArthur(File file) throws IOException {
-        for (JsonNode n : mapper.readTree(file).get("@graph")) if (n.path("@id").asText().equals("ex:arthur")) return n;
+        for (JsonNode n : mapper.readTree(file).get("@graph")) if (n.path("@id").asString("").equals("ex:arthur")) return n;
         throw new AssertionError("no ex:arthur in " + file);
     }
 

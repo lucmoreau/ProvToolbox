@@ -46,6 +46,7 @@ public class SummaryService implements Constants, InteropMediaType {
     private final JobManagement jobManager;
     private final NonDocumentResourceStorage ndStorage;
 
+
     public SummaryService(PostService postService) {
         this(postService, new LinkedList<ActionPerformer>(), Optional.empty());
     }
@@ -71,7 +72,6 @@ public class SummaryService implements Constants, InteropMediaType {
                     //headers=@Header(name="location",description="Location of posted document"),
                     content = {@Content(mediaType = MEDIA_TEXT_TURTLE),
                                @Content(mediaType = MEDIA_TEXT_PROVENANCE_NOTATION),
-                               @Content(mediaType = MEDIA_APPLICATION_PROVENANCE_XML),
                                @Content(mediaType = MEDIA_APPLICATION_TRIG),
                                @Content(mediaType = MEDIA_APPLICATION_RDF_XML),
                                @Content(mediaType = MEDIA_APPLICATION_JSON)}),
@@ -145,7 +145,7 @@ public class SummaryService implements Constants, InteropMediaType {
         String ptypesId=aResource2.getVisibleId();
         aResource2.setMediaType(MEDIA_APPLICATION_JSON);
         String resourceName2=ndStorage.newStore("json",MEDIA_APPLICATION_JSON);
-        ndStorage.serializeObjectToStore(TypePropagator.om(),ndx.summaryDescription(),resourceName2);
+        ndStorage.serializeObjectToStore(TypePropagator.om(), ndx.summaryDescription(),resourceName2);
         aResource2.setStorageId(resourceName2);
         ndIndex.put(ptypesId,aResource2);
         return ptypesId;
@@ -281,7 +281,7 @@ public class SummaryService implements Constants, InteropMediaType {
             NonDocumentResourceIndex<NonDocumentResource>  ndIndex=utils.getNonDocumentResourceIndex();
             NonDocumentResource ndr=ndIndex.get(sdr.getConfigId());
 
-            SummaryConfiguration sc=ndStorage.deserializeObjectFromStore(TypePropagator.om(),ndr.getStorageId(), SummaryConfiguration.class);
+            SummaryConfiguration sc=ndStorage.deserializeObjectFromStore(TypePropagator.om(), ndr.getStorageId(), SummaryConfiguration.class);
 
 
 
@@ -332,7 +332,7 @@ public class SummaryService implements Constants, InteropMediaType {
 
             System.out.println("Found ptypes storage id" + ndr.getStorageId());
 
-            SummaryDescriptionJson sdj=ndStorage.deserializeObjectFromStore(TypePropagator.om(),ndr.getStorageId(),SummaryDescriptionJson.class);
+            SummaryDescriptionJson sdj=ndStorage.deserializeObjectFromStore(TypePropagator.om(), ndr.getStorageId(),SummaryDescriptionJson.class);
 
             StreamingOutput so=(out) -> TypePropagator.om().writeValue(out,sdj);
 
@@ -413,7 +413,7 @@ public class SummaryService implements Constants, InteropMediaType {
         NonDocumentResource nd=index.get(configId);
         System.out.println("nd resource " + configId + " " + nd.getStorageId());
 
-        SummaryConfiguration sc=ndStorage.deserializeObjectFromStore(TypePropagator.om(),nd.getStorageId(), SummaryConfiguration.class);
+        SummaryConfiguration sc=ndStorage.deserializeObjectFromStore(TypePropagator.om(), nd.getStorageId(), SummaryConfiguration.class);
 
         Level0MapperJson level0=sc.level0();
 
@@ -455,7 +455,7 @@ public class SummaryService implements Constants, InteropMediaType {
         NonDocumentResource nd=index.get(configId);
         System.out.println("nd resource " + configId + " " + nd.getStorageId());
 
-        SummaryConfiguration sc=ndStorage.deserializeObjectFromStore(TypePropagator.om(),nd.getStorageId(), SummaryConfiguration.class);
+        SummaryConfiguration sc=ndStorage.deserializeObjectFromStore(TypePropagator.om(), nd.getStorageId(), SummaryConfiguration.class);
 
         Level0MapperJson level0=sc.level0();
 

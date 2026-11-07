@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.squareup.javapoet.*;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.Constants;
@@ -9,6 +8,7 @@ import org.openprovenance.prov.template.compiler.past.*;
 import org.openprovenance.prov.template.compiler.past.Class;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.ParameterizedType;
+import tools.jackson.core.JacksonException;
 
 import javax.lang.model.element.Modifier;
 import java.util.*;
@@ -172,7 +172,7 @@ public class CompilerCatalogueDispatcher {
             pastClass.FIELDS(FIELD("uniqueMap", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(uniqueMap))));
             pastClass.FIELDS(FIELD("shortNames", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(locations.getShortNames()))));
             pastClass.FIELDS(FIELD("linkers", STRING).MODIFIERS(Modifier.STATIC, Modifier.PRIVATE, Modifier.FINAL).INITIALIZER(CONSTANT(objectMapper.writeValueAsString(locations.getLinkerTableDeclarations()))));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
 

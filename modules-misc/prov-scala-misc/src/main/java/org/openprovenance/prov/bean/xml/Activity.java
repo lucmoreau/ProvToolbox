@@ -1,7 +1,7 @@
 package org.openprovenance.prov.bean.xml;
 import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 
 @JacksonXmlRootElement(localName="activity")

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.compiler.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.squareup.javapoet.JavaFile;
 import junit.framework.TestCase;
 import org.openprovenance.prov.model.ProvFactory;
@@ -33,12 +34,8 @@ import java.util.Set;
 public class QueryInvokerTextQuotingTest extends TestCase {
 
     private final ProvFactory pf = new org.openprovenance.prov.vanilla.ProvFactory();
-    private final ObjectMapper om = new ObjectMapper();
+    private final ObjectMapper om = new DescriptorUtils().setupDeserializer(JsonMapper.builderWithJackson2Defaults()).build();
     private final CompilerQueryInvoker compiler = new CompilerQueryInvoker(pf);
-
-    {
-        new DescriptorUtils().setupDeserializer(om);
-    }
 
     private static final String SCHEMA =
             "{\n" +

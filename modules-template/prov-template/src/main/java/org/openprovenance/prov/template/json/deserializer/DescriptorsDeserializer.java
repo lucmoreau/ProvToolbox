@@ -1,22 +1,21 @@
 package org.openprovenance.prov.template.json.deserializer;
 
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.DeserializationContext;
 import org.openprovenance.prov.template.json.Descriptor;
 import org.openprovenance.prov.template.json.Descriptors;
 import org.openprovenance.prov.template.json.deserializer.DescriptorDeserializer;
+import tools.jackson.databind.ValueDeserializer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DescriptorsDeserializer extends  JsonDeserializer<Descriptors> {
+public class DescriptorsDeserializer extends  ValueDeserializer<Descriptors> {
     final DescriptorDeserializer dd=new DescriptorDeserializer();
     @Override
-    public Descriptors deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public Descriptors deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         if (jsonParser.isExpectedStartArrayToken()) {
             List<Descriptor> descriptorList = new ArrayList<>();
 

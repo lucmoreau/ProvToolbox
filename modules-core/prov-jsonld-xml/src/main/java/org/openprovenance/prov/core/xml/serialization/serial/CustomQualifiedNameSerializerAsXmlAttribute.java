@@ -1,12 +1,10 @@
 package org.openprovenance.prov.core.xml.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
 import org.openprovenance.prov.vanilla.QualifiedName;
+import tools.jackson.databind.SerializationContext;
 import org.openprovenance.prov.core.xml.QualifiedNameRef;
-
-import java.io.IOException;
 
 
 public class CustomQualifiedNameSerializerAsXmlAttribute extends StdSerializer<QualifiedName> {
@@ -20,9 +18,9 @@ public class CustomQualifiedNameSerializerAsXmlAttribute extends StdSerializer<Q
     }
 
     @Override
-    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(QualifiedName q, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
 
-        jsonGenerator.writeObject(new QualifiedNameRef(q));
+        jsonGenerator.writePOJO(new QualifiedNameRef(q));
 
     }
 }

@@ -1,6 +1,6 @@
 package org.openprovenance.prov.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -43,9 +43,11 @@ public class ValidationReportMessageBodyReader implements MessageBodyReader<Vali
     	ValidationReport report=null;
 
         logger.info("readFrom() returning ValidationReport");
-        ObjectMapper mapper= new ProvDeserialiser().getMapper();
-        //mapper.addMixIn(ValidationReport.class,  IsDocumentWithFieldsToIgnore.class);
-        mapper.addMixIn(ValidationReport.class,  ValidationReportInterface.class);
+        // Jackson 3: mappers are immutable, so the mix-in is added to a rebuilt copy
+        ObjectMapper mapper= new ProvDeserialiser().getMapper().rebuild()
+        //.addMixIn(ValidationReport.class,  IsDocumentWithFieldsToIgnore.class)
+                .addMixIn(ValidationReport.class,  ValidationReportInterface.class)
+                .build();
 
         logger.info("readFrom() mixin set");
 

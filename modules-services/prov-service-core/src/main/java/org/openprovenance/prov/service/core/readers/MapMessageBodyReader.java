@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.core.readers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +34,7 @@ public class MapMessageBodyReader implements MessageBodyReader<Map> {
 								InputStream is) throws IOException,
 			WebApplicationException {
 
-		return new ObjectMapper().readValue(is,Map.class);
+		return JsonMapper.builderWithJackson2Defaults().build().readValue(is,Map.class);
 
 	}
 

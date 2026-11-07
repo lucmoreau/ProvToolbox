@@ -1,8 +1,8 @@
 package org.openprovenance.prov.core.xml;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 import org.openprovenance.prov.core.xml.serialization.deserial.CustomQualifiedNameDeserializerAsXmlAttribute;
 import org.openprovenance.prov.core.xml.serialization.serial.CustomQualifiedNameSerializerAsXmlAttribute;
 

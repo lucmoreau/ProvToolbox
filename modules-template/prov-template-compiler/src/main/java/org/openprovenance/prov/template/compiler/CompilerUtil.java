@@ -27,6 +27,7 @@ import org.openprovenance.prov.template.compiler.past.Expression;
 import org.openprovenance.prov.template.compiler.past.PastFactory;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.*;
+import tools.jackson.core.JacksonException;
 import org.openprovenance.prov.template.core.InstantiateUtil;
 
 //import com.google.common.base.CaseFormat;
@@ -316,13 +317,13 @@ public class CompilerUtil {
             if (bindings.equals(Constants.OPENPROVENANCE_COMPOSITE_BEAN_JSON)) {
                 try {
                     bindingsSchema=objectMapper.readValue(this.getClass().getResourceAsStream(RESOURCE_COMPOSITE_BEAN_JSON), TemplateBindingsSchema.class);
-                } catch (IOException e) {
+                } catch (JacksonException e) {
                     throw new RuntimeException(e);
                 }
             } else {
                 try {
                     bindingsSchema = objectMapper.readValue(new File(bindings), TemplateBindingsSchema.class);
-                } catch (IOException e) {
+                } catch (JacksonException e) {
                     throw new RuntimeException(e);
                 }
             }

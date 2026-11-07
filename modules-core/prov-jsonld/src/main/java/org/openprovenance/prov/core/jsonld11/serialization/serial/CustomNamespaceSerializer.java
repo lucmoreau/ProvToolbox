@@ -1,14 +1,15 @@
 package org.openprovenance.prov.core.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.databind.type.MapType;
+import tools.jackson.databind.type.TypeFactory;
 import org.openprovenance.prov.core.jsonld11.serialization.Constants;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.exception.UncheckedException;
+import tools.jackson.databind.SerializationContext;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,12 +23,10 @@ import static org.openprovenance.prov.core.jsonld11.serialization.Constants.OPEN
 public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
     public static final String JSONLD_DEFAULT_NAMESPACE = "@base";
     private final boolean embedContext;
-    private final ObjectMapper mapper;
 
-    public CustomNamespaceSerializer(boolean embedContext, ObjectMapper mapper) {
+    public CustomNamespaceSerializer(boolean embedContext) {
         super(Namespace.class);
         this.embedContext=embedContext;
-        this.mapper=mapper;
     }
 
     /*
@@ -41,7 +40,7 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
     static Map<String, Object> embeddedContext;
 
     static public Map<String, Object> readContext() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
         TypeFactory typeFactory = mapper.getTypeFactory();
         MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
         Map<String,Object> o=mapper.readValue(CustomNamespaceSerializer.class.getResourceAsStream("/" + JSONLDCONTEXT_2024_08_25),mapType);
@@ -64,7 +63,7 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
 
     /** The second element of the openprov context: what it adds to the PROV-JSONLD context. */
     static public List<Object> readOpenprovExtension() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
         Map<String, Object> o = mapper.readValue(CustomNamespaceSerializer.class.getResourceAsStream("/" + OPENPROV_CONTEXT_RESOURCE),
                 mapper.getTypeFactory().constructMapType(HashMap.class, String.class, Object.class));
         @SuppressWarnings("unchecked")
@@ -81,7 +80,7 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
     }
 
     @Override
-    public void serialize(Namespace namespace, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(Namespace namespace, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         Map<String, String> prefixes=new HashMap<>();
         prefixes.putAll(namespace.getPrefixes());
         String defaultNS=namespace.getDefaultNamespace();
@@ -97,9 +96,8 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
         } else {
             theContext.add(usesOpenprov ? Constants.OPENPROV_CONTEXT_URL : Constants.JSONLD_CONTEXT_URL);
         }
-        // set codec to serialize an array, was required for Mongo-storage.
-        jsonGenerator.setCodec(mapper);
-
-        jsonGenerator.writeObject(theContext.toArray());
+        // Jackson 3: write the array through the serialization context (Jackson 2 needed
+        // jsonGenerator.setCodec(mapper) here, for Mongo-storage, whose generator had no codec).
+        serializerProvider.writeValue(jsonGenerator, theContext.toArray());
     }
 }

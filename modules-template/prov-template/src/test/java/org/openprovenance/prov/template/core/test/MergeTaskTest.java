@@ -1,6 +1,7 @@
 package org.openprovenance.prov.template.core.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
@@ -72,7 +73,7 @@ public class MergeTaskTest extends TestCase {
         assertTrue(records.get(0), records.get(0).contains("sc/merged.jsonld"));
 
         // the shared index of the output directory holds every task's entries
-        Map<String, Map<String, Object>> index = new ObjectMapper().readValue(dir.resolve("out/index.json").toFile(), Map.class);
+        Map<String, Map<String, Object>> index = JsonMapper.builderWithJackson2Defaults().build().readValue(dir.resolve("out/index.json").toFile(), Map.class);
         for (String id : List.of("sc/a", "sc/b", "sc/c", "sc/merged")) {
             assertEquals(id, "sc/" + id.substring(3) + ".jsonld", index.get(id).get("jsonld"));
         }

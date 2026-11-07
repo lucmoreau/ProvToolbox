@@ -1,12 +1,13 @@
 package org.openprovenance.prov.template.core.deprecated;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.model.*;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.template.core.InstantiateUtil;
+import tools.jackson.core.JacksonException;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -94,7 +95,7 @@ public class Conversions {
             } else {
                 mapper.writeValue(new File(output_file1), bean);
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON serialization failed", e);
         }
@@ -106,7 +107,7 @@ public class Conversions {
         try {
             return mapper.readValue(input_file1,BindingsBean.class);
 
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON serialization failed", e);
         }
@@ -201,7 +202,7 @@ public class Conversions {
         if (v instanceof String) {
             String s=(String)v;
             if (s.startsWith("{")) {
-                ObjectMapper mapper = new ObjectMapper();
+                ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
                 try {
                     v=mapper.readValue((String)v,Hashtable.class);
                 } catch (Exception e) {
@@ -323,7 +324,7 @@ public class Conversions {
         try {
             return mapper.readValue(input_file1,BindingsBean.class);
 
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException("JSON serialization failed", e);
         }

@@ -1,16 +1,14 @@
 package org.openprovenance.prov.core.xml.serialization.deserial;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import org.openprovenance.prov.core.xml.serialization.Constants;
 import org.openprovenance.prov.model.Attribute;
 import org.openprovenance.prov.model.QualifiedName;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,19 +20,19 @@ public class CustomAttributeSetDeserializer extends StdDeserializer<Set> {
     }
 
     @Override
-    public Set deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        JsonNode node = jp.getCodec().readTree(jp);
+    public Set deserialize(JsonParser jp, DeserializationContext deserializationContext) {
+        JsonNode node = jp.objectReadContext().readTree(jp);
 
         QualifiedName context=(QualifiedName)deserializationContext.getAttribute(CustomKeyDeserializer.PROV_ATTRIBUTE_CONTEXT_KEY);
 
 
 
         JsonNode aType=node.get(Constants.PROPERTY_AT_TYPE);
-        String type = (aType==null)?null:aType.textValue();
+        String type = (aType==null)?null:aType.stringValue();
         JsonNode aLang=node.get(Constants.PROPERTY_STRING_LANG);
-        String lang = (aLang==null)?null:aLang.textValue();
+        String lang = (aLang==null)?null:aLang.stringValue();
         JsonNode aBody=node.get("");
-        String body = (aBody==null)?node.textValue():aBody.textValue();
+        String body = (aBody==null)?node.stringValue():aBody.stringValue();
 
 
         Set<Attribute> set=new HashSet<>();

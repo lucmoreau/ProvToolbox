@@ -1,7 +1,7 @@
 package org.openprovenance.prov.service.core;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.core.StreamingOutput;
 import org.apache.commons.csv.CSVParser;
@@ -70,8 +70,8 @@ public class TemplateLogic {
         this.templateDispatcher = templateDispatcher;
         this.documentBuilderDispatcher = templateDispatcher.getDocumentBuilderDispatcher();
         this.utils = utils;
-        this.om = om;
-        om.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
+        // Jackson 3: mappers are immutable; a copy of om with NON_NULL inclusion (was set on om itself)
+        this.om = om.rebuild().changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)).build();
         this.templateQuery = templateQuery;
         this.typeAssignment = templateDispatcher.getTypeAssignment();
         this.successors = templateDispatcher.getSuccessors();
@@ -213,7 +213,7 @@ public class TemplateLogic {
     private void debugDisplay(String msg, Object object) {
         try {
             System.out.println(msg + om.writeValueAsString(object));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }

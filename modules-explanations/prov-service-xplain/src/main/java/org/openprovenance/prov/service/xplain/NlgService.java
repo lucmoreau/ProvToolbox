@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.xplain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -387,7 +388,7 @@ public class NlgService implements Constants, InteropMediaType, SwaggerTags {
 
     }
 
-    final ObjectMapper objectMapper = new ObjectMapper();
+    final ObjectMapper objectMapper = JsonMapper.builderWithJackson2Defaults().build(); // D2
 
     public Map<?,?> doPost(String url, String requestBody) throws IOException {
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {

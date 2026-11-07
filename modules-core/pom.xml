@@ -3,7 +3,7 @@
     <parent>
         <artifactId>ProvToolbox</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.4.0</version>
+        <version>2.5.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -12,7 +12,7 @@
     <modules>
         <module>prov-model</module>
         <module>prov-jsonld</module>
-        <module>prov-jsonld-xml</module>
+        <!-- <module>prov-jsonld-xml</module> --> <!-- retired (not migrated to Jackson 3), see docs/JACKSON3_MIGRATION.md -->
         <module>prov-model-scala</module>
         <module>prov-n</module>
     </modules>

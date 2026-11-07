@@ -1,6 +1,5 @@
 package org.openprovenance.prov.template.compiler.common;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.stream.Streams;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openprovenance.apache.commons.lang.StringEscapeUtils;

@@ -6,7 +6,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@WebFilter({"*.provn", "*.provx"})
+@WebFilter({"*.provn"}) // PROV-XML (*.provx) support dropped, see docs/JACKSON3_MIGRATION.md
 public class ServletConfig implements Filter {
 
     @Override
@@ -35,7 +35,6 @@ public class ServletConfig implements Filter {
 
         switch (extension) {
             case "provn" : resp.setContentType("text/provenance-notation"); break;
-            case "provx" : resp.setContentType("application/provenance-xml"); break;
         }
         chain.doFilter(request, resp);
     }

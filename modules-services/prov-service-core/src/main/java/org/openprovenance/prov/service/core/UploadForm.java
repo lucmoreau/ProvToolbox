@@ -72,7 +72,7 @@ public class UploadForm {
 		this.translate = translate;
 	}
 
-    enum TypeOut { json, provn, provx, ttl, trig, svg, pdf, jpg }
-    enum TypeIn { json, provn, provx, ttl, trig }
+    enum TypeOut { json, provn, ttl, trig, svg, pdf, jpg }
+    enum TypeIn { json, provn, ttl, trig }
 
 }

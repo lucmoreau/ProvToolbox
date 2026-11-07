@@ -3,12 +3,11 @@ package org.openprovenance.prov.scala.nlgspec_transformer
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id
 import com.fasterxml.jackson.annotation._
-import com.fasterxml.jackson.core.Version
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.ClassTagExtensions // scala3: ScalaObjectMapper does not exist for Scala 3
+import tools.jackson.core.Version
+import tools.jackson.databind.annotation.JsonDeserialize
+import tools.jackson.databind.module.SimpleModule
+import tools.jackson.databind.{ObjectMapper, SerializationFeature}
+import tools.jackson.module.scala.DefaultScalaModule
 import nlg.wrapper._
 import Constants.AT_ITERATOR
 import org.openprovenance.prov.model.Bundle
@@ -1328,17 +1327,19 @@ object SpecLoader {
 
   val pf: ProvMixin2 =new ProvDeserialiser().provMixin()
 
-  val mapper:ObjectMapper = new ObjectMapper  with ClassTagExtensions
-  mapper.registerModule(DefaultScalaModule)
-  mapper.configure(SerializationFeature.INDENT_OUTPUT, true)
-
   val module = new SimpleModule("MyModule", new Version(1, 0, 0, null, null, null))
   module.addSerializer(classOf[StringPhrase], new CustomStringPhraseSerializer)
  // module.addDeserializer(classOf[HeadForm], new CustomHeadFormDeserializer)
 
  // module.addDeserializer(classOf[NounForm], new CustomNounFormDeserializer)
 
-  mapper.registerModule(module)
+  // Jackson 3: an immutable mapper, configured on its builder (Jackson 2 defaults, D2); the
+  // ClassTagExtensions mix-in (unused here) is gone. Callers that need more configuration use mapper.rebuild().
+  val mapper:ObjectMapper = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults()
+    .addModule(DefaultScalaModule)
+    .enable(SerializationFeature.INDENT_OUTPUT)
+    .addModule(module)
+    .build()
 
 
   def phraseExport (out: OutputStream, phrase: Phrase): Unit = {

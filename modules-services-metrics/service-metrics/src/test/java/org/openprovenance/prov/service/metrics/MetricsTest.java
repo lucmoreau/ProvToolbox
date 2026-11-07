@@ -1,7 +1,8 @@
 package org.openprovenance.prov.service.metrics;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.interop.InteropFramework;
 import org.openprovenance.prov.model.Document;
@@ -19,7 +20,7 @@ public class MetricsTest extends TestCase {
             return null;
         }
     }
-    public void testMetrics1() throws JsonProcessingException {
+    public void testMetrics1() throws JacksonException {
 
         InteropFramework interop = new InteropFramework();
         Document doc = interop.readDocumentFromFile("src/test/resources/metrics/doc1.provn");
@@ -28,25 +29,25 @@ public class MetricsTest extends TestCase {
 
 
         TrafficLightResult result = (TrafficLightResult) metricsRecord.traffic;
-        System.out.println("result = " + new ObjectMapper().writeValueAsString(result));
+        System.out.println("result = " + JsonMapper.builderWithJackson2Defaults().build().writeValueAsString(result));
 
     }
 
-    public void testMetrics2() throws JsonProcessingException {
+    public void testMetrics2() throws JacksonException {
         InteropFramework interop = new InteropFramework();
         Document doc = interop.readDocumentFromFile("src/test/resources/metrics/doc2.provn");
         MetricsRecord metricsRecord=(MetricsRecord)new MetricsCalculatorWithoutSignature().computeMetrics(doc, ProvFactory.getFactory());
         TrafficLightResult result = (TrafficLightResult) metricsRecord.traffic;
-        System.out.println("result = " + new ObjectMapper().writeValueAsString(result));
+        System.out.println("result = " + JsonMapper.builderWithJackson2Defaults().build().writeValueAsString(result));
 
     }
 
-    public void testMetric3() throws JsonProcessingException {
+    public void testMetric3() throws JacksonException {
         InteropFramework interop = new InteropFramework();
         Document doc = interop.readDocumentFromFile("src/test/resources/metrics/doc3.provn");
         MetricsRecord metricsRecord=(MetricsRecord)new MetricsCalculatorWithoutSignature().computeMetrics(doc, ProvFactory.getFactory());
         TrafficLightResult result = (TrafficLightResult) metricsRecord.traffic;
-        System.out.println("result = " + new ObjectMapper().writeValueAsString(result));
+        System.out.println("result = " + JsonMapper.builderWithJackson2Defaults().build().writeValueAsString(result));
 
     }
 }

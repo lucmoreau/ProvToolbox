@@ -1,7 +1,7 @@
 package org.openprovenance.prov.scala.xplain
 
 
-import com.fasterxml.jackson.databind.util.StdConverter
+import tools.jackson.databind.util.StdConverter
 import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.prov.scala.iface.Narrative
 import org.openprovenance.prov.scala.immutable

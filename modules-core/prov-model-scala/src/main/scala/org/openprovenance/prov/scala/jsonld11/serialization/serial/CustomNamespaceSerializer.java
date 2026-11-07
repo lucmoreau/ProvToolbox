@@ -1,12 +1,13 @@
 package org.openprovenance.prov.scala.jsonld11.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.databind.type.MapType;
+import tools.jackson.databind.type.TypeFactory;
 import org.openprovenance.prov.model.Namespace;
+import tools.jackson.databind.SerializationContext;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
     static Map<String, Object> embeddedContext;
 
     static public Map<String, Object> readContext() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = JsonMapper.builderWithJackson2Defaults().build();
         TypeFactory typeFactory = mapper.getTypeFactory();
         MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, Object.class);
         Map<String,Object> o=mapper.readValue(CustomNamespaceSerializer.class.getResourceAsStream("/2024-06-11/context.json"),mapType);
@@ -45,7 +46,7 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
 
 
     @Override
-    public void serialize(Namespace namespace, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(Namespace namespace, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         Map<String, String> prefixes=new HashMap<>();
         prefixes.putAll(namespace.getPrefixes());
         String defaultNS=namespace.getDefaultNamespace();
@@ -59,6 +60,6 @@ public class CustomNamespaceSerializer extends StdSerializer<Namespace> {
         } else {
             theContext[1]="http://openprovenance.org/prov.jsonld";
         }
-        jsonGenerator.writeObject(theContext);
+        jsonGenerator.writePOJO(theContext);
     }
 }

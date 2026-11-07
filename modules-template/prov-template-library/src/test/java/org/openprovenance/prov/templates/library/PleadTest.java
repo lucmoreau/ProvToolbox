@@ -1,8 +1,8 @@
 package org.openprovenance.prov.templates.library;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import org.openprovenance.prov.template.library.plead.client.integrator.*;
 import org.openprovenance.prov.template.library.plead.integrator.InputOutputProcessor;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class PleadTest extends TestCase {
     private final InputOutputProcessor templateInvoker;
-    private final ObjectMapper om = new ObjectMapper();
+    private final ObjectMapper om = tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build();
 
     public PleadTest(InputOutputProcessor templateInvoker) {
         this.templateInvoker = templateInvoker;
@@ -44,7 +44,7 @@ public class PleadTest extends TestCase {
         new PleadWorkflow(templateInvoker,inputs,outputs).workflow("doc123", 1, 220, 222, 1, 50, "path",null,null);
         try {
             System.out.println(om.writeValueAsString(outputs));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }

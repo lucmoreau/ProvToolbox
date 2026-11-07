@@ -1,7 +1,8 @@
 package org.openprovenance.prov.template.core.test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -14,13 +15,13 @@ import java.nio.file.Paths;
 
 import java.util.List;
 
-import com.flipkart.zjsonpatch.JsonDiff;
+import com.flipkart.zjsonpatch.Jackson3JsonDiff; // zjsonpatch 0.6: Jackson 3 API
 import org.openprovenance.prov.template.core.Bindings;
 
 public class MyTest extends TestCase {
 
     /*public void testMethod1() throws IOException {
-        ObjectMapper om=new ObjectMapper();
+        ObjectMapper om=tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build();
         TestBean tb=new TestBean();
         tb.var=new Hashtable<>();
         Descriptors ds=new Descriptors();
@@ -35,7 +36,7 @@ public class MyTest extends TestCase {
     }*/
 
     public void testMethod2() throws IOException {
-        ObjectMapper om=new ObjectMapper();
+        ObjectMapper om=JsonMapper.builderWithJackson2Defaults().build();
 
 
 
@@ -62,7 +63,7 @@ public class MyTest extends TestCase {
     static List<?> differenceBetweenJsonFiles(ObjectMapper om, String structureIn, String structureOut) throws IOException {
         JsonNode beforeNode = om.readTree(Files.newInputStream(Paths.get(structureIn)));
         JsonNode afterNode = om.readTree(Files.newInputStream(Paths.get(structureOut)));
-        JsonNode patchNode = JsonDiff.asJson(beforeNode, afterNode);
+        JsonNode patchNode = Jackson3JsonDiff.asJson(beforeNode, afterNode);
         String diff = patchNode.toString();
 
         return om.readValue(diff, List.class);

@@ -131,8 +131,6 @@ public class ServiceUtils {
                         return Destination.PNG;
                     case "jsonld":
                         return Destination.JSONLD;
-                    case "provx":
-                        return Destination.XML;
                     case "provn":
                         return Destination.PROVN;
                     case "pdf":
@@ -152,8 +150,6 @@ public class ServiceUtils {
                         return Destination.JSON;
                     case "jsonld":
                         return Destination.JSONLD;
-                    case "provx":
-                        return Destination.XML;
                     case "provn":
                         return Destination.PROVN;
                     case "png":
@@ -172,8 +168,6 @@ public class ServiceUtils {
                 switch (val) {
                     case "json":
                         return Destination.JSON;
-                    case "provx":
-                        return Destination.XML;
                     case "png":
                         return Destination.PNG;
                     case "provn":
@@ -195,7 +189,7 @@ public class ServiceUtils {
 
     public enum Action {
         UNKNOWN("UNKNOWN"), VALIDATE("VALIDATE"), INSTANTIATE("INSTANTIATE"), METRICS("METRICS"), NF("NF"), SIGN("SIGN"), SIGNATURE("SIGNATURE)"), CHECK("CHECK"), RANDOM("RANDOM"), LINEAR("LINEAR"), EXPLANATION("EXPLANATION"), TRANSLATE("TRANSLATE"), SUMMARISE("SUMMARISE"), UPLOAD("UPLOAD");
-        // JSON("json"), XML("provx"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg") ;
+        // JSON("json"), PROVN("provn"), TURTLE("ttl"), TRIG("trig"), SVG("svg"), JPG("jpg") ;
 
         Action(String text) {
             this.text = text;
@@ -209,7 +203,7 @@ public class ServiceUtils {
     }
 
     public enum Destination {
-        UNKNOWN("UNKNOWN"), JSON("json"), XML("provx"), PROVN("provn"), PNG("png"),  PDF("pdf"), SVG("svg"), JPG("jpg"), JSONLD("jsonld") ;
+        UNKNOWN("UNKNOWN"), JSON("json"), PROVN("provn"), PNG("png"),  PDF("pdf"), SVG("svg"), JPG("jpg"), JSONLD("jsonld") ;
         private Destination(String text) {
             this.text = text;
         }

@@ -1,7 +1,8 @@
 package org.openprovenance.prov.template.compiler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.networknt.schema.JsonSchema;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import com.networknt.schema.Schema;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
@@ -17,7 +18,7 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.descript
 
 public class CompilerDocumentation {
     private final CompilerUtil compilerUtil;
-    ObjectMapper om = new ObjectMapper();
+    ObjectMapper om = JsonMapper.builderWithJackson2Defaults().build();
     Map<String, Object> jsonSchemaAsAMap = initializeSchemaMap();
 
     public CompilerDocumentation(ProvFactory pFactory) {
@@ -209,37 +210,37 @@ public class CompilerDocumentation {
 
     static class Tester extends  JsonSchemaTesting {
         @Override
-        public JsonSchema getJsonSchemaFromClasspath(String name) {
+        public Schema getJsonSchemaFromClasspath(String name) {
             return super.getJsonSchemaFromClasspath(name);
         }
         @Override
-        public JsonSchema getJsonSchemaFromClasspathV7(String name) {
+        public Schema getJsonSchemaFromClasspathV7(String name) {
             return super.getJsonSchemaFromClasspathV7(name);
         }
 
         @Override
-        protected JsonSchema getJsonSchemaFromFile(String name) throws FileNotFoundException {
+        protected Schema getJsonSchemaFromFile(String name) throws FileNotFoundException {
             return super.getJsonSchemaFromFile(name);
         }
     }
 
     final Tester tester=new Tester();
 
-    public JsonSchema setupJsonSchemaFromClasspath(String file)  {
+    public Schema setupJsonSchemaFromClasspath(String file)  {
         System.out.println("### getting schema from classpath " + file);
-        JsonSchema schema2=tester.getJsonSchemaFromClasspath(file);
+        Schema schema2=tester.getJsonSchemaFromClasspath(file);
         return schema2;
     }
-    public JsonSchema setupJsonSchemaFromClasspathV7(String file)  {
+    public Schema setupJsonSchemaFromClasspathV7(String file)  {
         System.out.println("### getting schema from classpath " + file);
-        JsonSchema schema2=tester.getJsonSchemaFromClasspathV7(file);
+        Schema schema2=tester.getJsonSchemaFromClasspathV7(file);
         return schema2;
     }
 
 
-    public JsonSchema setupJsonSchemaFromFile(String file) throws FileNotFoundException {
+    public Schema setupJsonSchemaFromFile(String file) throws FileNotFoundException {
         System.out.println("#### getting schema from File " + file);
-        JsonSchema schema2=tester.getJsonSchemaFromFile(file);
+        Schema schema2=tester.getJsonSchemaFromFile(file);
 
         return schema2;
 

@@ -3,7 +3,7 @@
     <parent>
         <artifactId>ProvToolbox</artifactId>
         <groupId>org.openprovenance.prov</groupId>
-        <version>2.4.0</version>
+        <version>2.5.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,49 +22,55 @@
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-scala-misc</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-validation</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-nf</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-signature</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-summarisation</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-explanations</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.openprovenance.prov</groupId>
             <artifactId>prov-summary-explanations</artifactId>
-            <version>2.4.0</version>
+            <version>2.5.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.santuario</groupId>
             <artifactId>xmlsec</artifactId>
             <version>${xmlsec.version}</version>
+        </dependency>
+
+        <dependency> <!-- Jackson 3 Scala module, for prov-jsonld's (Jackson 3) serialiser, see docs/JACKSON3_MIGRATION.md -->
+            <groupId>tools.jackson.module</groupId>
+            <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
+            <version>${jackson3.version}</version>
         </dependency>
 
         <dependency>
@@ -80,9 +86,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson3.version}</version>
         </dependency>
 
         <dependency>

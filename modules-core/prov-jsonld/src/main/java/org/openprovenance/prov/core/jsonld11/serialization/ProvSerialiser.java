@@ -1,9 +1,11 @@
 package org.openprovenance.prov.core.jsonld11.serialization;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import tools.jackson.core.Version;
+import tools.jackson.databind.*;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.cfg.MapperBuilder;
+import tools.jackson.databind.ser.ValueSerializerModifier;
 
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomDateSerializer;
 import org.openprovenance.prov.core.jsonld11.serialization.serial.CustomNamespaceSerializer;
@@ -21,9 +23,10 @@ import org.openprovenance.prov.model.StatementOrBundle;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.model.exception.UncheckedException;
 import org.openprovenance.prov.vanilla.TypedValue;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ValueSerializer;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
@@ -35,20 +38,21 @@ public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerial
     protected final boolean embedContext;
     // create two independent mappers, with formatting or not
     final ObjectMapper mapper;
-    final ObjectMapper mapperWithFormat = new ObjectMapper();
+    final ObjectMapper mapperWithFormat;
     final ObjectWriter writer;
 
     public ProvSerialiser () {
-        this(new ObjectMapper(), false);
+        // Jackson 2 defaults keep the serialised PROV byte-identical (docs/JACKSON3_MIGRATION.md, D2)
+        this(JsonMapper.builderWithJackson2Defaults(), false);
     }
 
-    public ProvSerialiser (ObjectMapper mapper, boolean embedContext) {
+    /** Jackson 3: mappers are immutable, so the serialiser configures the given builder
+     * (instead of mutating a given mapper, as with Jackson 2) and builds its two mappers from it. */
+    public ProvSerialiser (MapperBuilder<?, ?> builder, boolean embedContext) {
         this.embedContext=embedContext;
-        this.mapper=mapper;
-        customize(mapper);
-        customize(mapperWithFormat);
-        mapperWithFormat.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.disable(SerializationFeature.INDENT_OUTPUT);
+        customize(builder);
+        this.mapper=builder.disable(SerializationFeature.INDENT_OUTPUT).build();
+        this.mapperWithFormat=mapper.rebuild().enable(SerializationFeature.INDENT_OUTPUT).build();
         writer=mapper.writer().withDefaultPrettyPrinter();
 
     }
@@ -71,7 +75,7 @@ public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerial
             } else {
                 writer.withAttribute(CustomNamespaceSerializer.USES_OPENPROV, usesOpenprov).writeValue(out, document);
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             e.printStackTrace();
             throw new UncheckedException(e);
         }
@@ -97,8 +101,7 @@ public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerial
         return false;
     }
 
-    public ObjectMapper customize(ObjectMapper mapper) {
-        mapper.getFactory().setCodec(mapper);
+    public MapperBuilder<?, ?> customize(MapperBuilder<?, ?> mapper) {
 
         SimpleModule module =
                 new SimpleModule("CustomKindSerializer",
@@ -106,20 +109,20 @@ public class  ProvSerialiser implements org.openprovenance.prov.model.ProvSerial
 
         module.addSerializer(QualifiedName.class, new CustomQualifiedNameSerializer());
         module.addSerializer(XMLGregorianCalendar.class, new CustomDateSerializer());
-        module.addSerializer(Namespace.class, new CustomNamespaceSerializer(embedContext,mapper));
-        mapper.registerModule(module);
+        module.addSerializer(Namespace.class, new CustomNamespaceSerializer(embedContext));
+        mapper.addModule(module);
 
         // See https://www.baeldung.com/jackson-serialize-field-custom-criteria#2-custom-serializer
 
-        mapper.registerModule(new SimpleModule() {
+        mapper.addModule(new SimpleModule() {
             @Override
             public void setupModule(SetupContext context) {
                 super.setupModule(context);
-                context.addBeanSerializerModifier(new BeanSerializerModifier() {
+                context.addSerializerModifier(new ValueSerializerModifier() {
                     @Override
-                    public JsonSerializer<?> modifySerializer(SerializationConfig config, BeanDescription desc, JsonSerializer<?> serializer) {
+                    public ValueSerializer<?> modifySerializer(SerializationConfig config, BeanDescription.Supplier desc, ValueSerializer<?> serializer) {
                         if (TypedValue.class.isAssignableFrom(desc.getBeanClass())) {
-                            return new CustomOverridingAttributeSerializer((JsonSerializer<TypedValue>) serializer);
+                            return new CustomOverridingAttributeSerializer((ValueSerializer<TypedValue>) serializer);
                         }
                         return serializer;
                     }

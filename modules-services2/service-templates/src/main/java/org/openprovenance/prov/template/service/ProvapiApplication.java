@@ -2,8 +2,8 @@
 package org.openprovenance.prov.template.service;
 
 
-import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
-import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import io.swagger.v3.rest.integration.resources.AcceptHeaderOpenApiResource;
+import io.swagger.v3.rest.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;

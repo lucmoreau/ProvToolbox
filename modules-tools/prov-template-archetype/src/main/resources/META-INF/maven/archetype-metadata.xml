@@ -104,7 +104,6 @@
                 <fileSet encoding="UTF-8">
                     <directory>src/test/resources</directory>
                     <includes>
-                        <include>**/*.provx</include>
                         <include>**/*.json</include>
                         <include>**/*.provn</include>
                         <include>**/*.jsonld</include>
@@ -176,7 +175,6 @@
                 <fileSet encoding="UTF-8">
                     <directory>src/test/resources</directory>
                     <includes>
-                        <include>**/*.provx</include>
                         <include>**/*.json</include>
                         <include>**/*.provn</include>
                         <include>**/*.jsonld</include>

@@ -1,17 +1,15 @@
 package org.openprovenance.prov.core.xml.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.vanilla.TypedValue;
+import tools.jackson.databind.SerializationContext;
 import org.openprovenance.prov.core.xml.serialization.Constants;
 import org.openprovenance.prov.core.xml.serialization.ProvSerialiser;
 import org.openprovenance.prov.core.xml.serialization.stax.StaxStreamWriterUtil;
 import org.openprovenance.prov.model.NamespacePrefixMapper;
 import org.openprovenance.prov.model.QualifiedName;
-
-import java.io.IOException;
 
 
 public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implements Constants {
@@ -31,7 +29,7 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
     }
 
     @Override
-    public void serialize(TypedValue attr, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(TypedValue attr, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) jsonGenerator;
 
 
@@ -63,7 +61,7 @@ public class CustomTypedValueSerializer extends StdSerializer<TypedValue> implem
             // no need to throw an exception, serialization may just be awkward
         }
 
-        jsonGenerator.writeObjectField(PROPERTY_AT_VALUE, value);
+        jsonGenerator.writePOJOProperty(PROPERTY_AT_VALUE, value);
 
         jsonGenerator.writeEndObject();
 

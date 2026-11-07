@@ -1,10 +1,10 @@
 package org.openprovenance.prov.scala.query
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 
 
 object JsonSupport {
-  val om: ObjectMapper =new ObjectMapper()
+  val om: ObjectMapper =tools.jackson.databind.json.JsonMapper.builderWithJackson2Defaults().build() // D2
 
   def toJsonSentence(s: Map[String,Object]): String = {
     om.writeValueAsString(s)

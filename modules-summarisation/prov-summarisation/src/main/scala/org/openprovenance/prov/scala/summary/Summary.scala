@@ -1,7 +1,6 @@
 package org.openprovenance.prov.scala.summary
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import tools.jackson.databind.annotation.JsonDeserialize
 import org.apache.logging.log4j.{LogManager, Logger}
 import org.openprovenance.prov.model.Namespace
 import org.openprovenance.prov.scala.immutable.NS.QN_LEVEL0
@@ -502,24 +501,20 @@ class SummaryConstructor (val ind: Indexing,
 object SummaryIndex {
 
   def exportToJsonDescription(outw: java.io.Writer, si: SummaryIndex): SummaryDescriptionJson = {
-    TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT)
     val summaryDescriptionJson = si.summaryDescription()
-    TypePropagator.om.writeValue(outw, summaryDescriptionJson)
+    TypePropagator.om.writerWithDefaultPrettyPrinter().writeValue(outw, summaryDescriptionJson)
     summaryDescriptionJson
   }
   def exportToJsonDescription(os: java.io.OutputStream, si: SummaryIndex): Unit = {
-    TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT)
-    TypePropagator.om.writeValue(os, si.summaryDescription())
+        TypePropagator.om.writerWithDefaultPrettyPrinter().writeValue(os, si.summaryDescription())
   }
 
   def exporToJsonDescription(outw: java.io.Writer, atype: SummaryDescriptionJson): Unit = {
-    TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT)
-    TypePropagator.om.writeValue(outw, atype)
+        TypePropagator.om.writerWithDefaultPrettyPrinter().writeValue(outw, atype)
   }
 
   def exportToFeatures(outw: java.io.Writer, si: SummaryIndex): Unit = {
-    TypePropagator.om.enable(SerializationFeature.INDENT_OUTPUT)
-    TypePropagator.om.writeValue(outw, FeaturesJson(si.summaryDescription().getFeatures))
+        TypePropagator.om.writerWithDefaultPrettyPrinter().writeValue(outw, FeaturesJson(si.summaryDescription().getFeatures))
   }
 
 }

@@ -1,6 +1,7 @@
 package org.openprovenance.prov.core.jsonld11.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvDeserialiser;
 import org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser;
 import org.openprovenance.prov.model.Document;
@@ -29,14 +30,14 @@ public class RoundTripFromJavaJSONLD11Test extends RoundTripFromJavaTest {
     public void writingMessage(String file) {
         System.out.println("writing to " + file);
     }
-    final ObjectMapper mapper=new ObjectMapper();
+    final ObjectMapper mapper=JsonMapper.builderWithJackson2Defaults().build();
 
 
 
     public void writeDocumentToFile(Document doc, String file) throws IOException {
         writingMessage(file);
 
-        ProvSerialiser serial=new ProvSerialiser(mapper, false);
+        ProvSerialiser serial=new ProvSerialiser(JsonMapper.builderWithJackson2Defaults(), false);
         serial.serialiseDocument(new FileOutputStream(file), doc, true);
     }
 

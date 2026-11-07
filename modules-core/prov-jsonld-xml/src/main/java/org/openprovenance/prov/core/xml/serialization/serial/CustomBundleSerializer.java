@@ -1,25 +1,23 @@
 package org.openprovenance.prov.core.xml.serialization.serial;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.jsontype.TypeSerializer;
+import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 import org.openprovenance.prov.core.xml.serialization.stax.StaxStreamWriterUtil;
 import org.openprovenance.prov.model.Namespace;
 import org.openprovenance.prov.vanilla.Bundle;
-
-import java.io.IOException;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
 
 import static org.openprovenance.prov.core.xml.serialization.serial.CustomDocumentSerializer.TO_DELETE;
 
 
-abstract public class CustomBundleSerializer extends JsonSerializer<Bundle> {
+abstract public class CustomBundleSerializer extends ValueSerializer<Bundle> {
 
 
 
     @Override
-    public void serialize(Bundle bun, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(Bundle bun, JsonGenerator jsonGenerator, SerializationContext serializerProvider) {
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) jsonGenerator;
         Namespace ns = bun.getNamespace();
 
@@ -41,7 +39,7 @@ abstract public class CustomBundleSerializer extends JsonSerializer<Bundle> {
 
         System.out.println("CustomBundleSerializer.serialize " + bun.getId());
 
-        xmlGenerator.writeObjectField("FOO1", new WrapperBundle(bun));
+        xmlGenerator.writePOJOProperty("FOO1", new WrapperBundle(bun));
 
 
 
@@ -50,7 +48,7 @@ abstract public class CustomBundleSerializer extends JsonSerializer<Bundle> {
     }
 
     @Override
-    public void serializeWithType(Bundle bun, JsonGenerator jsonGenerator, SerializerProvider serializers, TypeSerializer typeSer) throws IOException {
+    public void serializeWithType(Bundle bun, JsonGenerator jsonGenerator, SerializationContext serializers, TypeSerializer typeSer) {
         System.out.println("CustomBundleSerializer.serializeWithType " + bun.getId());
         ToXmlGenerator xmlGenerator = (ToXmlGenerator) jsonGenerator;
         Namespace ns = bun.getNamespace();
@@ -75,7 +73,7 @@ abstract public class CustomBundleSerializer extends JsonSerializer<Bundle> {
         System.out.println("CustomBundleSerializer.serializeWithType " + bun.getId());
 
        // xmlGenerator.writeObjectField("FOO2", new WrapperBundle(bun));
-        xmlGenerator.writeObject( new WrapperBundle(bun));
+        xmlGenerator.writePOJO( new WrapperBundle(bun));
 
 
 

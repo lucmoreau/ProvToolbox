@@ -1,0 +1,31 @@
+MODULES: EXECUTABLE (PROVMAN)	- | ok=2 fail=0
+NLG WRAPPER	run=0 fail=0 err=0 skip=0 | ABORTED
+NLG-SPEC-TRANSFORMER	run=0 fail=0 err=0 skip=0 | ABORTED
+PROV-DOT	run=167 fail=0 err=0 skip=0 | -
+PROV-EXPLANATIONS	- | ABORTED
+PROV-GENERATOR	run=3 fail=0 err=0 skip=0 | -
+PROV-INTEROP	run=1 fail=0 err=1 skip=0 | -
+PROV-JSONLD	run=660 fail=0 err=0 skip=0 | -
+PROV-JSONLD-XML	run=147 fail=0 err=0 skip=0 | -
+PROV-MODEL	run=613 fail=0 err=0 skip=0 | -
+PROV-MODEL-SCALA	run=149 fail=0 err=0 skip=0 | ok=16 fail=0
+PROV-N	run=460 fail=0 err=0 skip=0 | -
+PROV-NF	run=1 fail=0 err=0 skip=0 | ok=94 fail=0
+PROV-QUERY	- | ok=11 fail=0
+PROV-SCALA-MISC	run=18 fail=0 err=0 skip=0 | ok=6 fail=0
+PROV-SERVICE-CORE	run=1 fail=0 err=0 skip=0 | -
+PROV-SERVICE-SECURITY-PAC	run=5 fail=0 err=0 skip=0 | -
+PROV-SERVICE-VALIDATION	run=1 fail=0 err=0 skip=0 | -
+PROV-SIGNATURE	run=1 fail=0 err=0 skip=0 | ok=0 fail=0
+PROV-SUMMARISATION	- | ok=32 fail=0
+PROV-SUMMARY-EXPLANATIONS	- | ok=0 fail=0
+PROV-TEMPLATE	run=31 fail=2 err=0 skip=0 | -
+PROV-TEMPLATE-COMPILER	run=158 fail=0 err=1 skip=0 | -
+PROV-TEMPLATE-LIBRARY	run=2 fail=0 err=0 skip=0 | -
+PROV-TOOLBOX-JS-EMBEDDING	run=0 fail=0 err=0 skip=0 | -
+PROV-VALIDATION	run=232 fail=0 err=0 skip=0 | -
+PROVTOOLBOX-PLUGIN	run=4 fail=0 err=0 skip=0 | -
+ROUNDTRIP	run=147 fail=0 err=0 skip=0 | -
+SERVICE-METRICS	run=3 fail=0 err=0 skip=0 | -
+SERVICE-TEMPLATES	run=1 fail=0 err=1 skip=0 | -
+SERVICE-TEMPLATES-CORE	run=59 fail=0 err=0 skip=1 | -

@@ -41,7 +41,7 @@ public class ResourcesService implements SwaggerTags {
             description = "No content negotiation allowed here, no dynamic generation.",
             responses = {@ApiResponse(responseCode = "200", description = "Representation of resource"),
                     @ApiResponse(responseCode = "404", description = "Representatoin not found")})
-    @Produces({ MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_APPLICATION_PROVENANCE_XML, MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD, "plain/text" })
+    @Produces({ MEDIA_TEXT_PROVENANCE_NOTATION, MEDIA_APPLICATION_JSON, MEDIA_APPLICATION_JSONLD, "plain/text" })
     public Response getResource(@Context HttpServletResponse response,
                                 @Context HttpServletRequest request,
                                 @Parameter(name = "path", description = "document path", required = true) @PathParam("path") String path) {

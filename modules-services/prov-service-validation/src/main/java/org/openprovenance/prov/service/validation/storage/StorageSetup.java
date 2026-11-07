@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.validation.storage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mongojack.internal.MongoJackModule;
@@ -34,8 +35,8 @@ public class StorageSetup extends org.openprovenance.prov.service.translation.st
 
         // extends configuration with this service storage requirements
 
-        ObjectMapper mapper= Mapper.getValidationReportMapper();
-        mapper.registerModule(MongoJackModule.DEFAULT_MODULE_INSTANCE);
+        // Jackson 3 / mongojack 6: immutable mappers, configure() returns a copy with the MongoJack module
+        ObjectMapper mapper= MongoJackModule.configure(Mapper.getValidationReportMapper());
 
         final String mongoHost = configuration.mongo_host;
         final String mongoDbName = configuration.dbname;
@@ -65,7 +66,7 @@ public class StorageSetup extends org.openprovenance.prov.service.translation.st
         ServiceUtilsConfig utilsConfig=super.withFileSystem(utilsConfig2, factory, configuration);
 
         utilsConfig.genericResourceStorageMap.put(ActionValidate.REPORT_KEY,new NonDocumentGenericResourceStorageFileSystem<>(Mapper.getValidationReportMapper(), ValidationReport.class, new File(configuration.uploaded_filepath)));
-        utilsConfig.genericResourceStorageMap.put(ActionValidate.MATRIX_KEY,new NonDocumentGenericResourceStorageFileSystem<>(new ObjectMapper(), Object.class, new File(configuration.uploaded_filepath)));
+        utilsConfig.genericResourceStorageMap.put(ActionValidate.MATRIX_KEY,new NonDocumentGenericResourceStorageFileSystem<>(JsonMapper.builderWithJackson2Defaults().build(), Object.class, new File(configuration.uploaded_filepath)));
 
         return utilsConfig;
     }

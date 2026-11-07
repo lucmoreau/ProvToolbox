@@ -1,6 +1,7 @@
 package org.openprovenance.prov.service.security.pac;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,12 +46,12 @@ public class Utils {
         return pubKey;
     }
 
-    ObjectMapper om = new ObjectMapper();
+    ObjectMapper om = JsonMapper.builderWithJackson2Defaults().build();
 
     public SecurityConfiguration readSecurityConfiguration(String configFileName) {
         try {
             return om.readValue(new File(configFileName), SecurityConfiguration.class);
-        } catch (IOException e) {
+        } catch (tools.jackson.core.JacksonException e) { // Jackson 3: unchecked, also for I/O errors (was IOException)
             throw new RuntimeException(e);
         }
     }

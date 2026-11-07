@@ -1,8 +1,9 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
-`2.5.0-SNAPSHOT`
-* Jackson 3 (3.2.4, `tools.jackson`) instead of Jackson 2 (requires Java 17): public APIs taking Jackson types change, e.g. prov-jsonld's ProvSerialiser/ProvDeserialiser take a `MapperBuilder`, and `ObjectMapper`s are now `tools.jackson.databind.ObjectMapper`; JSON output unchanged (mappers built with Jackson 2 defaults); PROV-XML support dropped (prov-jsonld-xml retired, no PROVX input/output in prov-interop, services no longer offer application/provenance+xml); json-schema-validator 3.0.8, swagger-core 3.0.0 (`swagger-rest`), mongojack 6.0.0, zjsonpatch now `io.github.vishwakarma:zjsonpatch` 0.6.4; pac4j and Spring Boot 2.7 (service-templates tests) still bring Jackson 2. See docs/JACKSON3_MIGRATION.md
-* 
+`2.5.0`
+* Jackson 3 (3.2.4, `tools.jackson`) instead of Jackson 2 (requires Java 17): public APIs taking Jackson types change, e.g. prov-jsonld's ProvSerialiser/ProvDeserialiser take a `MapperBuilder`, and `ObjectMapper`s are now `tools.jackson.databind.ObjectMapper`; JSON output unchanged (mappers built with Jackson 2 defaults); json-schema-validator 3.0.8, swagger-core 3.0.0 (`swagger-rest`), mongojack 6.0.0, zjsonpatch now `io.github.vishwakarma:zjsonpatch` 0.6.4; pac4j and Spring Boot 2.7 (service-templates tests) still bring Jackson 2. See docs/JACKSON3_MIGRATION.md
+* PROV-XML support dropped (prov-jsonld-xml retired, no PROVX input/output in prov-interop, services no longer offer application/provenance+xml)
+
 
 `2.4.0`
 * prov-n: PROV-N is read with the ANTLR 4 parser (ProvN.g4, ProvNReader): ProvDeserialiser, hence InteropFramework and the services, and Utility.readDocument/convertSyntaxTreeToJavaBean. A document that is not valid PROV-N is rejected with a ProvNSyntaxException listing all errors, where the ANTLR 3 parser recovered from errors and only logged them; see ProvDeserialiser for the other differences. The ANTLR 3 parser remains only behind the deprecated methods of Utility that expose it, and TreeTraversal, to be removed

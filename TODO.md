@@ -585,6 +585,12 @@ real alternative, what it is.
     code calls the same fully qualified name in every language;
   - the compiler's `Constants.PRIVACY_RUNTIME_PACKAGE`, the tests and the conformance vectors follow.
 
+- **Ruling 9 (Luc, 2026-11-10), on F4.** "Document it only." Applied: the specification's `#template-compiler`
+  section says a writer that bypasses the generated client is refused by the constraint, whose error may repeat the
+  row with the clear value, and that a store holding references to people should set `log_error_verbosity = terse`
+  and be written only by the generated client. The same paragraph now says, after Ruling 7, that the client check is
+  generated for Java, Python and JavaScript, and that a catalogue generating Rust is warned. No code changes.
+
 **Build (phase 2, 2026-11-10): committed on `t31-transient-pseudonym` after Luc's review; the composite work below
 followed.**
 - *What is built.*
@@ -706,7 +712,8 @@ followed.**
     (`Failing row contains (…, Jane Smith, …)`).
     - The generated client refuses first, without the value, but a writer that bypasses it gets the value back in the
       error, and the server log keeps it unless `log_error_verbosity = terse`.
-    - Options: document it, or have the insert function check first and raise without the value.
+    - Options: document it, or have the insert function check first and raise without the value. Ruling 9: document
+      it only.
   - F5, reported by the code survey and not checked: `log2prov`'s `FileBuilder.register` keys builders by short name
     while the record's first column holds the fully qualified name; `processRecordForSql` calls `toBean`, which simple
     templates don't generate.

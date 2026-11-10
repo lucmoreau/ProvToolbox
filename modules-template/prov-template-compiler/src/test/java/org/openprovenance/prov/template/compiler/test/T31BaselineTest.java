@@ -100,6 +100,12 @@ public class T31BaselineTest extends TestCase {
         om.writerWithDefaultPrettyPrinter().writeValue(new File(cbindings), bindings);
 
         ObjectNode catalogue = (ObjectNode) om.readTree(catalogueJson(id, cbindings));
+        JsonNode extra = c.get("catalogue");   // a case may change the catalogue, e.g. add rust_dir
+        if (extra != null) {
+            for (Map.Entry<String, JsonNode> m : extra.properties()) {
+                catalogue.put(m.getKey(), OUT + id + "/libs/" + m.getValue().asText());
+            }
+        }
         JsonNode policy = c.get("policy");
         if (policy != null) {
             om.writerWithDefaultPrettyPrinter().writeValue(new File(dir + "privacy.json"), policy);

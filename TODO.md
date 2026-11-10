@@ -74,7 +74,7 @@ declaration, so the compiler enforces it, instead of every application rememberi
 The design comes first: written into this section and ruled by Luc before the compiler changes below are built.
 They will change to fit it.
 
-**Design (proposed 2026-11-10, awaiting Luc's ruling; nothing is built until R1–R15 are ruled).** Grounded in
+**Design (proposed 2026-11-10, awaiting Luc's ruling; nothing is built until R1–R17 are ruled).** Grounded in
 `development2_0` at eca0e021a. The rulings asked for are numbered; each says what is proposed and, where there is a
 real alternative, what it is.
 
@@ -86,9 +86,16 @@ real alternative, what it is.
   checker, invokers, SQL, expansion, JSON schema and documentation. The beans must keep a transient field, since the
   enactor needs it. So `fieldNames` can't simply drop transient variables. Each place where a value leaves the
   process needs its own list.
-- The generated client project (`cli`) has no ProvToolbox runtime dependency (`CompilerMaven`: `prov-model` at most).
-  It is also emitted as Python, JavaScript and Rust. A Java `ServiceLoader` registry called from generated client code
-  would add a dependency and work in one language of four.
+- The generated client project (`cli`) is emitted from PAST into Java, Python, JavaScript (jsweet) and Rust. `@escape`
+  already shows how a runtime call reaches all of them, and R9 follows it:
+  - `CompilerCommon` emits a PAST `METHOD_CALL` to
+    `org.openprovenance.apache.commons.lang.StringEscapeUtils.escapeCsv`;
+  - the class exists once per language: Java in `prov-model`, JavaScript through the jsweet candy in
+    `prov-jsweet-candy-java`, Python in `prov-template-library/src/main/python`;
+  - `CompilerMaven.makeSubPom` adds `prov-model` to the client project only when `@escape` is used.
+- Ports can drift. The Python `escapeCsv` port is a placeholder ("PLACEHOLDER TO FIX" in its docstring) that doesn't
+  double embedded quotes as the Java one does. Rust has no mapping for a static call to such a class:
+  `rust-registry.json` maps types and instance methods only. A run-time registry looked up by name stays out (Ruling 1).
 - The insert function is `LANGUAGE SQL` (a CTE chain), or plpgsql only in the `@unique` idempotent case. Tables are
   created `IF NOT EXISTS`, so a constraint written inside `CREATE TABLE` never reaches a table that already exists.
 - The descriptors are read with Jackson 2 defaults, which fail on unknown members. So a compiler older than T31
@@ -123,7 +130,10 @@ real alternative, what it is.
   - for a transient method, `keeps` (R5);
   - for a pseudonym method, `pattern`: a regular expression in the subset that Java and PostgreSQL `~` read alike
     (POSIX ERE: classes, `{n}`, `*`, `+`, `?`, `|`, anchors; no look-around, no `\d`);
-  - `sql`: optional. A boolean SQL expression over `v` that replaces the pattern test when a regular expression is not enough;
+  - `sql`: optional. A boolean SQL expression over `v` that replaces the pattern test in the database when a regular
+    expression is not enough;
+  - `past`: optional. A PAST method `{package, class, method}` that replaces the default PAST call in the client
+    code (R9, R16, R17);
   - `resolver`: a hint naming the system readers resolve a value against, e.g. `hr`;
   - `documentation`.
 - ProvToolbox's built-ins ship as a resource of the compiler (`privacy/methods.json`), in the same format an
@@ -233,7 +243,22 @@ real alternative, what it is.
 - `fieldNames` is unchanged for the beans, builders' parameters, the JSON schema and the documentation.
 - A composite inherits its component's effective annotations.
 
-*R9. Enforcement for a pseudonym is in the database; the JSON schema gives early feedback.*
+*R9. A pseudonym is checked in the client code through PAST, and in the database (Ruling 3).*
+- In the client, each pseudonym method maps by default to a PAST method call. Each emitter maps that call to its
+  target language (R16).
+  - The default call is `Pseudonyms.matches(value, PATTERN)` on a runtime class
+    `org.openprovenance.prov.template.privacy.Pseudonyms`.
+  - `PATTERN` is a `static final` constant generated into the client builder, holding the method's pattern. The
+    meaning stays in the generated code, fixed at generation (Ruling 1). The runtime class only matches a regular
+    expression, which every target language does the same way within R4's subset.
+  - The client builder gains a generated `checkPrivacy(…)`, called from `args2csv` and `args2bean`. Those are the two
+    conversions every value from the caller passes through on its way to a CSV record, a bean, the `QueryInvoker` or
+    the JDBC insert.
+  - A refusal throws `IllegalArgumentException` naming the template, the variable and the method, never the value.
+    An error message must not carry the clear value into a log.
+  - A transient method needs no call: what it does is decided by what the code generates (R5).
+- In the database, the check stays as below. It is the authority for any writer that bypasses the generated client,
+  e.g. a direct call of the insert function.
 - For each pseudonymised column, the SQL file gains a constraint whose check is written inline, from the method's
   definition fixed at generation (Ruling 1):
   `ALTER TABLE t ADD CONSTRAINT t_<col>_p<digest12> CHECK (<col> IS NULL OR <col> ~ '<pattern>') NOT VALID;`,
@@ -248,10 +273,39 @@ real alternative, what it is.
   migrating them is not in this task. Every new write is checked, through both insert function forms. A clear value
   is a failed write.
 - `CompilerJsonSchema` adds `"pattern"` to a pseudonymised property, so a form refuses a clear value before sending it.
-- No check is generated into the client code in Java, Python, JavaScript or Rust. There is no Java run-time registry
-  either. Both would put a ProvToolbox dependency, or a Java-only behaviour, into the client project.
-- Alternative (B): a per-language regex test in the generated CSV conversion. It is fixed when the code is generated
-  and changes the client code of every annotated template.
+- So a clear value is refused three times: by a form (JSON-schema `pattern`), by the generated client in every
+  language (PAST), and by the database (constraint). All three test the same pattern, fixed at generation.
+
+*R16. How the PAST call reaches each target language (Ruling 3).*
+- **Java:** `Pseudonyms` goes in `prov-model`, beside `StringEscapeUtils`, using `java.util.regex`.
+  `CompilerMaven.makeSubPom`'s condition for adding `prov-model` to the client project becomes "`@escape` or a
+  pseudonym is used".
+- **JavaScript:** a jsweet candy in `prov-jsweet-candy-java`, implemented with JavaScript `RegExp` and the `u` flag.
+- **Python:** a port at `prov-template-library/src/main/python/org/openprovenance/prov/template/privacy/Pseudonyms.py`,
+  using `re.fullmatch`. The Python emitter imports it as it imports `StringEscapeUtils`.
+- **Rust:** an entry in `rust-registry.json` mapping the static call to a function using the `regex` crate, added to
+  the generated `Cargo.toml`. That needs the registry to accept static calls, a JSON-level extension of
+  `RustMethodRegistry`.
+  - Until it does, generating Rust for a catalogue with a pseudonym is a compile error. That fails closed rather than
+    leaving the Rust client without the check.
+- **Conformance:** one set of test vectors runs against all four ports and against PostgreSQL's `~`, and all must give
+  the same answer. The vectors are the `refused` / `accepted` lists of `t31/cases.json`, plus edge cases (anchors,
+  empty string, non-ASCII `⟨⟩`). This is what keeps the ports from drifting as `escapeCsv`'s have.
+- **Unannotated templates:** no import, no constant, no `checkPrivacy`, no new dependency (R14).
+
+*R17. An application's own PAST method (requirement 4 through PAST).*
+- A method definition may give `past` instead of the default call, e.g.
+  `"acme:staff-no": {"kind": "pseudonym", "pattern": "^S[0-9]{6}$", "past": {"package": "com.acme.privacy",
+  "class": "Checks", "method": "staffNo"}, "targets": ["java", "python"]}`.
+  - `targets` lists the languages for which the application provides that class.
+  - Generating for a language not listed is a compile error: the compiler can't check a Python or Rust class exists,
+    so the application declares it.
+  - `pattern` remains compulsory. It drives the database check and the JSON schema.
+- Auditability, in view of Ruling 1: with a custom `past`, the client check's meaning lives in the application's
+  runtime code, outside the generated code and outside the digest. The digest then covers only the reference
+  (package, class, method). The register marks the row "client check defined in application code".
+- Proposed: allow it, marked as such. Alternative: refuse custom `past` altogether, so that every check's meaning is
+  in the generated code.
 
 *R10. Everything is fixed when the code is generated (Ruling 1).*
 - Fixed when the code is generated, like a `final` variable, for auditability:
@@ -259,7 +313,8 @@ real alternative, what it is.
     bindings);
   - which method a variable uses;
   - what each method means: its form, its places, its digest;
-  - the SQL checks, the JSON-schema pattern, the documentation, the audit record.
+  - the SQL checks, the client checks (the PAST call and its `final` pattern constant), the JSON-schema pattern, the
+    documentation, the audit record.
 - Nothing about a method is changeable at run time. There is no registry, no lookup by name while running, and no
   replaceable SQL function.
 - The generated client builder of an annotated template carries the effective policy as a constant,
@@ -290,7 +345,10 @@ real alternative, what it is.
   allowed, and checked in that column.
 - `@transient` on a variable that is also `@unique`, named in `@sql.new.inputs` / `@sql.also.outputs`, or shared in
   a composite.
-- A transient method whose `keeps` names an unknown place. A pseudonym method without `pattern`, `sql` or `class`.
+- A transient method whose `keeps` names an unknown place. A pseudonym method without `pattern` (a `class` must
+  supply one).
+- A custom `past` for a target language not in its `targets`. A pseudonym in a catalogue that generates Rust, until
+  the Rust registry maps the call (R16).
 - A new method under `pt:`.
 - A non-`honour` decision without `reason`. A policy scope naming an unknown template or variable.
 
@@ -355,6 +413,13 @@ real alternative, what it is.
   - the pattern, run in Java, refuses a clear value and accepts a valid one.
 - Digests: two generations from the same definitions give the same digests. A changed definition (P2 against A6)
   gives a new digest, constraint name and constant.
+- Client checks (R9, R16):
+  - the generated Java and Python builders contain `checkPrivacy`, its calls from `args2csv` and `args2bean`, and the
+    `final` pattern constants;
+  - a template without annotations has none of them;
+  - the conformance vectors give the same answers in the Java, Python, JavaScript and Rust ports and in PostgreSQL.
+    The Python, JavaScript and PostgreSQL runs are skipped when their interpreter or database is absent;
+  - the refusal message names template, variable and method, and doesn't contain the value.
 - A live PostgreSQL test runs the generated SQL and shows the insert refused and accepted. It runs only when
   `PROV_T31_PG_URL` is set, so the build doesn't need a database.
 - Byte identity: one catalogue, generated (i) with its annotations stripped and (ii) with them all ignored by policy,
@@ -385,7 +450,7 @@ real alternative, what it is.
   - `approval.provn`: an approval activity with a clear name, its agent with a reference, the approved order with
     a note and a customer hash;
   - `approval-base.json`: its bindings, unannotated;
-  - `cases.json`: the 33 configurations. Each gives annotations, optionally a base case and a policy, and the
+  - `cases.json`: the 36 configurations. Each gives annotations, optionally a base case and a policy, and the
     design's expectation.
 - `T31BaselineTest` runs today's compiler on each case into `target/t31/<case>/`. It writes `target/t31/baseline.md`,
   which records:
@@ -400,7 +465,7 @@ real alternative, what it is.
 | A0 | no annotation | the baseline | generates |
 | A1 | `approver_name` `@transient: true` | no column, SQL type field, insert parameter, `_sqlInsert1`/`QueryInvoker` element, CSV field or expanded attribute; bean, schema, doc keep it | bindings refused: `UnrecognizedPropertyException "@transient"` |
 | A2 | `@transient: "pt:local-log"` | as A1, but the CSV field kept | refused, as A1 |
-| A3 | `approver_ref` `@pseudonym: "erp-ref"` (unprefixed) | inline `NOT VALID` constraint `approval_approver_ref_p<digest>`, `privacy` constant, schema `pattern`; refuses `Jane Smith`, accepts `hr:person/4711` | refused: `"@pseudonym"` |
+| A3 | `approver_ref` `@pseudonym: "erp-ref"` (unprefixed) | inline `NOT VALID` constraint `approval_approver_ref_p<digest>`, `privacy` constant, client `checkPrivacy` calling `Pseudonyms.matches` in Java and Python, schema `pattern`; refuses `Jane Smith`, accepts `hr:person/4711` | refused: `"@pseudonym"` |
 | A4 | `order_note` `pt:inline-refs` | refuses `⟨person Jane Smith⟩`; accepts text with well-formed references (a bare name in the text passes: the known limit) | refused |
 | A5 | `customer_hash` `pt:keyed-hash` | refuses `ACME Ltd`, accepts `k1:` + 64 hex | refused |
 | A6 | the library: A1+A3+A4+A5 | the union; the register has 4 rows | refused |
@@ -415,6 +480,9 @@ real alternative, what it is.
 | P8 | A1, `method:pt:drop` → `acme:keep-log` | generated code same as A2 | refused, as P1 |
 | E1–E8 (not E5) | both annotations; `@transient` on a name variable, an `@output`, with `@unique`; unknown `pt:` methods; an undefined `acme:` method | compile errors (R11), each naming template, variable and method | bindings refused by Jackson, the same message for all, never the reason |
 | E5 | `@pseudonym` on an input with `@sql.table` (`order`) | allowed: checked in the template's `_order` column (R11 as amended) | refused by Jackson |
+| P9 | A6, `acme:staff-no` with its own PAST method for Java and Python | client check calls `com.acme.privacy.Checks.staffNo`; inline database check `^S[0-9]{6}$`; register: "client check defined in application code" (R17) | refused, as P1 |
+| E18 | A3 in a catalogue that generates Rust | compile error until the Rust registry maps the call (R16) | refused by Jackson |
+| E19 | P9 with `targets: ["java"]`, the catalogue generating Python | compile error (R17) | refused, as P1 |
 | E15–E17 | `@pseudonym` on `@input: "false"`; on an input with `@output: "optional"`; a policy adding `@pseudonym` to the output `approving` | compile errors (R11: inputs only) | the first two refused by Jackson; the third: catalogue refused |
 | E9 | E8, policy ignores `acme:staff-no` | same as A0 | refused, as P1 |
 | E10, E13, E14 | A0, policy invents `pt:new-thing` / a method with no form / `keeps: ["cloud"]` | compile errors (R3, R11) | catalogue refused; without the policy, same as A0 |
@@ -461,7 +529,17 @@ real alternative, what it is.
   - R11's other refusals stand with it: both annotations; `@transient` on a name variable, with `@unique`, in
     `@sql.new.inputs` / `@sql.also.outputs`, or shared in a composite; unknown methods; a new `pt:` method; a decision
     without `reason`; an unknown scope.
-- R1–R9 and R12–R15 await ruling.
+- **Ruling 3 (Luc, 2026-11-10), on R9.** "As prov-template-compiler generates PAST expressions, there should be a
+  default mapping to past methods, each of them being mapped to their corresponding target language java, js, etc."
+  Applied:
+  - R9: a client check through a default PAST call, beside the database check;
+  - R16: how the call reaches Java, JavaScript, Python and Rust;
+  - R17: an application's own PAST method;
+  - R4, R10, R11, R15: amended to match.
+  - This replaces R9's earlier "no check in the client code", whose premise was wrong: `@escape` already maps a PAST
+    call to per-language runtime classes.
+- R1–R9 (as amended by Rulings 1 and 3), R12–R17 await ruling. R16's Rust choice (an error until the registry maps
+  static calls) and R17's choice (allow a custom `past`, marked) are the open questions Ruling 3 raises.
 
 **What the compiler does with them.** Each item names the generator it touches, as found on `development2_0` at 77cd3d1e0:
 1. **Descriptors.** `descriptors/NameDescriptor.java` and `AttributeDescriptor.java` gain `@transient` (boolean) and

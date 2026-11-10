@@ -249,6 +249,24 @@ public class PrivacyPolicy {
         }
     }
 
+    /**
+     * R11: a composite's elements are tied together by the value of each variable it shares, so a shared variable
+     * can't be transient. R8: otherwise a composite uses its component's bindings, and so its effective annotations.
+     */
+    public void checkComposite(String composite, String component, Collection<String> sharing) {
+        if (sharing == null) return;
+        TemplateBindingsSchema schema = appliedTemplates.get(component);
+        if (schema == null) return;
+        for (String key : sharing) {
+            EffectivePrivacy ep = new DescriptorUtils().getPrivacy(key, schema).orElse(null);
+            if (ep != null && ep.kind == EffectivePrivacy.Kind.TRANSIENT) {
+                throw new PrivacyException("template " + component + ", variable " + key + ", method " + ep.method
+                        + ": @transient on a variable shared by the composite " + composite
+                        + ", whose elements are tied together by its value");
+            }
+        }
+    }
+
     /** R12: the register's rows, in catalogue order. Empty when no variable of the catalogue is annotated. */
     public List<RegisterEntry> register() {
         return new ArrayList<>(register.values());

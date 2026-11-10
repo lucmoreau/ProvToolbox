@@ -413,6 +413,12 @@ public class ConfigProcessor implements Constants {
             }
         }
         policy.checkScopes(templates);
+        for (TemplateCompilerConfig aconfig : configs.templates) {
+            if (!TemplateConfigurationEnum.isSimple(aconfig)) {
+                CompositeTemplateCompilerConfig composite = (CompositeTemplateCompilerConfig) aconfig;
+                policy.checkComposite(composite.fullyQualifiedName, composite.consistsOf, composite.sharing);
+            }
+        }
         this.privacyPolicy = policy;
         return policy;
     }

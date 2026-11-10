@@ -39,6 +39,7 @@ public class PrivacyPolicy {
     static final String BUILT_INS = "/privacy/methods.json";
     static final Set<String> LANGUAGES = Set.of("java", "python", "javascript", "rust");
     static final String CUSTOM_PAST_NOTE = "client check defined in application code";
+    static final String NOT_IN_RUST_NOTE = "not checked by the generated Rust client (Ruling 7)";
 
     private static volatile PrivacyPolicy current;
 
@@ -57,6 +58,7 @@ public class PrivacyPolicy {
     private final Map<String, String> templateByBindingsPath = new HashMap<>();
     private final Map<String, TemplateBindingsSchema> appliedTemplates = new LinkedHashMap<>();
     private final Map<String, RegisterEntry> register = new LinkedHashMap<>();
+    private final List<String> warnings = new ArrayList<>();
 
     /**
      * @param policyFile the application's policy file, or null when the catalogue has none
@@ -224,6 +226,9 @@ public class PrivacyPolicy {
             } else {
                 row.pattern = ep.pattern;
                 if (ep.past != null) row.note = CUSTOM_PAST_NOTE;
+                if (languages.contains("rust") && !checkedInRust(a.method)) {
+                    row.note = (row.note == null) ? NOT_IN_RUST_NOTE : row.note + "; " + NOT_IN_RUST_NOTE;
+                }
             }
             row.resolver = ep.resolver;
         }
@@ -265,6 +270,27 @@ public class PrivacyPolicy {
                         + ", whose elements are tied together by its value");
             }
         }
+    }
+
+    /**
+     * Whether the generated Rust client checks a pseudonym method's values. Never, until the Rust registry maps a
+     * static call (R16): neither the built-in {@code Pseudonyms.check} nor an application's own PAST method, even one
+     * listing {@code rust} among its targets, reaches the Rust code. Ruling 7: the Rust client leaves the check out.
+     */
+    public boolean checkedInRust(String method) {
+        return false;
+    }
+
+    /** The warnings of this generation, also printed on standard error as they arise. */
+    public List<String> warnings() {
+        return Collections.unmodifiableList(warnings);
+    }
+
+    private void warn(String message) {
+        String m = "T31: " + message;
+        if (warnings.contains(m)) return;
+        warnings.add(m);
+        System.err.println("[privacy] WARNING: " + m);
     }
 
     /** R12: the register's rows, in catalogue order. Empty when no variable of the catalogue is annotated. */
@@ -310,11 +336,14 @@ public class PrivacyPolicy {
             }
         } else {
             MethodDefinition def = methods.get(a.method);
-            if (languages.contains("rust")) {
-                throw new PrivacyException(what + ": @pseudonym in a catalogue that generates Rust: the Rust registry doesn't map the client check yet (R16)");
+            if (languages.contains("rust") && !checkedInRust(a.method)) {
+                // Ruling 7: the Rust client leaves the check out, with a warning; the other clients and the database keep it
+                warn(what + ": the generated Rust client doesn't check this pseudonym (the Rust registry doesn't map"
+                        + " the call); the other clients and the database constraint still do");
             }
             if (def.past != null) {
                 for (String lang : languages) {
+                    if (lang.equals("rust")) continue;   // Ruling 7: left out of the Rust client, with the warning above
                     if (!def.targets.contains(lang)) {
                         throw new PrivacyException(what + ": the catalogue generates " + lang
                                 + ", for which the method's PAST method is not provided (targets " + def.targets + ")");

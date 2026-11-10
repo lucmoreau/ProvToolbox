@@ -10,6 +10,7 @@ import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy;
 import org.openprovenance.prov.template.privacy.Pseudonyms;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -71,6 +72,7 @@ public class T31CasesTest extends TestCase {
     final List<String> failures = new ArrayList<>();
     final Map<String, JsonNode> byId = new LinkedHashMap<>();
     final Map<String, String> errors = new HashMap<>();
+    final Map<String, List<String>> warnings = new HashMap<>();
     final Map<String, Map<String, String>> hashes = new LinkedHashMap<>();
 
     public void testCases() throws Exception {
@@ -219,6 +221,31 @@ public class T31CasesTest extends TestCase {
                 check(where, "Java client check " + simple + " on " + v.getKey() + ", in logX and args2bean",
                         count(java, simple + "(__" + v.getKey() + ",") == 2);
                 check(where, "Python client check " + simple + " on " + v.getKey(), count(python, simple + "(" + v.getKey() + ",") == 2);
+            }
+        }
+        if (e.has("warning")) {   // Ruling 7
+            for (JsonNode w : e.get("warning")) {
+                check(where, "warns \"" + w.asText() + "\"", warnings.get(id).stream().anyMatch(x -> x.contains(w.asText())));
+            }
+        }
+        if (e.has("noWarning")) check(where, "no warning", warnings.get(id).isEmpty());
+        if (e.has("notInRust")) {   // Ruling 7: the Rust client leaves each check out, with a comment saying why
+            String rust;
+            try (Stream<Path> files = Files.walk(Path.of(root + "rust"))) {
+                rust = files.filter(f -> f.toString().endsWith(".rs")).map(f -> {
+                    try { return Files.readString(f); } catch (IOException x) { throw new RuntimeException(x); }
+                }).collect(Collectors.joining("\n"));
+            }
+            check(where, "Rust generated", !rust.isEmpty());
+            check(where, "no Rust call to a client check", rust.lines().filter(l -> !l.trim().startsWith("//")).noneMatch(l -> l.contains("Pseudonyms")));
+            // the Rust client emits no builder yet (no logX, no args2bean), so there is no Rust code for a check to be
+            // in; where a builder is emitted, each check is a comment instead (RustEmitterTest covers the emitter)
+            boolean rustBuilder = rust.contains("fn log_approval");
+            report.append("- Rust builder emitted: ").append(rustBuilder).append("\n");
+            if (rustBuilder) {
+                for (JsonNode v : e.get("notInRust")) {
+                    check(where, "Rust comment for " + v.asText(), rust.contains("// T31: " + v.asText() + " @pseudonym("));
+                }
             }
         }
         if (e.has("schemaPattern")) {
@@ -509,7 +536,10 @@ public class T31CasesTest extends TestCase {
             } else {
                 generate(configs);
             }
-            report.append("- generated\n\n");
+            warnings.put(id, PrivacyPolicy.current().warnings());
+            report.append("- generated\n");
+            for (String w : warnings.get(id)) report.append("- warning: ").append(w).append("\n");
+            report.append("\n");
         } catch (Throwable e) {
             String error = e.getClass().getSimpleName() + ": " + e.getMessage();
             errors.put(id, error);

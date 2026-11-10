@@ -49,6 +49,7 @@ import static org.openprovenance.prov.template.compiler.past.Variable.VariableKi
  *   <li>Super-delegation chain returning a cloneable collection appends {@code .clone()}.</li>
  *   <li>Super-delegation chain returning a non-cloneable collection uses {@code &} return type.</li>
  *   <li>Trait default body: primitive parameter is not double-wrapped in {@code Some()}.</li>
+ *   <li>NotInRust: a statement left out of the Rust code, with a comment (T31, Ruling 7).</li>
  * </ol>
  */
 public class RustEmitterTest {
@@ -435,6 +436,18 @@ public class RustEmitterTest {
                         new Return(staticNew)));
         String out = emit(clazz);
         assertTrue("Static call should use :: syntax", out.contains("HashMap::new()"));
+    }
+
+    @Test
+    public void notInRust_leavesTheCallOutWithAComment() {
+        // T31, Ruling 7: a client check the Rust registry doesn't map is left out of the Rust code, with its reason
+        MethodCall check = MethodCall.METHOD_CALL(ClassName.get("Pseudonyms", "org.openprovenance.prov.template.privacy"), "check",
+                List.of(new Constant("ref"), new Constant("^x$"), new Constant("t"), new Constant("v"), new Constant("pt:erp-ref")));
+        check.annotation.add(new org.openprovenance.prov.template.compiler.past.annotations.NotInRust("T31: v @pseudonym(pt:erp-ref) is not checked by the Rust client"));
+        Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(publicMethod("log", check));
+        String out = emit(clazz);
+        assertTrue("the reason is written as a comment", out.contains("// T31: v @pseudonym(pt:erp-ref) is not checked by the Rust client"));
+        assertFalse("no call to the check", out.lines().filter(l -> !l.trim().startsWith("//")).anyMatch(l -> l.contains("Pseudonyms") || l.contains("check(")));
     }
 
     @Test

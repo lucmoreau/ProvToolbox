@@ -477,8 +477,13 @@ public class CompilerCommon {
             EffectivePrivacy ep = p.get();
             ClassName clazz = (ep.past == null) ? get(Constants.PRIVACY_RUNTIME_CLASS, Constants.PRIVACY_RUNTIME_PACKAGE) : get(ep.past.get("class"), ep.past.get("package"));
             String m = (ep.past == null) ? "check" : ep.past.get("method");
-            res.add(METHOD_CALL(clazz, m, List.of(VARIABLE(compilerUtil.generateNewNameForVariable(key)),
-                    CONSTANT(ep.pattern), CONSTANT(templateFullyQualifiedName), CONSTANT(key), CONSTANT(ep.method))));
+            MethodCall check = METHOD_CALL(clazz, m, List.of(VARIABLE(compilerUtil.generateNewNameForVariable(key)),
+                    CONSTANT(ep.pattern), CONSTANT(templateFullyQualifiedName), CONSTANT(key), CONSTANT(ep.method)));
+            // Ruling 7: the Rust registry doesn't map the call (R16), so the Rust client leaves the check out, saying so
+            check.annotation.add(new org.openprovenance.prov.template.compiler.past.annotations.NotInRust(
+                    "T31: " + key + " @pseudonym(" + ep.method + ") is not checked by the Rust client: the Rust registry"
+                            + " doesn't map " + clazz.simpleName + "." + m + " (Ruling 7); the database constraint checks it"));
+            res.add(check);
             foundPrivacy = true;
         }
         return res;

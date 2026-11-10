@@ -97,7 +97,8 @@
         "accepted": [
           "hr:person/4711",
           null
-        ]
+        ],
+        "noWarning": true
       }
     },
     {
@@ -678,15 +679,52 @@
       }
     },
     {
-      "id": "E18",
-      "title": "a pseudonym in a catalogue that generates Rust, before the Rust registry maps the call",
+      "id": "R1",
+      "title": "a pseudonym in a catalogue that generates Rust: the Rust client leaves the check out, with a warning (Ruling 7)",
       "base": "A3",
       "catalogue": {
         "rust_dir": "rust"
       },
       "expect": {
-        "error": "R11 Rust (R16)",
-        "errorContains": "Rust"
+        "warning": [
+          "approver_ref, method pt:erp-ref: the generated Rust client doesn't check this pseudonym"
+        ],
+        "notInRust": [
+          "approver_ref"
+        ],
+        "clientCheck": {
+          "approver_ref": "org.openprovenance.prov.template.privacy.Pseudonyms.check"
+        },
+        "constraint": {
+          "approver_ref": "pt:erp-ref"
+        },
+        "registerNote": {
+          "approver_ref": "not checked by the generated Rust client (Ruling 7)"
+        }
+      }
+    },
+    {
+      "id": "R2",
+      "title": "the library (A6) in a catalogue that generates Rust: transient values handled as in the other languages, pseudonym checks left out of the Rust client with a warning each",
+      "base": "A6",
+      "catalogue": {
+        "rust_dir": "rust"
+      },
+      "expect": {
+        "warning": [
+          "approver_ref, method pt:erp-ref",
+          "order_note, method pt:inline-refs",
+          "customer_hash, method pt:keyed-hash"
+        ],
+        "notInRust": [
+          "approver_ref",
+          "order_note",
+          "customer_hash"
+        ],
+        "emptyColumn": {
+          "approver_name": "pt:drop"
+        },
+        "register": 4
       }
     },
     {

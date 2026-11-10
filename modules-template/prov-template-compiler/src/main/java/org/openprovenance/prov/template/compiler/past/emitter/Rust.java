@@ -2205,6 +2205,15 @@ public class Rust implements Emitter<StringBuilder> {
         emitStatement(statement, indent, false, sb);
     }
 
+    /** The reason a statement is left out of the Rust code (a {@link NotInRust} annotation), or null. */
+    private static String notInRust(Expression es) {
+        if (!(es instanceof MethodCall)) return null;
+        for (PastAnnotation a : ((MethodCall) es).annotation) {
+            if (a instanceof NotInRust) return ((NotInRust) a).reason;
+        }
+        return null;
+    }
+
     private void emitStatement(Statement statement, String indent, boolean isLastStatement, StringBuilder sb) {
         switch (statement.statementKind) {
             case ASSIGNMENT -> {
@@ -2402,6 +2411,11 @@ public class Rust implements Emitter<StringBuilder> {
 
             case EXPRESSION_STATEMENT -> {
                 Expression es = (Expression) statement;
+                String notInRust = notInRust(es);
+                if (notInRust != null) {
+                    sb.append(indent).append("// ").append(notInRust).append("\n");
+                    return;
+                }
                 sb.append(indent)
                         .append(convert(es))
                         .append(";\n");

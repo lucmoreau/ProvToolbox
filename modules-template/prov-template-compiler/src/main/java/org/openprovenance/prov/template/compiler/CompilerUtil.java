@@ -323,6 +323,10 @@ public class CompilerUtil {
             } else {
                 try {
                     bindingsSchema = objectMapper.readValue(new File(bindings), TemplateBindingsSchema.class);
+                    // T31: the application's privacy policy applies wherever a bindings schema is read
+                    org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy privacy =
+                            org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy.current();
+                    if (privacy != null) privacy.applyToFile(bindings, bindingsSchema);
                 } catch (JacksonException e) {
                     throw new RuntimeException(e);
                 }

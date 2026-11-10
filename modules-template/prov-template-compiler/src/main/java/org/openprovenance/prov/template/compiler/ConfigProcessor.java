@@ -1,5 +1,8 @@
 package org.openprovenance.prov.template.compiler;
 
+import org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy;
+import org.openprovenance.prov.template.compiler.privacy.PrivacyRegisterWriter;
+
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import com.squareup.javapoet.TypeVariableName;
@@ -28,6 +31,7 @@ import tools.jackson.core.JacksonException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -54,6 +58,8 @@ public class ConfigProcessor implements Constants {
     private final CompilerBuilderInterface compilerBuilderInterface;
     boolean withMain=true; // TODO need to be updatable via command line
     // Jackson 3: built once with the descriptor deserializer (was added to this shared mapper in the constructor)
+    private PrivacyPolicy privacyPolicy;
+
     public static final ObjectMapper objectMapper = new DescriptorUtils().setupDeserializer(JsonMapper.builderWithJackson2Defaults()).build();
     private final CompilerUtil compilerUtil;
     private final CompilerLogger compilerLogger ;
@@ -211,6 +217,8 @@ public class ConfigProcessor implements Constants {
             new File(cli_webjar_bindings_dir).mkdirs();
             new File(cli_webjar_templates_dir).mkdirs();
 
+            setupPrivacy(configs, inputBaseDir, cbindingsBaseDir);
+
             Pair<Map<String, String>, Map<String, String>> packages_shortnames_pair = findAllPackagesInConfigurations(configs, cbindingsBaseDir);
             Map<String, String> packages = packages_shortnames_pair.getLeft();
             Map<String, String> shortNames = packages_shortnames_pair.getRight();
@@ -280,6 +288,7 @@ public class ConfigProcessor implements Constants {
 
             generateSQLEnd(configs, cli_src_dir);
             generateDocumentationEnd(configs, cli_src_dir);
+            generatePrivacyRegister(cli_webjar_dir);
 
 
             doGenerateProject(configs, locations, root_dir, cli_lib, l2p_lib, l2p_dir, l2p_src_dir, l2p_test_src_dir, cli_test_src_dir, cli_webjar_dir);
@@ -378,6 +387,40 @@ public class ConfigProcessor implements Constants {
         return Pair.of(packages, shortNames);
     }
 
+    /**
+     * T31: builds the catalogue's privacy policy (built-in methods, PrivacyMethod classes, the catalogue's privacy file),
+     * makes it the current one, so that every bindings schema read from now on carries its effective annotations, and
+     * reads every template's bindings once, so that a refusal stops generation before anything is written.
+     */
+    public PrivacyPolicy setupPrivacy(TemplatesProjectConfiguration configs, String inputBaseDir, String cbindingsBaseDir) {
+        File policyFile = configs.privacy == null ? null : new File(addBaseDirIfRelative(configs.privacy, inputBaseDir));
+        PrivacyPolicy policy = new PrivacyPolicy(policyFile,
+                PrivacyPolicy.languages(configs.python_dir != null, configs.jsweet, configs.rust_dir != null));
+        PrivacyPolicy.setCurrent(policy);
+        List<String> templates = new ArrayList<>();
+        for (TemplateCompilerConfig aconfig : configs.templates) {
+            if (TemplateConfigurationEnum.isSimple(aconfig)) {
+                SimpleTemplateCompilerConfig config = (SimpleTemplateCompilerConfig) aconfig;
+                // composites resolve a component's bindings against inputBaseDir, simple entries against cbindingsBaseDir
+                policy.registerBindings(addBaseDirIfRelative(config.cbindings, cbindingsBaseDir), config.fullyQualifiedName);
+                policy.registerBindings(addBaseDirIfRelative(config.cbindings, inputBaseDir), config.fullyQualifiedName);
+                templates.add(config.fullyQualifiedName);
+            }
+        }
+        for (TemplateCompilerConfig aconfig : configs.templates) {
+            if (TemplateConfigurationEnum.isSimple(aconfig)) {
+                compilerUtil.getBindingsSchema(addBaseDirIfRelative(((SimpleTemplateCompilerConfig) aconfig).cbindings, cbindingsBaseDir));
+            }
+        }
+        policy.checkScopes(templates);
+        this.privacyPolicy = policy;
+        return policy;
+    }
+
+    public PrivacyPolicy getPrivacyPolicy() {
+        return privacyPolicy;
+    }
+
     static String addBaseDirIfRelative(String template_builder, String baseDir) {
         if (template_builder.startsWith("/")) return template_builder;
         return baseDir + "/" + template_builder;
@@ -412,6 +455,22 @@ public class ConfigProcessor implements Constants {
 
     public void generateSQLEnd(TemplatesProjectConfiguration configs, String cli_src_dir) {
         if (configs.sqlFile!=null) compilerSQL.generateSQLEnd(configs.sqlFile, cli_src_dir +"/../resources", getReferencedSqlTables());
+    }
+
+    /**
+     * T31 (R12): the privacy register, the audit record of the catalogue's data-protection annotations, written at
+     * generation beside the documentation in the client's webjar ({@code html/privacy-register.json} and {@code .html}),
+     * and only when at least one variable of the catalogue is annotated, declared or added.
+     */
+    public void generatePrivacyRegister(String cli_webjar_dir) {
+        if (privacyPolicy == null || privacyPolicy.register().isEmpty()) return;
+        String dir = cli_webjar_dir + "/html";
+        new File(dir).mkdirs();
+        try {
+            new PrivacyRegisterWriter().write(privacyPolicy.register(), new File(dir));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public void generateDocumentationEnd(TemplatesProjectConfiguration configs, String cli_webjar_dir) {
@@ -449,7 +508,7 @@ public class ConfigProcessor implements Constants {
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
 
 
-        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape());
+        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape() || compilerCommon.getFoundPrivacy()); // T31 (R16): Pseudonyms is in prov-model
         compilerMaven.makeSubPomJweet(configs, cli_dir, cli_lib, configs.jsweet);
 
 

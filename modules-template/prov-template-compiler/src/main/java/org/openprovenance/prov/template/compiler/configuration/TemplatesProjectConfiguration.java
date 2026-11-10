@@ -21,6 +21,9 @@ public class TemplatesProjectConfiguration {
     public String root_package;
     public String variableCheck;
 
+    /** T31: path of the application's privacy policy (methods and overrides of the templates' data-protection annotations). */
+    public String privacy;
+
     public String script;
     public String script_dir;
     public String python_dir;
@@ -51,6 +54,7 @@ public class TemplatesProjectConfiguration {
                 ", documentation='" + documentation + '\'' +
                 ", root_package='" + root_package + '\'' +
                 ", variableCheck='" + variableCheck + '\'' +
+                ", privacy='" + privacy + '\'' +
                 ", script='" + script + '\'' +
                 ", script_dir='" + script_dir + '\'' +
                 ", python_dir='" + python_dir + '\'' +

@@ -505,9 +505,10 @@ real alternative, what it is.
 
    R8 lists these places, corrected from this run.
 3. **Generation is not deterministic** in `buildDate` and in `schema.json` key order. R14 is amended for it.
-4. **A second generation in one JVM fails**: an NPE in `past/emitter/Python.typeSimpleName`. An argument's type is
-   null, so state is shared between `ConfigProcessor` instances. This is not T31's problem. The test works around it
-   with a fresh JVM per case. It is a follow-up of its own.
+4. **A second generation in one JVM fails**, with an NPE in `past/emitter/Python.typeSimpleName`. *Corrected in
+   phase 2:* the harness, copied from `CompilerTest`, skipped the `SpecificationFile.resetTypeCheckCoordinator()` /
+   `resetCodeGenCoordinator()` that `processTemplateGenerationConfig` calls before each generation. With them,
+   repeated in-process generation works. It is not a compiler bug.
 
 **Rulings.** Each ruling is recorded here, with who made it and when.
 - **Ruling 1 (Luc, 2026-11-10), on R10.** A method's meaning must not change while the application runs: "not
@@ -551,6 +552,119 @@ real alternative, what it is.
     stays verbatim;
   - R16: Rust is a compile error for a pseudonym until the Rust registry maps the call.
 - All rulings are made. Phase 2 builds the design. "Done when" holds as R15 amends it.
+- **Ruling 6 (Luc, 2026-11-10), on the build's departures.** D1–D4 are approved ("approved"); D5 was agreed before
+  them. They are recorded under *Build (phase 2)* below:
+  - D1: the CSV log keeps a transient variable's column, empty;
+  - D2: the client check is one `Pseudonyms.check` call per pseudonymised variable, in `logX` and `args2bean`;
+  - D3: patterns must be anchored;
+  - D4: the register sits beside `doc.html`, written whether or not the catalogue configures documentation;
+  - D5: the store keeps a transient variable's column, never written and guarded by `CHECK (… IS NULL)`, and the old
+    insert function is dropped on upgrade.
+
+**Build (phase 2, 2026-11-10): in the working tree, uncommitted, for Luc's review.**
+- *What is built.*
+  - Descriptors: `@transient` and `@pseudonym` on `NameDescriptor` / `AttributeDescriptor`, and the effective annotation
+    `EffectivePrivacy`. `DescriptorUtils` gains `getPrivacy`, `keeps` and the stored / logged / expanded field lists.
+  - The catalogue: `privacy` in `TemplatesProjectConfiguration` and `template-project-schema.json`.
+  - Package `compiler/privacy`:
+    - `PrivacyPolicy`: methods, scopes, decisions, digests, every R11 / Ruling 2 / R16 / R17 refusal, the register;
+    - `MethodDefinition`, `PrivacyMethod` (the SPI, `uses` in `module-info`), `PolicyFile`, `RegisterEntry`,
+      `PrivacyRegisterWriter`;
+    - the built-ins in `privacy/methods.json`.
+  - Wiring: `ConfigProcessor.setupPrivacy` (per generation) and `CompilerUtil.getBindingsSchema` (applies the policy
+    wherever bindings are read).
+  - Generators:
+    - `CompilerSQL`: the column, type, `_sqlInsert1`, `?` count and `sqlTuple` body take the stored variables; the
+      inline digest-named `NOT VALID` constraints are added;
+    - `CompilerSqlComposer`: the stored variables;
+    - `CompilerQueryInvoker`: the stored variables;
+    - the CSV writer (`CompilerCommon.generateLoggerMethod`);
+    - `CompilerExpansionBuilder`: `make(…)` and the continuation pass `null` for a transient value;
+    - `CompilerJsonSchema`: `pattern` and a mark;
+    - `CompilerDocumentation`: a mark;
+    - the client check through PAST, and the `privacy` constant;
+    - `CompilerMaven`: `prov-model` when a pseudonym is used.
+  - Runtime `Pseudonyms`, the same in each language:
+    - Java: in `prov-model`, exported;
+    - JavaScript: a jsweet candy in `prov-jsweet-candy-java`;
+    - Python: a port in `prov-template-library`.
+  - Tests: `T31CasesTest` (renamed from `T31BaselineTest`) generates the 36 cases of `t31/cases.json` and asserts each
+    `expect`.
+  - The specification, edited in its own repository, also uncommitted:
+    - `prov-template/index.html`: members table rows, a section on the data-protection annotations, the policy in the
+      compiler section;
+    - `prov-template/schemas/bindings-schema.json`: `@pseudonym` on both descriptors, `@transient` on attribute
+      descriptors only;
+    - `prov-template-library/index.html`: a convention.
+- *Verified.*
+  - All 36 cases pass, including every refusal message, with D5's expectations on A1, A2 and A6.
+  - Conformance of every `refused` / `accepted` vector: Java runtime, Python port, JavaScript `RegExp`, PostgreSQL `~`.
+  - The generated SQL in a live PostgreSQL 14 (`PROV_T31_PG_URL`):
+    - A6's valid record is accepted, and each clear value is refused by its constraint;
+    - P2's changed definition replaces the constraint under its new digest, `NOT VALID`.
+  - The compiler module's full suite passes: 165 tests.
+  - Byte identity against the pre-build compiler, after the R14 normalisations plus generator line numbers (finding
+    3): A0, A7, P1, P5 and E9 against pre-build A0; `CompilerTest`'s `config1` catalogue as well.
+- *Departures from the rulings (approved by Luc: Ruling 6).*
+  - D1 (R5/R8, the log):
+    - a transient value its method doesn't log keeps its CSV column, left empty: the separator is written, never the
+      value. The ruled design dropped the column (`loggedFieldNames` for writer and reader alike);
+    - the record is positional, and about 15 generators re-derive its index (`record2bean`, `processorConverter`,
+      `make(Object[])`, `TypedRecord`, `propertyOrder`, `__nodes` / `__successors` / `__relations`,
+      `foreignTables`, …), as does the `log2prov` runtime (`FileBuilder`);
+    - an empty column gives the same protection, since the value is never written and a replay never learns it,
+      without touching any of them.
+  - D2 (R9, the client check):
+    - no separate generated `checkPrivacy(…)`: one `Pseudonyms.check(value, pattern, template, variable, method)`
+      call per pseudonymised variable, at the start of `logX` and of `args2bean`;
+    - the runtime throws `IllegalArgumentException` naming template, variable and method, never the value;
+    - the pattern is a literal of the generated code, fixed at generation, not a separate constant per variable; the
+      `privacy` constant carries method and digest;
+    - an application's own PAST method (R17) takes the same five parameters.
+  - D3 (R11): a pattern must be anchored, `^...$`. Without anchors, Java `matches()` and Python `fullmatch` match the
+    whole value while JavaScript `test` and PostgreSQL `~` search within it.
+  - D4 (R12):
+    - the register goes to the webjar's `html/` directory beside `doc.html`;
+    - it is written from `ConfigProcessor.generatePrivacyRegister`, even when the catalogue has no `documentation`;
+      the audit record shouldn't depend on that setting.
+  - D5 (R5, the store), agreed by Luc on 2026-11-10: "it's better for legacy store, there is an upgrade path".
+    - A transient value its method doesn't store keeps its column, in the table and in the composite type, and is
+      never written there. Only the write paths leave it out: the insert function's parameters and values, the JDBC
+      `_sqlInsert1` and its `?` count, `sqlTuple`, `QueryInvoker`. Readers are unchanged.
+    - Past records in a legacy store keep their values and read back as before. Erasing them stays the application's
+      migration.
+    - A new store has the column, always `NULL`. Luc noted a further benefit: bindings with and without `@transient`
+      map to the same table.
+    - `CHECK (col IS NULL) NOT VALID`, named `<table>_<col>_t<digest>` and commented with method and digest, refuses a
+      writer that bypasses the generated code. `COMMENT ON COLUMN` says why the column is empty.
+    - On a table that catalogues with different decisions share, the stricter decision wins: the guard refuses the
+      writes of a catalogue that doesn't honour `@transient`. Drop the guard if such sharing matters more.
+    - `CREATE OR REPLACE FUNCTION` with fewer parameters would add a second insert function beside the old one, which
+      an old client could still call with the clear value. The SQL file therefore drops the old signature first.
+    - A column's earlier constraints are cleared by exact name (`^<table>_<col>_[pt]<12 hex>$`), never by a looser
+      prefix that could catch unrelated constraints.
+    - Verified live: a legacy A0 store with a past record, upgraded by A6's SQL, keeps the record's name; the old
+      insert function is gone; a direct `INSERT` of a name is refused; a new record's column is `NULL`.
+- *Findings.*
+  - F1: finding 4 above is corrected: the NPE came from the harness, not the compiler.
+  - F2: `StatementTypeAction` keeps a static counter (`tmp_Conv<n>`) running across generations in one JVM.
+    `compile-catalogue` with several catalogues therefore makes one catalogue's output depend on those generated before
+    it.
+  - F3: the generated code carries the generator's own source line numbers (`// in file CompilerCommon.java, at line
+    N`). Any edit of the compiler changes every catalogue's output, so R14's byte identity can only hold modulo them.
+  - F4: PostgreSQL's refusal `DETAIL` echoes the failing row, the clear value included
+    (`Failing row contains (…, Jane Smith, …)`).
+    - The generated client refuses first, without the value, but a writer that bypasses it gets the value back in the
+      error, and the server log keeps it unless `log_error_verbosity = terse`.
+    - Options: document it, or have the insert function check first and raise without the value.
+  - F5, reported by the code survey and not checked: `log2prov`'s `FileBuilder.register` keys builders by short name
+    while the record's first column holds the fully qualified name; `processRecordForSql` calls `toBean`, which simple
+    templates don't generate.
+- *Not done.*
+  - R11's refusal of `@transient` on a variable shared in a composite, and the two composite cases: they need
+    `processTemplateGenerationConfig`, which the case harness doesn't run.
+  - The jsweet candy compiles but wasn't transpiled. The Python port is exercised only by the conformance vectors.
+  - Rust stays a compile error for a pseudonym (R16).
 
 **What the compiler does with them** (as filed; superseded where the design above differs). Each item names the
 generator it touches, as found on `development2_0` at 77cd3d1e0:

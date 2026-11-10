@@ -7,6 +7,7 @@ import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.EffectivePrivacy;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 
@@ -135,6 +136,16 @@ public class CompilerDocumentation {
 
                 if (sharing!=null && sharing.contains(key)) {
                     os.print(makeSpan("share-able variable", "csv_shared"));
+                }
+
+                // T31 (R12): the annotation in effect; an ignored one leaves the page as it was
+                Optional<EffectivePrivacy> privacy = descriptorUtils.getPrivacy(key, bindingsSchema);
+                if (privacy.isPresent()) {
+                    EffectivePrivacy ep = privacy.get();
+                    String mark = ep.isPseudonym()
+                            ? "@pseudonym(" + ep.method + "): a reference, never a clear value"
+                            : "@transient(" + ep.method + "): never persisted" + (ep.keeps(EffectivePrivacy.Place.LOG) ? "" : ", column left empty");
+                    os.print(makeSpan(mark, "csv_privacy"));
                 }
                 os.println(":");
 

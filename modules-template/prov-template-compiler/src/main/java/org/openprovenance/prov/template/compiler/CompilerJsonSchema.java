@@ -7,6 +7,7 @@ import com.networknt.schema.Schema;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.descriptors.EffectivePrivacy;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import tools.jackson.core.JacksonException;
@@ -98,7 +99,19 @@ public class CompilerJsonSchema {
             String documentation=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
             //String type=descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getType, NameDescriptor::getType);
             if (documentation==null) documentation="";
-            atype.put("description", documentation + " (" + jsonType + ")" );
+            // T31 (R9): a pseudonymised property carries its method's pattern, so a form refuses a clear value early
+            String privacyMark = "";
+            Optional<EffectivePrivacy> privacy = descriptorUtils.getPrivacy(key, bindingsSchema);
+            if (privacy.isPresent()) {
+                EffectivePrivacy ep = privacy.get();
+                if (ep.isPseudonym()) {
+                    atype.put("pattern", ep.pattern);
+                    privacyMark = " [@pseudonym(" + ep.method + "): a reference, never a clear value]";
+                } else {
+                    privacyMark = " [@transient(" + ep.method + "): never persisted]";
+                }
+            }
+            atype.put("description", documentation + " (" + jsonType + ")" + privacyMark);
 
 
 

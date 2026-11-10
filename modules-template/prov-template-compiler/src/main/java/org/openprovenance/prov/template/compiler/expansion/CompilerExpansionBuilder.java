@@ -515,7 +515,12 @@ public class CompilerExpansionBuilder {
                         method.addStatement(DEFINITION(OBJECT, VARIABLE(newName), getNull()));
                     }
                 }
-                generatorArgs.add(VARIABLE(newName));
+                if (descriptorUtils.keeps(key, bindingsSchema, org.openprovenance.prov.template.descriptors.EffectivePrivacy.Place.EXPANSION)) {
+                    generatorArgs.add(VARIABLE(newName));
+                } else {
+                    // T31: a transient value is not bound; the generator leaves out an attribute whose value is null
+                    generatorArgs.add(getNull());
+                }
             }
         }
 
@@ -644,7 +649,12 @@ public class CompilerExpansionBuilder {
             if (translator.get(key) != null) {
                 argName = translator.get(key);
             }
-            callArgs.add(VARIABLE(argName));
+            if (descriptorUtils.keeps(key, bindingsSchema, org.openprovenance.prov.template.descriptors.EffectivePrivacy.Place.EXPANSION)) {
+                callArgs.add(VARIABLE(argName));
+            } else {
+                // T31: nor does a transient value reach the typed record or the type management of the expansion
+                callArgs.add(getNull());
+            }
         }
 
         // __C_result = processor.call(args...)

@@ -71,7 +71,7 @@ public class CompilerSqlComposer {
 
 
         Map<String,?> funParams=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(key -> descriptorUtils.isInput(key, templateBindingsSchema) || shared.contains(key))
                 .collect(Collectors.toMap(key -> appendPossiblySharedOutput(key, shared.contains(key)),
@@ -81,7 +81,7 @@ public class CompilerSqlComposer {
 
 
         Map<String,Object> functionReturns=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
                 .collect(Collectors.toMap(this::sqlify,
@@ -97,7 +97,7 @@ public class CompilerSqlComposer {
 
 
         Map<String,Object> insertValues2=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .collect(Collectors.toMap(  this::sqlify,
                         key -> {
@@ -155,7 +155,7 @@ public class CompilerSqlComposer {
 
         Map<String,Function<PrettyPrinter, ?>> cteValues2=
                descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
                 .collect(Collectors.toMap(  this::newTableWithId,
@@ -187,7 +187,7 @@ public class CompilerSqlComposer {
 
 
         List<String> outputs=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
                 .map(key -> orig_templateName + "." + key)
@@ -208,14 +208,14 @@ public class CompilerSqlComposer {
         // returns the existing ids rather than failing the unique index. Composites and sqlForeign
         // outputs are deferred to the standard path.
         List<String> uniqueKeys = descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(key -> descriptorUtils.isUnique(key, templateBindingsSchema).orElse(false))
                 .collect(Collectors.toList());
         boolean allUniqueAreInputs = uniqueKeys.stream()
                 .allMatch(key -> descriptorUtils.isInput(key, templateBindingsSchema));
         boolean hasForeignOutput = descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(key -> descriptorUtils.isOutput(key, templateBindingsSchema) && !shared.contains(key))
                 .anyMatch(key -> descriptorUtils.getOutputSqlForeign(key, templateBindingsSchema).isPresent());
@@ -240,6 +240,20 @@ public class CompilerSqlComposer {
                             .returning(outputs)
                             .bodyEnd("");
             sql = fun.getSQL();
+        }
+
+        // T31 (D5): when a transient variable no longer goes to the store, the insert function loses its parameter, and
+        // CREATE OR REPLACE then creates a second function beside the old one, which an old client could still call with
+        // the clear value. The old signature, the one without T31, is dropped first.
+        List<String> legacyTypes = descriptorUtils
+                .fieldNames(templateBindingsSchema)
+                .stream()
+                .filter(key -> descriptorUtils.isInput(key, templateBindingsSchema) || shared.contains(key))
+                .map(key -> getTheSqlType(compilerUtil, key, templateBindingsSchema, var))
+                .collect(Collectors.toList());
+        if (legacyTypes.size() != funParams.size()) {
+            sql = "-- T31: the insert function's signature before its transient parameters were left out\n"
+                    + "DROP FUNCTION IF EXISTS " + insertFunctionName + "(" + String.join(", ", legacyTypes) + ");\n\n" + sql;
         }
 
         functionDeclarations.put(templateName, sql);
@@ -365,7 +379,7 @@ public class CompilerSqlComposer {
 
 
         Map<String,Object> functionReturns=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(isOutput)
                 .collect(Collectors.toMap(  this::sqlify,
@@ -376,7 +390,7 @@ public class CompilerSqlComposer {
                         }}));
 
         Map<String,Function<PrettyPrinter, ?>> cteValues1=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(key -> isOutput.test(key) && shared.contains(key))
                 .collect(Collectors.toMap(  this::table_tokens,
@@ -407,7 +421,7 @@ public class CompilerSqlComposer {
 
 
         List<String> insertColumns=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(isOutput)
                 .map(key ->  shared.contains(key)? localId(key) : "(" + Constants.ARECORD_VAR + ")." + sqlify(key))
@@ -416,7 +430,7 @@ public class CompilerSqlComposer {
                     }}));
 
         List<String> theArguments=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(key -> isInput.test(key) || shared.contains(key))
                 .map(key -> shared.contains(key)? table_token_id_pairs(key) + ".id" : key)
@@ -486,7 +500,7 @@ public class CompilerSqlComposer {
 
 
         Map<String,Object> functionReturns=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(isOutput)
                 .collect(Collectors.toMap(  this::sqlify,
@@ -519,7 +533,7 @@ public class CompilerSqlComposer {
         cteValues2.put("the_linker", pp -> new QueryBuilder(pp).insertInto(finalTemplateName+ LINKER_SUFFIX + "(composite,simple) ").selectExp("*").from(THE_PRODUCT));
 
         List<String> insertColumns=descriptorUtils
-                .fieldNames(templateBindingsSchema)
+                .storedFieldNames(templateBindingsSchema) // T31: a variable not stored has no column
                 .stream()
                 .filter(isOutput)
                 .map(key ->  shared.contains(key)? key : sqlify(key))  // was  "(" + Constants.ARECORD_VAR + ")." + sqlify(key)

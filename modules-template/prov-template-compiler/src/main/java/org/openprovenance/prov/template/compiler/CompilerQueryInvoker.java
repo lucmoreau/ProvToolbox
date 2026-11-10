@@ -292,7 +292,7 @@ public class CompilerQueryInvoker {
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(INSERT_PREFIX + config.name + " ("))));
 
         boolean first = true;
-        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+        for (String key: descriptorUtils.storedFieldNames(bindingsSchema) /* T31 */) {
             if (descriptorUtils.isInput(key, bindingsSchema)) {
                 if (!first) {
                     m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT(","))));
@@ -326,7 +326,7 @@ public class CompilerQueryInvoker {
         m.BODY(METHOD_CALL(VARIABLE(SB_VAR), "append", List.of(CONSTANT("( "))));
 
         boolean first = true;
-        for (String key: descriptorUtils.fieldNames(bindingsSchema)) {
+        for (String key: descriptorUtils.storedFieldNames(bindingsSchema) /* T31 */) {
             boolean doProcess = true;
             if (!doProcess) continue;
             if (!first) {

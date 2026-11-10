@@ -209,6 +209,7 @@
         "variableCheck": {
             "type": "string"
         },
+        "privacy": {"type": "string", "description": "T31: path of the application's privacy policy file"},
         "sqlFile": {
             "type": "string"
         },

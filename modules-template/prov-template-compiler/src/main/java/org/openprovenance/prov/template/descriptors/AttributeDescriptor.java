@@ -50,6 +50,46 @@ public class AttributeDescriptor implements Descriptor {
     @JsonProperty("@unique")
     private boolean unique;
 
+    /** T31: {@code true}, {@code false} or a transient method name, as declared in the bindings schema. */
+    @JsonProperty("@transient")
+    private Object transientDeclared;
+    /** T31: a pseudonym method name, as declared in the bindings schema. */
+    @JsonProperty("@pseudonym")
+    private String pseudonym;
+    /** T31: the annotation in effect once the application's policy is applied; set by the compiler, never serialised. */
+    @JsonIgnore
+    private EffectivePrivacy effectivePrivacy;
+
+    @JsonProperty("@transient")
+    public Object getTransient() {
+        return transientDeclared;
+    }
+
+    @JsonProperty("@transient")
+    public void setTransient(Object transientDeclared) {
+        this.transientDeclared = transientDeclared;
+    }
+
+    @JsonProperty("@pseudonym")
+    public String getPseudonym() {
+        return pseudonym;
+    }
+
+    @JsonProperty("@pseudonym")
+    public void setPseudonym(String pseudonym) {
+        this.pseudonym = pseudonym;
+    }
+
+    @JsonIgnore
+    public EffectivePrivacy getEffectivePrivacy() {
+        return effectivePrivacy;
+    }
+
+    @JsonIgnore
+    public void setEffectivePrivacy(EffectivePrivacy effectivePrivacy) {
+        this.effectivePrivacy = effectivePrivacy;
+    }
+
     @JsonProperty("@value")
     public String getValue() {
         return value;

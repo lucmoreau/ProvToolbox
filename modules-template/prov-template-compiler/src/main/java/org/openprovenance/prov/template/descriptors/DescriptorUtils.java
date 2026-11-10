@@ -48,6 +48,45 @@ public class DescriptorUtils {
         return theVars.keySet().stream().filter((v) -> theVars.containsKey(v) && theVars.get(v)!=null).collect(Collectors.toList());
     }
 
+    /** T31: the data-protection annotation in effect on a variable, once the application's policy is applied. */
+    public Optional<EffectivePrivacy> getPrivacy(String key, TemplateBindingsSchema templateBindingsSchema) {
+        List<Descriptor> var = templateBindingsSchema.getVar().get(key);
+        if (var == null || var.isEmpty() || var.get(0) == null) return Optional.empty();
+        return Optional.ofNullable(getFromDescriptor(var.get(0), AttributeDescriptor::getEffectivePrivacy, NameDescriptor::getEffectivePrivacy));
+    }
+
+    /** T31: whether a variable's value may go to a place (store, log, expansion). True for an unannotated variable. */
+    public boolean keeps(String key, TemplateBindingsSchema templateBindingsSchema, EffectivePrivacy.Place place) {
+        return getPrivacy(key, templateBindingsSchema).map(p -> p.keeps(place)).orElse(true);
+    }
+
+    /** T31: the variables, in order, whose value may go to a place. Equal to {@link #fieldNames} when nothing is transient. */
+    public Collection<String> fieldNames(TemplateBindingsSchema templateBindingsSchema, EffectivePrivacy.Place place) {
+        return fieldNames(templateBindingsSchema).stream()
+                .filter(key -> keeps(key, templateBindingsSchema, place))
+                .collect(Collectors.toList());
+    }
+
+    /** T31: the variables stored in SQL (column, type, insert parameter, invoker). */
+    public Collection<String> storedFieldNames(TemplateBindingsSchema templateBindingsSchema) {
+        return fieldNames(templateBindingsSchema, EffectivePrivacy.Place.STORE);
+    }
+
+    /** T31: the variables written to the CSV log record. */
+    public Collection<String> loggedFieldNames(TemplateBindingsSchema templateBindingsSchema) {
+        return fieldNames(templateBindingsSchema, EffectivePrivacy.Place.LOG);
+    }
+
+    /** T31: the variables bound in the expanded PROV document. */
+    public Collection<String> expandedFieldNames(TemplateBindingsSchema templateBindingsSchema) {
+        return fieldNames(templateBindingsSchema, EffectivePrivacy.Place.EXPANSION);
+    }
+
+    /** T31: whether any variable of the template carries an annotation in effect. */
+    public boolean hasPrivacy(TemplateBindingsSchema templateBindingsSchema) {
+        return fieldNames(templateBindingsSchema).stream().anyMatch(key -> getPrivacy(key, templateBindingsSchema).isPresent());
+    }
+
     public boolean isSemanticType(String key, TemplateBindingsSchema templateBindingsSchema) {
         List<Descriptor> var=templateBindingsSchema.getVar().get(key);
         if (var == null) return false;

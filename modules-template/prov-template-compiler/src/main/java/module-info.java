@@ -31,6 +31,10 @@ module prov.template.compiler {
     exports org.openprovenance.prov.template.compiler.util;
     exports org.openprovenance.prov.template.descriptors;
     exports org.openprovenance.prov.template.log2prov;
+    // T31: data-protection methods (R4): the SPI an application implements, and the policy's data classes
+    exports org.openprovenance.prov.template.compiler.privacy;
+    opens org.openprovenance.prov.template.compiler.privacy;
+    uses org.openprovenance.prov.template.compiler.privacy.PrivacyMethod;
     // qualified export: the SQL composer is internal, opened only to its unit test (T-38)
     exports org.openprovenance.prov.template.compiler.sql to prov.template.compiler.test;
 

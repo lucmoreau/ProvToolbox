@@ -60,6 +60,20 @@ declaration, so the compiler enforces it, instead of every application rememberi
 
   A random token kept with a lookup table is excluded, because it needs the persistent mapping the rule forbids.
 
+**Requirements added 2026-11-10 (Luc).**
+- **A library declares; an application decides.** A template library may carry the annotations. An application using
+  that library must be able to ignore them, or change them, without copying the library: from its own project
+  configuration, never by editing the library's bindings.
+- **Methods are extensible.** The initial methods are a starting set. New methods must be addable over time, by
+  ProvToolbox or by an application, without changing the compiler.
+- **`@transient` takes a method too.** It becomes `@transient("method")` (for example, drop the value entirely, or keep
+  it only in a local log), with a default when no method is given.
+- **Implementations can be overridden.** An application can replace a method's implementation with its own, under the
+  same method name.
+
+The design comes first: written into this section and ruled by Luc before the compiler changes below are built.
+They will change to fit it.
+
 **What the compiler does with them.** Each item names the generator it touches, as found on `development2_0` at 77cd3d1e0:
 1. **Descriptors.** `descriptors/NameDescriptor.java` and `AttributeDescriptor.java` gain `@transient` (boolean) and
    `@pseudonym` (a method name). The configuration's JSON schema and `TemplatesProjectConfiguration` read them. A

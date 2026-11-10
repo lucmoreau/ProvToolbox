@@ -74,6 +74,340 @@ declaration, so the compiler enforces it, instead of every application rememberi
 The design comes first: written into this section and ruled by Luc before the compiler changes below are built.
 They will change to fit it.
 
+**Design (proposed 2026-11-10, awaiting Luc's ruling; nothing is built until R1–R15 are ruled).** Grounded in
+`development2_0` at eca0e021a. The rulings asked for are numbered; each says what is proposed and, where there is a
+real alternative, what it is.
+
+*What the code imposes.*
+- Every generator gets a template's variables from one place. `CompilerUtil.getBindingsSchema(config[, baseDir])`
+  reads each `cbindings` file once and caches it. `ConfigProcessor.findAllPackagesInConfigurations` loads them all
+  before any generation. A policy applied there is seen by every generator, with no generator reading it again.
+- `DescriptorUtils.fieldNames(schema)` lists the variables in order. 21 generators use it: beans, builders, the bean
+  checker, invokers, SQL, expansion, JSON schema and documentation. The beans must keep a transient field, since the
+  enactor needs it. So `fieldNames` can't simply drop transient variables. Each place where a value leaves the
+  process needs its own list.
+- The generated client project (`cli`) has no ProvToolbox runtime dependency (`CompilerMaven`: `prov-model` at most).
+  It is also emitted as Python, JavaScript and Rust. A Java `ServiceLoader` registry called from generated client code
+  would add a dependency and work in one language of four.
+- The insert function is `LANGUAGE SQL` (a CTE chain), or plpgsql only in the `@unique` idempotent case. Tables are
+  created `IF NOT EXISTS`, so a constraint written inside `CREATE TABLE` never reaches a table that already exists.
+- The descriptors are read with Jackson 2 defaults, which fail on unknown members. So a compiler older than T31
+  refuses a library that carries the annotations. That fails closed, as wanted.
+- A library is consumed in place: the `compile-catalogue` goal takes `templateLibraries` and `cbindingsBaseDir`, and
+  the application's own catalogue names the library's `cbindings`. Nothing is copied.
+
+*R1. Two layers: the library declares, the application decides.*
+- The annotations in a bindings schema state the library's intent.
+- The application's catalogue (`TemplatesProjectConfiguration`) gains a member `privacy`: the path of a policy file,
+  like `variableCheck`. The policy states the application's decisions.
+- Where the two disagree, the policy wins.
+- With no `privacy` member, every annotation is honoured as declared.
+- One policy file can be shared by all of an application's catalogues.
+- Alternative: the policy inline in the catalogue. Rejected because several catalogues would repeat it.
+
+*R2. Syntax in a bindings schema.*
+- `"@transient": "pt:local-log"`, or `"@transient": true` for the default method, `pt:drop`.
+- `"@pseudonym": "pt:erp-ref"`.
+- A method name without a prefix means `pt:`, so `"erp-ref"` is `pt:erp-ref`.
+- Both annotations on one variable are refused, unless the policy resolves the variable to one of them.
+- The notation `@transient("m")` / `@pseudonym("m")` used elsewhere in this ticket stands for these members.
+
+*R3. Method names are namespaced.*
+- `pt:` is reserved for ProvToolbox. Any other prefix belongs to whoever defines it, e.g. `acme:staff-no`.
+- An application may redefine a `pt:` method (R4) but not invent a new one under `pt:`. That is a compile error, so
+  a later ProvToolbox method can't collide with an application's.
+
+*R4. Methods are data first, Java second; a same-name definition overrides.*
+- A method is a JSON definition:
+  - `kind`: `transient` or `pseudonym`;
+  - for a transient method, `keeps` (R5);
+  - for a pseudonym method, `pattern`: a regular expression in the subset that Java and PostgreSQL `~` read alike
+    (POSIX ERE: classes, `{n}`, `*`, `+`, `?`, `|`, anchors; no look-around, no `\d`);
+  - `sql`: optional. A boolean SQL expression over `v` that replaces the pattern test when a regular expression is not enough;
+  - `resolver`: a hint naming the system readers resolve a value against, e.g. `hr`;
+  - `documentation`.
+- ProvToolbox's built-ins ship as a resource of the compiler (`privacy/methods.json`), in the same format an
+  application uses.
+- An application defines methods under `methods` in its policy file. A definition with a built-in's name replaces the
+  built-in (requirement 4). The audit record says so (R12).
+- For a method that can't be stated as data, an interface `PrivacyMethod` (name, kind, keeps, SQL check, JSON-schema
+  pattern, resolver, documentation) is found by `ServiceLoader` on the compiler's classpath. For the Maven goal, that
+  means a dependency of the plugin. The policy can also name a class: `"acme:x": {"class": "com.acme.X"}`.
+- Precedence for one name: the policy's definition, then a class found by `ServiceLoader`, then the built-in.
+- Requirement 2 holds: a new method is a few lines of JSON, or a jar on the plugin's classpath. The compiler is unchanged.
+
+*R5. A transient method says where the value may go.*
+- A value can go to four places:
+  - `store`: the SQL column, the composite SQL type, the insert parameter, `sqlTuple`, what `QueryInvoker` /
+    `TableConfigurator` send;
+  - `log`: the CSV record written by `CompilerLogger`;
+  - `expansion`: the attribute in the expanded PROV document;
+  - the bean, which always keeps it, since the enactor needs it.
+- The JSON schema and the documentation always describe the variable, since a caller still supplies it.
+- A transient method lists the places it keeps the value, among `store`, `log`, `expansion`:
+  - `pt:drop` (the default) keeps none;
+  - `pt:local-log` keeps `log` only. The value stays in the caller's CSV log and never reaches the store or an
+    expanded document. A replay of that log (`log2prov`) still leaves it unbound.
+- An application can add methods by choosing another subset.
+- The honest limit: a new *place* (a new kind of output) needs a compiler change. A new *method* doesn't.
+- Keeping the value in the log is safe only while the log stays local. An application that ships its CSV log to a
+  server should use `pt:drop`. The documentation says so.
+
+*R6. The starting pseudonym methods and their forms.*
+
+| Method | Form (pattern) | Resolver / erasure |
+|---|---|---|
+| `pt:erp-ref` | `^[a-z][a-z0-9_.-]*:[A-Za-z0-9_./-]+$`, a system prefix and an identifier with no spaces, e.g. `hr:person/4711` | the system of record |
+| `pt:inline-refs` | `^([^⟨⟩]\|⟨person [a-z][a-z0-9_.-]*:[A-Za-z0-9_./-]+⟩)*$`: free text whose every `⟨…⟩` is a well-formed reference | as `pt:erp-ref`, per reference |
+| `pt:keyed-hash` | `^[a-z0-9_-]+:[0-9a-f]{64}$`, a key identifier and an HMAC-SHA256 in hex | destroy the key: erases the whole tenant |
+
+- A form check recognises a clear value by its shape, not its meaning:
+  - `John Smith` fails `pt:erp-ref` (space, no prefix), but `smith:john` passes.
+  - `pt:inline-refs` checks only that references are well-formed. It can't prove that the text around them names nobody.
+- Both limits are stated in the documentation. An application is expected to override `pt:erp-ref` with its own
+  system's exact form (R4). That is requirement 4's main use.
+- The key identifier in `pt:keyed-hash` is there so a rotated or destroyed key is traceable from the stored values.
+- Alternative: no key identifier, the bare 64 hex digits.
+
+*R7. What the policy can say.*
+- It can define methods (R4).
+- `overrides` maps a scope to a decision. Scopes, from most specific to least:
+  - `variable:<template fqn>#<variable>`;
+  - `template:<template fqn>`;
+  - `method:<method>`, which applies wherever that method is declared;
+  - `*`.
+- The most specific matching scope decides.
+- Decisions:
+  - `"honour"` (the default; a bare string);
+  - `{"decision": "ignore", "reason": …}`: the variable is treated as unannotated;
+  - a replacement, such as `{"@pseudonym": "acme:staff-no", "reason": …}` or `{"@transient": "pt:drop", "reason": …}`.
+- At `variable:` scope, a replacement may also *add* an annotation the library didn't declare. An application can
+  protect a library variable without copying the library.
+- At `method:` scope, a replacement substitutes one method for another everywhere. This is also how an application
+  changes the default `@transient` method: `"method:pt:drop": {"@transient": "acme:x"}`.
+- `reason` is required on every decision other than `honour`. The audit record keeps it.
+- Example:
+  ```json
+  { "methods":   { "pt:erp-ref":   { "kind": "pseudonym", "pattern": "^hr:person/[0-9]+$", "resolver": "hr" },
+                   "acme:staff-no": { "kind": "pseudonym", "pattern": "^S[0-9]{6}$", "resolver": "hr" } },
+    "overrides": { "method:pt:local-log":              { "@transient": "pt:drop", "reason": "our CSV logs are shipped" },
+                   "template:org.example.Cleaning":    { "decision": "ignore", "reason": "test fixtures only" },
+                   "variable:org.example.Ordering#clerk": { "@pseudonym": "acme:staff-no", "reason": "staff numbers, not ERP" } } }
+  ```
+
+*R8. Where it is applied in the compiler.*
+- A `PrivacyPolicy` is built once in `ConfigProcessor.processTemplateGenerationConfig`, from the built-ins, the
+  `ServiceLoader` classes and the catalogue's `privacy` file.
+- It is applied to each bindings schema as it enters `CompilerUtil`'s cache. It resolves each descriptor to its
+  *effective* annotation: fields on `NameDescriptor` / `AttributeDescriptor`, set from the declared members and the
+  policy. It also records an audit entry.
+- `DescriptorUtils` gains:
+  - `getTransient(key, schema)` and `getPseudonym(key, schema)`, returning the effective method;
+  - `keeps(key, schema, Place)`;
+  - `storedFieldNames`, `loggedFieldNames`, `expandedFieldNames`.
+- The places that send a value out switch from `fieldNames` to the right list. The list was checked against the
+  generated code (see *Test configurations* below):
+  - `CompilerSQL`:
+    - `generateSQL`, the table column;
+    - `generateSqlTypeDeclaration`, the composite type;
+    - `generateSQLInsertStatement`, the JDBC `_sqlInsert1` in the client builder;
+    - `generateSqlTupleMethod`;
+  - `sql/CompilerSqlComposer`: insert, array insert, composite/linker insert, search functions;
+  - `CompilerQueryInvoker` and `CompilerQueryInvokerWithPrincipal`, in the generated Java and Python `QueryInvoker`;
+    also the processor / `TableConfigurator`;
+  - the CSV record. Its writer (`logApproval(sb, …)` in the client builder, from
+    `CompilerCommon.generateCommonCSVConverterMethod`), its reader (`record2bean`), `propertyOrder` and the `log2prov`
+    reader all take `loggedFieldNames`. The record is positional, so all of them must agree. `CompilerLogger`'s
+    `logX(…)` keeps every parameter: the caller still passes the value, which goes no further;
+  - `expansion/CompilerExpansionBuilder`: the factory methods leave a transient variable unbound. The generated
+    builder already adds an attribute only when its value is non-null (`if (x != null) attrs.add(…)`), so this
+    means not binding it, not new expansion logic.
+- The generated Python is emitted from the same PAST and follows with no separate work. The JavaScript (jsweet)
+  and Rust outputs are checked in phase 2.
+- `fieldNames` is unchanged for the beans, builders' parameters, the JSON schema and the documentation.
+- A composite inherits its component's effective annotations.
+
+*R9. Enforcement for a pseudonym is in the database; the JSON schema gives early feedback.*
+- For each pseudonym method in use, the SQL file gains
+  `CREATE OR REPLACE FUNCTION privacy_<sqlified method>(v text) RETURNS boolean LANGUAGE sql IMMUTABLE AS
+  $$ SELECT v IS NULL OR v ~ '<pattern>' $$`, or the method's `sql` expression instead.
+- For each pseudonymised column, the SQL file gains `ALTER TABLE t DROP CONSTRAINT IF EXISTS t_<col>_privacy;
+  ALTER TABLE t ADD CONSTRAINT t_<col>_privacy CHECK (privacy_<method>(<col>)) NOT VALID;`.
+- The constraint reaches a table that already exists. `NOT VALID` means rows written before are not re-checked:
+  migrating them is not in this task. Every new write is checked, through both insert function forms. A clear value
+  is a failed write.
+- `CompilerJsonSchema` adds `"pattern"` to a pseudonymised property, so a form refuses a clear value before sending it.
+- No check is generated into the client code in Java, Python, JavaScript or Rust. There is no Java run-time registry
+  either. Both would put a ProvToolbox dependency, or a Java-only behaviour, into the client project.
+- Alternative (B): a per-language regex test in the generated CSV conversion. It is fixed when the code is generated
+  and changes the client code of every annotated template.
+
+*R10. Compile time and run time.*
+- Fixed when the code is generated, and changed only by regenerating:
+  - whether a variable is transient, and where its value goes (columns, insert parameters, CSV fields, expansion
+    bindings);
+  - which method a variable uses;
+  - the JSON-schema pattern, the documentation, the audit record.
+- Changeable without regenerating or recompiling any Java:
+  - the body of a method's SQL check function. Change the definition in the policy, regenerate the SQL file only, and
+    re-run it. `CREATE OR REPLACE` leaves tables and data untouched. In an emergency a DBA can replace the function
+    directly, but the next run of the generated SQL restores the policy's version;
+  - the resolver readers call, which is the application's code, not generated.
+- Not changeable at run time: anything that changes the shape of a table or a record.
+
+*R11. Fail closed: compile errors, each naming the template, the variable and the method.*
+- A method with no definition, unless the policy defines it or ignores the annotation.
+- Both annotations on one variable.
+- `@transient` on a name variable. A name variable is in an identifier position: unbound, it would suppress the node.
+- `@transient` on a variable that is also `@output`, `@unique`, `@sql.table`, named in `@sql.new.inputs` /
+  `@sql.also.outputs`, or shared in a composite.
+- `@pseudonym` on an `@output` or `@sql.table` variable. Its value doesn't land in the template's own column, so the
+  check would test nothing.
+- A transient method whose `keeps` names an unknown place. A pseudonym method without `pattern`, `sql` or `class`.
+- A new method under `pt:`.
+- A non-`honour` decision without `reason`. A policy scope naming an unknown template or variable.
+
+*R12. The effective policy is in the output: the audit record.*
+- `generateDocumentationEnd` writes, beside the documentation, `privacy-register.json` and a page `privacy-register.html`.
+- They are written only when the catalogue has at least one annotation, declared or added.
+- One row per annotated variable:
+  - template, variable;
+  - declared annotation and method (or none);
+  - effective annotation and method (or ignored);
+  - decided by: the library's bindings file, or the policy scope that decided;
+  - reason;
+  - where the method's definition came from (built-in, the policy, or a class);
+  - for a transient method, the places it keeps the value; for a pseudonym method, its form and resolver.
+- This is the record a data-protection audit asks for.
+- Each template's own documentation page shows the *effective* annotation only. An ignored annotation leaves the page
+  as it was (R14).
+
+*R13. Two ways an application uses a library.*
+- (a) Its catalogue names the library's `cbindings` in place (`templateLibraries`, `cbindingsBaseDir`). The policy
+  then applies fully: tables, records, checks.
+- (b) It depends on code the library generated and published. The library's choices are then fixed in that code.
+  Only a check function's body can be replaced (R10).
+- Neither way copies the library. An application that needs to change the shape of a library template's table uses (a).
+
+*R14. "No change for others", stated exactly.*
+- When no variable of a catalogue has an effective annotation, every file the compiler wrote before T31 is
+  byte-identical, and no new file appears. That covers no annotations at all, and all of them ignored.
+- Measured: today's compiler is not deterministic on its own. Two runs on the same input differ in two places:
+  - the generated logger's `buildDate`, a timestamp;
+  - the key order of the generated `schema.json`, which differs between JVMs; the content is the same.
+- So "byte-identical" means after normalising those two: `buildDate` blanked, JSON compared with sorted keys. The
+  test does this (`T31BaselineTest.normalise`).
+- Alternative: make the order of `CompilerJsonSchema` stable as part of T31. It would change `schema.json`'s bytes
+  once for every catalogue, so it belongs in its own ticket.
+- New output (the SQL privacy section, the register) appears only with annotations.
+- One exception holds by construction. The webjar's `bindings/` copy is the library's file copied verbatim
+  (`ConfigProcessor`, `FileUtils.copyFileToDirectory`), so it carries the library's declared annotations even when
+  the application ignores them.
+- A run-time consumer must therefore never act on annotations read from a raw bindings file. The effective policy is
+  in the register.
+- Alternative: write the effective bindings instead of the verbatim copy whenever the policy changed something. That
+  re-serialises the file, so its bytes change whenever a policy applies.
+
+*R15. Tests, and "Done when" as the design amends it.*
+- Tests sit in `prov-template-compiler/src/test`, beside `IdempotentInsertFunctionTest`. There are two kinds:
+  - unit tests in its style: build a `TemplateBindingsSchema` from JSON and inspect the generated text;
+  - end-to-end tests over the matrix of test configurations below (`t31/cases.json`), generated by the compiler as
+    `T31BaselineTest` does. Each case's `expect` becomes assertions.
+- Each generation runs in a fresh JVM, because a second generation in one JVM fails today (see below).
+- Parsing and validation: both annotations, `true` for the default method, the unprefixed name, every R11 refusal.
+- Policy: each scope and decision, precedence, an override of `pt:erp-ref`, an application method, a
+  `ServiceLoader` method found from a test resource.
+- Transient (`pt:drop`): no column, no SQL type field, no insert parameter, no `sqlTuple` element, no CSV field, no
+  expanded attribute. `pt:local-log`: the CSV field kept, the rest absent.
+- Pseudonym, for each method: the check function and the `NOT VALID` constraint are generated; the JSON-schema
+  pattern is present; the pattern, run in Java, refuses a clear value and accepts a valid one.
+- A live PostgreSQL test runs the generated SQL and shows the insert refused and accepted. It runs only when
+  `PROV_T31_PG_URL` is set, so the build doesn't need a database.
+- Byte identity: one catalogue, generated (i) with its annotations stripped and (ii) with them all ignored by policy,
+  gives identical trees. A test catalogue is also generated before and after, against `development2_0`'s output.
+- The register lists declared, effective and decided-by, as in R12.
+- The specification and the bindings schema carry the annotations (below).
+
+*The specification (`provenance-templates-specification`, not edited in phase 1).*
+- `prov-template/index.html` §`bindings-schemas`:
+  - two rows in the members table, `@transient` and `@pseudonym`;
+  - a short subsection on what they mean. A transient attribute variable is left unbound, so its attribute is
+    absent: the existing rule for unbound attribute variables in `prov-template-algorithms` needs no change. A name
+    variable can't be transient, since unbound it suppresses its node. Method names are namespaced, `pt:` reserved.
+- `prov-template/schemas/bindings-schema.json`: the descriptor objects accept `@transient` (string or `true`) and
+  `@pseudonym` (string). Today they are `additionalProperties: false`. The ednote listing the members the schema
+  rejects stays as it is.
+- `prov-template/index.html` §`template-compiler`, informative:
+  - the catalogue's `privacy` policy, its scopes and precedence, method definitions and overrides;
+  - what is fixed at generation and what isn't;
+  - the register.
+- `prov-template-library` §`organisation` or §`conventions`: library `cbindings` may carry the annotations as intent,
+  and each application decides through its policy.
+- The method definition format and the built-in methods' forms go in the specification too, as a table, so a reader
+  in another language can check a value the same way.
+
+*Test configurations, and what today's compiler does with them (measured 2026-11-10 at eca0e021a).*
+- The fixtures are in `prov-template-compiler/src/test/resources/t31/`:
+  - `approval.provn`: an approval activity with a clear name, its agent with a reference, the approved order with
+    a note and a customer hash;
+  - `approval-base.json`: its bindings, unannotated;
+  - `cases.json`: the 30 configurations. Each gives annotations, optionally a base case and a policy, and the
+    design's expectation.
+- `T31BaselineTest` runs today's compiler on each case into `target/t31/<case>/`. It writes `target/t31/baseline.md`,
+  which records:
+  - whether the catalogue and the bindings are read;
+  - whether generation succeeds;
+  - which files differ from A0's;
+  - for A0, every generated file that mentions each variable.
+- It asserts only that A0 generates and that generation, once normalised, is deterministic.
+
+| Case | Configuration | Design expects | Today |
+|---|---|---|---|
+| A0 | no annotation | the baseline | generates |
+| A1 | `approver_name` `@transient: true` | no column, SQL type field, insert parameter, `_sqlInsert1`/`QueryInvoker` element, CSV field or expanded attribute; bean, schema, doc keep it | bindings refused: `UnrecognizedPropertyException "@transient"` |
+| A2 | `@transient: "pt:local-log"` | as A1, but the CSV field kept | refused, as A1 |
+| A3 | `approver_ref` `@pseudonym: "erp-ref"` (unprefixed) | `privacy_pt_erp_ref`, `NOT VALID` constraint, schema `pattern`; refuses `Jane Smith`, accepts `hr:person/4711` | refused: `"@pseudonym"` |
+| A4 | `order_note` `pt:inline-refs` | refuses `⟨person Jane Smith⟩`; accepts text with well-formed references (a bare name in the text passes: the known limit) | refused |
+| A5 | `customer_hash` `pt:keyed-hash` | refuses `ACME Ltd`, accepts `k1:` + 64 hex | refused |
+| A6 | the library: A1+A3+A4+A5 | the union; the register has 4 rows | refused |
+| A7 | `@transient: false` | same as A0 | refused |
+| P1 | A6, policy `*` ignore | same as A0, plus the register | catalogue refused: `UnrecognizedPropertyException "privacy"`; without it, bindings refused |
+| P2 | A6, policy redefines `pt:erp-ref` | as A6, check body `^hr:person/[0-9]+$`; register: defined by the policy | refused, as P1 |
+| P3 | A2, `method:pt:local-log` → `pt:drop` | generated code same as A1 | refused, as P1 |
+| P4 | A0, policy *adds* `@pseudonym` on `approver_ref` | generated code same as A3; register: declared none | catalogue refused; without the policy, same as A0 |
+| P5 | A6, `template:` ignore | same as A0, plus the register | refused, as P1 |
+| P6 | A6, `acme:staff-no` on `approver_ref` | constraint `privacy_acme_staff_no` | refused, as P1 |
+| P7 | A6, `variable:` ignore on `approver_name` | A3+A4+A5 only | refused, as P1 |
+| P8 | A1, `method:pt:drop` → `acme:keep-log` | generated code same as A2 | refused, as P1 |
+| E1–E8 | both annotations; `@transient` on a name variable, an `@output`, with `@unique`; `@pseudonym` on an `@sql.table`; unknown `pt:` methods; an undefined `acme:` method | compile errors (R11), each naming template, variable and method | bindings refused by Jackson, the same message for all, never the reason |
+| E9 | E8, policy ignores `acme:staff-no` | same as A0 | refused, as P1 |
+| E10, E13, E14 | A0, policy invents `pt:new-thing` / a method with no form / `keeps: ["cloud"]` | compile errors (R3, R11) | catalogue refused; without the policy, same as A0 |
+| E11, E12 | A6, a decision without `reason` / a scope naming an unknown variable | compile errors (R11) | refused, as P1 |
+
+- The cases still missing need a composite catalogue: a composite sharing a transient variable (R11), and a
+  composite inheriting its component's annotations (R8). `doGenerateServerForEntry1` doesn't cover composites, so
+  phase 2 runs them through `ConfigProcessor.processTemplateGenerationConfig`.
+
+*What the measurement showed.*
+1. **Today's compiler fails closed**, as the design assumed. A bindings schema with either annotation is refused,
+   and so is a catalogue with `privacy`. A library that adopts the annotations can't be compiled by an older
+   compiler into a store that silently persists the values.
+2. **Where a value lands today.** Shown for `approver_name` in A0, 25 files. This is the list R5 and R8 must cover:
+   - the store: `template.sql` (column, type, insert parameter), `_sqlInsert1` in the client builder, the Java and
+     Python `QueryInvoker`;
+   - the log: the CSV writer and reader in the client builder, and the Java and Python `Logger` (parameters only);
+   - the expansion: the `l2p` `ApprovalBuilder`, `…TypeManagement`, `…TypedRecord`;
+   - kept: the bean, processor, builder interface, `BeanChecker`, `TypeConverter`, `schema.json`, `doc.html`;
+   - verbatim copies: the webjar copy of the bindings and of the template.
+
+   R8 lists these places, corrected from this run.
+3. **Generation is not deterministic** in `buildDate` and in `schema.json` key order. R14 is amended for it.
+4. **A second generation in one JVM fails**: an NPE in `past/emitter/Python.typeSimpleName`. An argument's type is
+   null, so state is shared between `ConfigProcessor` instances. This is not T31's problem. The test works around it
+   with a fresh JVM per case. It is a follow-up of its own.
+
+**Rulings.** None yet. Each ruling is recorded here, with who made it and when.
+
 **What the compiler does with them.** Each item names the generator it touches, as found on `development2_0` at 77cd3d1e0:
 1. **Descriptors.** `descriptors/NameDescriptor.java` and `AttributeDescriptor.java` gain `@transient` (boolean) and
    `@pseudonym` (a method name). The configuration's JSON schema and `TemplatesProjectConfiguration` read them. A

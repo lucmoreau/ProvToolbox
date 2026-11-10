@@ -1,0 +1,59 @@
+{
+	"var": {
+		"approving": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The approval activity",
+				"@output": "true"
+			}
+		],
+		"approver": [
+			{
+				"@id": "ex:agent/*",
+				"@documentation": "The approving agent",
+				"@input": "compulsory"
+			}
+		],
+		"approver_name": [[
+			{
+				"@type": "xsd:string",
+				"@documentation": "The approver's name, in clear",
+				"@input": "compulsory"
+			}
+		]],
+		"approver_ref": [[
+			{
+				"@type": "xsd:string",
+				"@documentation": "The approver, as a reference in the system of record",
+				"@input": "compulsory"
+			}
+		]],
+		"order": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The approved order",
+				"@input": "compulsory",
+				"@sql.table": "order_record"
+			}
+		],
+		"order_note": [[
+			{
+				"@type": "xsd:string",
+				"@documentation": "A note on the order, which may mention people",
+				"@escape": true,
+				"@input": "optional"
+			}
+		]],
+		"customer_hash": [[
+			{
+				"@type": "xsd:string",
+				"@documentation": "The customer, as a keyed hash",
+				"@input": "optional"
+			}
+		]]
+	},
+	"context": {
+		"ex": "http://example.org/"
+	},
+	"template": "https://example.org/templates/t31/approval.provn"
+}

@@ -1,0 +1,14 @@
+document
+ prefix tmpl <http://openprovenance.org/ns/tmpl#>
+ prefix var <http://openprovenance.org/var#>
+ prefix vargen <http://openprovenance.org/vargen#>
+ prefix ex <http://example.org/>
+
+ bundle vargen:b
+  activity(var:approving, [prov:type='ex:Approving', ex:approverName='var:approver_name'])
+  agent(var:approver, [ex:staffRef='var:approver_ref'])
+  wasAssociatedWith(var:approving, var:approver, -)
+  entity(var:order, [ex:note='var:order_note', ex:customer='var:customer_hash'])
+  used(var:approving, var:order, -)
+ endBundle
+endDocument

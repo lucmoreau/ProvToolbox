@@ -134,6 +134,12 @@ real alternative, what it is.
   pattern, resolver, documentation) is found by `ServiceLoader` on the compiler's classpath. For the Maven goal, that
   means a dependency of the plugin. The policy can also name a class: `"acme:x": {"class": "com.acme.X"}`.
 - Precedence for one name: the policy's definition, then a class found by `ServiceLoader`, then the built-in.
+- A method is resolved once, when the code is generated, and its meaning is then fixed (Ruling 1). A `PrivacyMethod`
+  class runs inside the compiler only. What it returns is written into the generated artefacts, and the class is
+  never called while the application runs.
+- Each resolved definition has a *digest*: the SHA-256 of its canonical JSON (kind; `keeps`, or the `pattern` / `sql`
+  actually used). It doesn't matter whether the definition came from the built-ins, the policy or a class. The digest
+  identifies what the method meant when the code was generated.
 - Requirement 2 holds: a new method is a few lines of JSON, or a jar on the plugin's classpath. The compiler is unchanged.
 
 *R5. A transient method says where the value may go.*
@@ -228,11 +234,16 @@ real alternative, what it is.
 - A composite inherits its component's effective annotations.
 
 *R9. Enforcement for a pseudonym is in the database; the JSON schema gives early feedback.*
-- For each pseudonym method in use, the SQL file gains
-  `CREATE OR REPLACE FUNCTION privacy_<sqlified method>(v text) RETURNS boolean LANGUAGE sql IMMUTABLE AS
-  $$ SELECT v IS NULL OR v ~ '<pattern>' $$`, or the method's `sql` expression instead.
-- For each pseudonymised column, the SQL file gains `ALTER TABLE t DROP CONSTRAINT IF EXISTS t_<col>_privacy;
-  ALTER TABLE t ADD CONSTRAINT t_<col>_privacy CHECK (privacy_<method>(<col>)) NOT VALID;`.
+- For each pseudonymised column, the SQL file gains a constraint whose check is written inline, from the method's
+  definition fixed at generation (Ruling 1):
+  `ALTER TABLE t ADD CONSTRAINT t_<col>_p<digest12> CHECK (<col> IS NULL OR <col> ~ '<pattern>') NOT VALID;`,
+  or the method's `sql` expression instead of the pattern test. Then
+  `COMMENT ON CONSTRAINT t_<col>_p<digest12> ON t IS '<method> sha256:<digest>'`.
+- Before adding it, a `DO` block drops any other `t_<col>_p…` constraint, the trace of an earlier definition.
+  Constraint names stay under PostgreSQL's 63 characters: the method name goes in the comment, not the name.
+- There is no shared check function. `CREATE OR REPLACE FUNCTION` would let anyone with rights on the schema change
+  what a method means for every table at once, without touching a table or leaving a trace in the constraints. An
+  inline check can change only by DDL on the table itself, and only under a new name.
 - The constraint reaches a table that already exists. `NOT VALID` means rows written before are not re-checked:
   migrating them is not in this task. Every new write is checked, through both insert function forms. A clear value
   is a failed write.
@@ -242,27 +253,44 @@ real alternative, what it is.
 - Alternative (B): a per-language regex test in the generated CSV conversion. It is fixed when the code is generated
   and changes the client code of every annotated template.
 
-*R10. Compile time and run time.*
-- Fixed when the code is generated, and changed only by regenerating:
+*R10. Everything is fixed when the code is generated (Ruling 1).*
+- Fixed when the code is generated, like a `final` variable, for auditability:
   - whether a variable is transient, and where its value goes (columns, insert parameters, CSV fields, expansion
     bindings);
   - which method a variable uses;
-  - the JSON-schema pattern, the documentation, the audit record.
-- Changeable without regenerating or recompiling any Java:
-  - the body of a method's SQL check function. Change the definition in the policy, regenerate the SQL file only, and
-    re-run it. `CREATE OR REPLACE` leaves tables and data untouched. In an emergency a DBA can replace the function
-    directly, but the next run of the generated SQL restores the policy's version;
-  - the resolver readers call, which is the application's code, not generated.
-- Not changeable at run time: anything that changes the shape of a table or a record.
+  - what each method means: its form, its places, its digest;
+  - the SQL checks, the JSON-schema pattern, the documentation, the audit record.
+- Nothing about a method is changeable at run time. There is no registry, no lookup by name while running, and no
+  replaceable SQL function.
+- The generated client builder of an annotated template carries the effective policy as a constant,
+  `public static final String[] privacy`, one `"<variable>=<method>@sha256:<digest>"` per annotated variable (the
+  Python `Final` equivalent). A running application can report which definitions it was built with, and nothing can
+  rebind them. A template without annotations doesn't get the constant (R14).
+- A method's meaning can change only through a new generation from a changed definition. That gives a new digest, a
+  new constraint name and comment in the database, a new constant in the code and a new row in the register, so every
+  change is visible.
+- The resolver a reader calls is the application's code, not generated. The method fixes only its name (`resolver`).
 
 *R11. Fail closed: compile errors, each naming the template, the variable and the method.*
 - A method with no definition, unless the policy defines it or ignores the annotation.
 - Both annotations on one variable.
 - `@transient` on a name variable. A name variable is in an identifier position: unbound, it would suppress the node.
-- `@transient` on a variable that is also `@output`, `@unique`, `@sql.table`, named in `@sql.new.inputs` /
-  `@sql.also.outputs`, or shared in a composite.
-- `@pseudonym` on an `@output` or `@sql.table` variable. Its value doesn't land in the template's own column, so the
-  check would test nothing.
+- Either annotation on a variable that isn't an input, whether declared by the library or added by a policy. An input
+  is `@input` `compulsory` or `optional`, with `@output` absent or `false`. (Proposed after Luc's question of
+  2026-11-10, "restricted to @input properties?"; awaiting his ruling.)
+  - Only an input carries a value from the caller, which is the only way a name enters a record. An output gets its
+    value from the store: `approving` comes from `INSERT INTO approving DEFAULT VALUES RETURNING ID`.
+  - `@transient` on an output contradicts itself: the store makes the value and keeps it.
+  - `@pseudonym` on an output would test the store's own integer ID against a reference pattern, and so refuse every
+    write.
+  - `@output: "optional"` counts as an output (`OutputFieldValue.isOutput`).
+  - An `@input: "false"` variable that isn't an output is never supplied by a caller, so there is nothing to protect.
+- This replaces the earlier `@output` and `@sql.table` refusals. The `@sql.table` one was wrong for inputs: the
+  generated SQL inserts an input with `@sql.table` straight into the template's own column (`order` as
+  `input__order` into `_order`). `@sql.table` redirects only outputs. `@pseudonym` on such an input is therefore
+  allowed, and checked in that column.
+- `@transient` on a variable that is also `@unique`, named in `@sql.new.inputs` / `@sql.also.outputs`, or shared in
+  a composite.
 - A transient method whose `keeps` names an unknown place. A pseudonym method without `pattern`, `sql` or `class`.
 - A new method under `pt:`.
 - A non-`honour` decision without `reason`. A policy scope naming an unknown template or variable.
@@ -276,7 +304,8 @@ real alternative, what it is.
   - effective annotation and method (or ignored);
   - decided by: the library's bindings file, or the policy scope that decided;
   - reason;
-  - where the method's definition came from (built-in, the policy, or a class);
+  - where the method's definition came from (built-in, the policy, or a class), and its digest, the one found in
+    the database constraint's comment and in the code's `privacy` constant;
   - for a transient method, the places it keeps the value; for a pseudonym method, its form and resolver.
 - This is the record a data-protection audit asks for.
 - Each template's own documentation page shows the *effective* annotation only. An ignored annotation leaves the page
@@ -285,8 +314,8 @@ real alternative, what it is.
 *R13. Two ways an application uses a library.*
 - (a) Its catalogue names the library's `cbindings` in place (`templateLibraries`, `cbindingsBaseDir`). The policy
   then applies fully: tables, records, checks.
-- (b) It depends on code the library generated and published. The library's choices are then fixed in that code.
-  Only a check function's body can be replaced (R10).
+- (b) It depends on code the library generated and published. The library's choices, method meanings included,
+  are then fixed in that code, and nothing can be replaced (R10).
 - Neither way copies the library. An application that needs to change the shape of a library template's table uses (a).
 
 *R14. "No change for others", stated exactly.*
@@ -319,8 +348,14 @@ real alternative, what it is.
   `ServiceLoader` method found from a test resource.
 - Transient (`pt:drop`): no column, no SQL type field, no insert parameter, no `sqlTuple` element, no CSV field, no
   expanded attribute. `pt:local-log`: the CSV field kept, the rest absent.
-- Pseudonym, for each method: the check function and the `NOT VALID` constraint are generated; the JSON-schema
-  pattern is present; the pattern, run in Java, refuses a clear value and accepts a valid one.
+- Pseudonym, for each method:
+  - the inline `NOT VALID` constraint is generated, named by digest and commented with method and digest;
+  - no `CREATE FUNCTION` appears in the SQL;
+  - the `privacy` constant is in the client builder;
+  - the JSON-schema pattern is present;
+  - the pattern, run in Java, refuses a clear value and accepts a valid one.
+- Digests: two generations from the same definitions give the same digests. A changed definition (P2 against A6)
+  gives a new digest, constraint name and constant.
 - A live PostgreSQL test runs the generated SQL and shows the insert refused and accepted. It runs only when
   `PROV_T31_PG_URL` is set, so the build doesn't need a database.
 - Byte identity: one catalogue, generated (i) with its annotations stripped and (ii) with them all ignored by policy,
@@ -351,7 +386,7 @@ real alternative, what it is.
   - `approval.provn`: an approval activity with a clear name, its agent with a reference, the approved order with
     a note and a customer hash;
   - `approval-base.json`: its bindings, unannotated;
-  - `cases.json`: the 30 configurations. Each gives annotations, optionally a base case and a policy, and the
+  - `cases.json`: the 33 configurations. Each gives annotations, optionally a base case and a policy, and the
     design's expectation.
 - `T31BaselineTest` runs today's compiler on each case into `target/t31/<case>/`. It writes `target/t31/baseline.md`,
   which records:
@@ -366,20 +401,22 @@ real alternative, what it is.
 | A0 | no annotation | the baseline | generates |
 | A1 | `approver_name` `@transient: true` | no column, SQL type field, insert parameter, `_sqlInsert1`/`QueryInvoker` element, CSV field or expanded attribute; bean, schema, doc keep it | bindings refused: `UnrecognizedPropertyException "@transient"` |
 | A2 | `@transient: "pt:local-log"` | as A1, but the CSV field kept | refused, as A1 |
-| A3 | `approver_ref` `@pseudonym: "erp-ref"` (unprefixed) | `privacy_pt_erp_ref`, `NOT VALID` constraint, schema `pattern`; refuses `Jane Smith`, accepts `hr:person/4711` | refused: `"@pseudonym"` |
+| A3 | `approver_ref` `@pseudonym: "erp-ref"` (unprefixed) | inline `NOT VALID` constraint `approval_approver_ref_p<digest>`, `privacy` constant, schema `pattern`; refuses `Jane Smith`, accepts `hr:person/4711` | refused: `"@pseudonym"` |
 | A4 | `order_note` `pt:inline-refs` | refuses `⟨person Jane Smith⟩`; accepts text with well-formed references (a bare name in the text passes: the known limit) | refused |
 | A5 | `customer_hash` `pt:keyed-hash` | refuses `ACME Ltd`, accepts `k1:` + 64 hex | refused |
 | A6 | the library: A1+A3+A4+A5 | the union; the register has 4 rows | refused |
 | A7 | `@transient: false` | same as A0 | refused |
 | P1 | A6, policy `*` ignore | same as A0, plus the register | catalogue refused: `UnrecognizedPropertyException "privacy"`; without it, bindings refused |
-| P2 | A6, policy redefines `pt:erp-ref` | as A6, check body `^hr:person/[0-9]+$`; register: defined by the policy | refused, as P1 |
+| P2 | A6, policy redefines `pt:erp-ref` | as A6, inline check `^hr:person/[0-9]+$`, a digest different from A6's; register: defined by the policy | refused, as P1 |
 | P3 | A2, `method:pt:local-log` → `pt:drop` | generated code same as A1 | refused, as P1 |
 | P4 | A0, policy *adds* `@pseudonym` on `approver_ref` | generated code same as A3; register: declared none | catalogue refused; without the policy, same as A0 |
 | P5 | A6, `template:` ignore | same as A0, plus the register | refused, as P1 |
-| P6 | A6, `acme:staff-no` on `approver_ref` | constraint `privacy_acme_staff_no` | refused, as P1 |
+| P6 | A6, `acme:staff-no` on `approver_ref` | inline check `^S[0-9]{6}$`, comment `acme:staff-no` | refused, as P1 |
 | P7 | A6, `variable:` ignore on `approver_name` | A3+A4+A5 only | refused, as P1 |
 | P8 | A1, `method:pt:drop` → `acme:keep-log` | generated code same as A2 | refused, as P1 |
-| E1–E8 | both annotations; `@transient` on a name variable, an `@output`, with `@unique`; `@pseudonym` on an `@sql.table`; unknown `pt:` methods; an undefined `acme:` method | compile errors (R11), each naming template, variable and method | bindings refused by Jackson, the same message for all, never the reason |
+| E1–E8 (not E5) | both annotations; `@transient` on a name variable, an `@output`, with `@unique`; unknown `pt:` methods; an undefined `acme:` method | compile errors (R11), each naming template, variable and method | bindings refused by Jackson, the same message for all, never the reason |
+| E5 | `@pseudonym` on an input with `@sql.table` (`order`) | allowed: checked in the template's `_order` column (R11 as amended) | refused by Jackson |
+| E15–E17 | `@pseudonym` on `@input: "false"`; on an input with `@output: "optional"`; a policy adding `@pseudonym` to the output `approving` | compile errors (R11: inputs only) | the first two refused by Jackson; the third: catalogue refused |
 | E9 | E8, policy ignores `acme:staff-no` | same as A0 | refused, as P1 |
 | E10, E13, E14 | A0, policy invents `pt:new-thing` / a method with no form / `keeps: ["cloud"]` | compile errors (R3, R11) | catalogue refused; without the policy, same as A0 |
 | E11, E12 | A6, a decision without `reason` / a scope naming an unknown variable | compile errors (R11) | refused, as P1 |
@@ -406,7 +443,17 @@ real alternative, what it is.
    null, so state is shared between `ConfigProcessor` instances. This is not T31's problem. The test works around it
    with a fresh JVM per case. It is a follow-up of its own.
 
-**Rulings.** None yet. Each ruling is recorded here, with who made it and when.
+**Rulings.** Each ruling is recorded here, with who made it and when.
+- **Ruling 1 (Luc, 2026-11-10), on R10.** A method's meaning must not change while the application runs: "not
+  something that can be updated, but should be fixed, as a final variable", for auditability. Applied:
+  - R4: a method is resolved once, at generation, and gets a digest;
+  - R9: an inline check in a digest-named constraint, no shared replaceable SQL function;
+  - R10: everything fixed at generation, and a `final` constant of the effective policy in the generated client
+    builder;
+  - R12: the digest in the register;
+  - R13: nothing replaceable in pre-generated code;
+  - R15 and the cases: digests tested.
+- R1–R9 and R11–R15 await ruling. R11's input-only rule was added after Luc's question and is part of what awaits.
 
 **What the compiler does with them.** Each item names the generator it touches, as found on `development2_0` at 77cd3d1e0:
 1. **Descriptors.** `descriptors/NameDescriptor.java` and `AttributeDescriptor.java` gain `@transient` (boolean) and

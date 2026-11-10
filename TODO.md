@@ -43,8 +43,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ### 🟡 T31: `@transient` and `@pseudonym` on a template's variables
 
 **Priority**: 🟡 MEDIUM.  **Category**: Template compiler / Data protection.  **Branch**: `t31-transient-pseudonym` (off `development2_0`).
-**Filed 2026-11-10** (Luc), ProvToolbox's part of nextgen's T-610 (`ODOO-TODO.md` on nextgen's `ag/mat23`; filed there
-2026-11-09 from T-485). The rule behind it: a provenance store built from templates should hold references to people,
+**Filed 2026-11-10** (Luc). The rule behind it: a provenance store built from templates should hold references to people,
 never their names. A name is resolved, when shown, from the system of record for people. A name-to-reference mapping
 is never kept, so erasing a person is that system's job alone. The annotations make the rule part of a template's
 declaration, so the compiler enforces it, instead of every application remembering it.
@@ -54,7 +53,7 @@ declaration, so the compiler enforces it, instead of every application rememberi
 - **`@transient`:** the value exists while the template is filled in (an enactor may match on it, a caller may log it
   locally) and is never persisted.
 - **`@pseudonym("method")`:** the value arrives already pseudonymised. The annotation declares the method, the form a
-  valid value takes, and the resolver readers use. Proposed methods (nextgen T-610):
+  valid value takes, and the resolver readers use. Proposed methods:
   - `erp-ref`: the system of record's identifier, resolved and erased there.
   - `inline-refs`: free text in which people appear only as `erp-ref` references, e.g. `⟨person <id>⟩`.
   - `keyed-hash`: an HMAC with a tenant key, where no system of record exists. Erasure destroys the key, for the whole tenant.
@@ -81,13 +80,8 @@ declaration, so the compiler enforces it, instead of every application rememberi
 6. **The specification.** The PROV-TEMPLATE specification (`provenance-templates-specification`) states both, and the
    bindings schema accepts them.
 
-**Not ProvToolbox's (stays in nextgen T-610):**
-- marking nextgen's agent name `@transient` and its reference `@pseudonym("erp-ref")`;
-- the chronicle's feed and weaver journal honouring `@transient`;
-- the readings' resolvers;
-- the roster files;
-- migrating the names already in nextgen's store;
-- the 12-mat.
+**Not in this task:** an application's use of the annotations — which of its variables it marks, the resolvers its
+readers call, honouring `@transient` in its own feeds and logs, and migrating values already in its store.
 
 **Done when.**
 - Both annotations parse and are validated.
@@ -96,7 +90,7 @@ declaration, so the compiler enforces it, instead of every application rememberi
 - For each method, a pseudonymised variable's clear value is refused at insert, and its valid value is accepted.
 - The documentation lists both.
 - The specification and the bindings schema carry them.
-- A template without either annotation generates byte-identical output (nextgen's catalogue unchanged until it opts in).
+- A template without either annotation generates byte-identical output (an existing catalogue is unchanged until it opts in).
 
 ---
 

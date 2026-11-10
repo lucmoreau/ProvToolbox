@@ -276,8 +276,7 @@ real alternative, what it is.
 - Both annotations on one variable.
 - `@transient` on a name variable. A name variable is in an identifier position: unbound, it would suppress the node.
 - Either annotation on a variable that isn't an input, whether declared by the library or added by a policy. An input
-  is `@input` `compulsory` or `optional`, with `@output` absent or `false`. (Proposed after Luc's question of
-  2026-11-10, "restricted to @input properties?"; awaiting his ruling.)
+  is `@input` `compulsory` or `optional`, with `@output` absent or `false` (Ruling 2).
   - Only an input carries a value from the caller, which is the only way a name enters a record. An output gets its
     value from the store: `approving` comes from `INSERT INTO approving DEFAULT VALUES RETURNING ID`.
   - `@transient` on an output contradicts itself: the store makes the value and keeps it.
@@ -453,7 +452,16 @@ real alternative, what it is.
   - R12: the digest in the register;
   - R13: nothing replaceable in pre-generated code;
   - R15 and the cases: digests tested.
-- R1–R9 and R11–R15 await ruling. R11's input-only rule was added after Luc's question and is part of what awaits.
+- **Ruling 2 (Luc, 2026-11-10), on R11.** `@transient` and `@pseudonym` are restricted to inputs: `@input`
+  `compulsory` or `optional`, and `@output` absent or `false`. This holds whether the library declares the annotation
+  or a policy adds it. Luc asked "restricted to @input properties?" and ruled the proposal as written.
+  - This replaces the earlier `@output` and `@sql.table` refusals. An input with `@sql.table` may be `@pseudonym`
+    (case E5).
+  - E15–E17 are the refusals.
+  - R11's other refusals stand with it: both annotations; `@transient` on a name variable, with `@unique`, in
+    `@sql.new.inputs` / `@sql.also.outputs`, or shared in a composite; unknown methods; a new `pt:` method; a decision
+    without `reason`; an unknown scope.
+- R1–R9 and R12–R15 await ruling.
 
 **What the compiler does with them.** Each item names the generator it touches, as found on `development2_0` at 77cd3d1e0:
 1. **Descriptors.** `descriptors/NameDescriptor.java` and `AttributeDescriptor.java` gain `@transient` (boolean) and

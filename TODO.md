@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T30** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T31) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T31** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T32) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T31 | `@transient` and `@pseudonym("method")` on a template's variables: a transient value is never persisted (no column, no expansion, no log), a pseudonymised one is checked for its method's form at write time. | 🟡 MEDIUM | Template compiler / Data protection | [T31 section](#-t31-transient-and-pseudonym-on-a-templates-variables) |
 | T30 | ttf execution: the `dot` runs left after T29 — one run per layout for the png and svg of a document; `validate-ttf` one `ajv` run per batch; `dot`'s stderr drained. | ⬜ BACKLOG | Template / Build | [T30 section](#-t30-ttf-execution-one-dot-run-per-layout) |
 | T28 | The Browser tab checks every listed record's hash at once — with ~2,000 records the browser drops ~400 checks and rows on screen can show no verdict. | 🟡 MEDIUM | Service / Dashboard | [T28 section](#-t28-the-browser-tab-checks-every-records-hash-at-once) |
 | T26 | log2prov cannot read composite template records (null builder slots in the generated Init, FQN vs name key, literal `\n` between the composite's records). | 🟡 MEDIUM | Template compiler / log2prov | [T26 section](#-t26-log2prov-cannot-read-composite-template-records) |
@@ -36,6 +37,66 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+---
+
+### 🟡 T31: `@transient` and `@pseudonym` on a template's variables
+
+**Priority**: 🟡 MEDIUM.  **Category**: Template compiler / Data protection.  **Branch**: `t31-transient-pseudonym` (off `development2_0`).
+**Filed 2026-11-10** (Luc), ProvToolbox's part of nextgen's T-610 (`ODOO-TODO.md` on nextgen's `ag/mat23`; filed there
+2026-11-09 from T-485). The rule behind it: a provenance store built from templates should hold references to people,
+never their names. A name is resolved, when shown, from the system of record for people. A name-to-reference mapping
+is never kept, so erasing a person is that system's job alone. The annotations make the rule part of a template's
+declaration, so the compiler enforces it, instead of every application remembering it.
+
+**The two annotations** (on a variable's descriptor in the bindings configuration, beside `@input`, `@output`,
+`@sql.type`, `@sql.table`, `@escape`, `@unique`):
+- **`@transient`:** the value exists while the template is filled in (an enactor may match on it, a caller may log it
+  locally) and is never persisted.
+- **`@pseudonym("method")`:** the value arrives already pseudonymised. The annotation declares the method, the form a
+  valid value takes, and the resolver readers use. Proposed methods (nextgen T-610):
+  - `erp-ref`: the system of record's identifier, resolved and erased there.
+  - `inline-refs`: free text in which people appear only as `erp-ref` references, e.g. `⟨person <id>⟩`.
+  - `keyed-hash`: an HMAC with a tenant key, where no system of record exists. Erasure destroys the key, for the whole tenant.
+
+  A random token kept with a lookup table is excluded, because it needs the persistent mapping the rule forbids.
+
+**What the compiler does with them.** Each item names the generator it touches, as found on `development2_0` at 77cd3d1e0:
+1. **Descriptors.** `descriptors/NameDescriptor.java` and `AttributeDescriptor.java` gain `@transient` (boolean) and
+   `@pseudonym` (a method name). The configuration's JSON schema and `TemplatesProjectConfiguration` read them. A
+   variable that is both is refused, as is an unknown method.
+2. **SQL.**
+   - `CompilerSQL`: no column for a transient variable in the generated `CREATE TABLE`.
+   - `sql/CompilerSqlComposer`: no parameter in the insert function, and nothing inserted.
+   - A pseudonymised variable keeps its column, and the insert function refuses a value not in the method's form
+     (a `CHECK` or a test in the function). A leak is then a failed write, not a silent row.
+3. **Beans and invokers.** The beans still carry the field, since the enactor needs it. The generated
+   `QueryInvoker` / processor / `TableConfigurator` leave it out of what goes to the store. `CompilerLogger` leaves it
+   out of the CSV log record, so a replay never re-learns it.
+4. **Expansion.** `expansion/CompilerExpansionBuilder` and the template expansion leave a transient variable unbound
+   in the expanded PROV document (an attribute absent, never an empty value). An identifier position cannot be
+   transient, and the compiler says so.
+5. **JSON schema and documentation.** `CompilerJsonSchema` marks both. `CompilerDocumentation` lists them, and a
+   catalogue-wide listing (template, variable, method) gives the record of personal data a data-protection audit asks for.
+6. **The specification.** The PROV-TEMPLATE specification (`provenance-templates-specification`) states both, and the
+   bindings schema accepts them.
+
+**Not ProvToolbox's (stays in nextgen T-610):**
+- marking nextgen's agent name `@transient` and its reference `@pseudonym("erp-ref")`;
+- the chronicle's feed and weaver journal honouring `@transient`;
+- the readings' resolvers;
+- the roster files;
+- migrating the names already in nextgen's store;
+- the 12-mat.
+
+**Done when.**
+- Both annotations parse and are validated.
+- Generator tests (in `prov-template-compiler/src/test`, beside `IdempotentInsertFunctionTest`) show, for a transient
+  variable: no column, no insert parameter, no log field, no expanded attribute.
+- For each method, a pseudonymised variable's clear value is refused at insert, and its valid value is accepted.
+- The documentation lists both.
+- The specification and the bindings schema carry them.
+- A template without either annotation generates byte-identical output (nextgen's catalogue unchanged until it opts in).
 
 ---
 

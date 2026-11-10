@@ -1,9 +1,9 @@
-package org.openprovenance.prov.template.privacy;
+package org.openprovenance.prov.utils;
 
 import def.js.RegExp;
 
 /**
- * T31 (R16): JSweet candy of {@code org.openprovenance.prov.template.privacy.Pseudonyms} (prov-model), so that the
+ * T31 (R16): JSweet candy of {@code org.openprovenance.prov.utils.Pseudonyms} (prov-model), so that the
  * generated client checks a pseudonymised variable in JavaScript as it does in Java. Patterns are anchored
  * ({@code ^...$}), so {@code RegExp.test} matches the whole value, as Java's {@code matches()} does; the {@code u} flag
  * reads non-ASCII characters as code points.

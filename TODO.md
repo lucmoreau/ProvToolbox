@@ -247,7 +247,7 @@ real alternative, what it is.
 - In the client, each pseudonym method maps by default to a PAST method call. Each emitter maps that call to its
   target language (R16).
   - The default call is `Pseudonyms.matches(value, PATTERN)` on a runtime class
-    `org.openprovenance.prov.template.privacy.Pseudonyms`.
+    `org.openprovenance.prov.template.privacy.Pseudonyms` (`org.openprovenance.prov.utils.Pseudonyms` since Ruling 8).
   - `PATTERN` is a `static final` constant generated into the client builder, holding the method's pattern. The
     meaning stays in the generated code, fixed at generation (Ruling 1). The runtime class only matches a regular
     expression, which every target language does the same way within R4's subset.
@@ -277,11 +277,12 @@ real alternative, what it is.
   language (PAST), and by the database (constraint). All three test the same pattern, fixed at generation.
 
 *R16. How the PAST call reaches each target language (Ruling 3).*
-- **Java:** `Pseudonyms` goes in `prov-model`, beside `StringEscapeUtils`, using `java.util.regex`.
+- **Java:** `Pseudonyms` goes in `prov-model`, beside `StringEscapeUtils`, using `java.util.regex` (package
+  `org.openprovenance.prov.utils` since Ruling 8).
   `CompilerMaven.makeSubPom`'s condition for adding `prov-model` to the client project becomes "`@escape` or a
   pseudonym is used".
 - **JavaScript:** a jsweet candy in `prov-jsweet-candy-java`, implemented with JavaScript `RegExp` and the `u` flag.
-- **Python:** a port at `prov-template-library/src/main/python/org/openprovenance/prov/template/privacy/Pseudonyms.py`,
+- **Python:** a port at `prov-template-library/src/main/python/org/openprovenance/prov/utils/Pseudonyms.py` (Ruling 8),
   using `re.fullmatch`. The Python emitter imports it as it imports `StringEscapeUtils`.
 - **Rust:** an entry in `rust-registry.json` mapping the static call to a function using the `regex` crate, added to
   the generated `Cargo.toml`. That needs the registry to accept static calls, a JSON-level extension of
@@ -574,6 +575,16 @@ real alternative, what it is.
   - Today the Rust client emits only the beans, processors and record classes, not the builder that holds `logX`
     and `args2bean`, so no Rust code holds a check yet; the annotation takes effect when the builder is emitted.
 
+- **Ruling 8 (Luc, 2026-11-10), on where `Pseudonyms` lives.** Luc first asked for it to move from `prov-model` to
+  the compiler module. Told that the generated client project would then depend on `prov-template-compiler` whenever
+  a pseudonym is used (it depends only on `prov-model`, for `@escape`), he ruled: "then it's ok to be prov-model, but
+  make it appear under org.openprovenance.prov.utils." Applied:
+  - Java: `org.openprovenance.prov.utils.Pseudonyms` in `prov-model`, which exports the package;
+  - the jsweet candy (`prov-jsweet-candy-java`, re-transpiled into `dist`) and the Python port
+    (`prov-template-library/src/main/python/org/openprovenance/prov/utils/Pseudonyms.py`) follow, since the generated
+    code calls the same fully qualified name in every language;
+  - the compiler's `Constants.PRIVACY_RUNTIME_PACKAGE`, the tests and the conformance vectors follow.
+
 **Build (phase 2, 2026-11-10): committed on `t31-transient-pseudonym` after Luc's review; the composite work below
 followed.**
 - *What is built.*
@@ -629,6 +640,13 @@ followed.**
 - *Verified.*
   - All 40 cases pass, including every refusal message, with D5's expectations on A1, A2, A6, C1 and R2.
   - Conformance of every `refused` / `accepted` vector: Java runtime, Python port, JavaScript `RegExp`, PostgreSQL `~`.
+  - The jsweet candy, transpiled into `prov-jsweet-candy-java/dist` by packaging that module (`mvn -pl
+    modules-template/prov-jsweet-candy-java package`; the copy to `dist` runs at `package`): run in node,
+    `org.openprovenance.prov.utils.Pseudonyms.matches` accepts a reference and `null`, refuses a clear name, and
+    `check` refuses without the value.
+  - Built without `-am`, the compiler module's tests compile against the installed `prov-model`, which may predate
+    T31: `T31CasesTest` then looks `Pseudonyms` up at run time and skips the Java conformance, saying so in the
+    report. Verified both ways.
   - The generated SQL in a live PostgreSQL 14 (`PROV_T31_PG_URL`):
     - A6's valid record is accepted, and each clear value is refused by its constraint;
     - P2's changed definition replaces the constraint under its new digest, `NOT VALID`.
@@ -693,7 +711,7 @@ followed.**
     while the record's first column holds the fully qualified name; `processRecordForSql` calls `toBean`, which simple
     templates don't generate.
 - *Not done.*
-  - The jsweet candy compiles but wasn't transpiled. The Python port is exercised only by the conformance vectors.
+  - The Python port is exercised only by the conformance vectors.
   - Rust (Ruling 7): the Rust client has no pseudonym check; the registry still doesn't map a static call (R16).
 
 **What the compiler does with them** (as filed; superseded where the design above differs). Each item names the

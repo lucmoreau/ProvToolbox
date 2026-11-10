@@ -1,4 +1,35 @@
 /* Generated from Java with JSweet 3.1.0 - http://www.jsweet.org */
+var org;
+(function (org) {
+    var openprovenance;
+    (function (openprovenance) {
+        var prov;
+        (function (prov) {
+            var utils;
+            (function (utils) {
+                /**
+                 * T31 (R16): JSweet candy of {@code org.openprovenance.prov.utils.Pseudonyms} (prov-model), so that the
+                 * generated client checks a pseudonymised variable in JavaScript as it does in Java. Patterns are anchored
+                 * ({@code ^...$}), so {@code RegExp.test} matches the whole value, as Java's {@code matches()} does; the {@code u} flag
+                 * reads non-ASCII characters as code points.
+                 * @class
+                 */
+                class Pseudonyms {
+                    static matches(value, pattern) {
+                        return value == null || new RegExp(pattern, "u").test(value);
+                    }
+                    static check(value, pattern, template, variable, method) {
+                        if (!Pseudonyms.matches(value, pattern)) {
+                            throw Object.defineProperty(new Error("T31: template " + template + ", variable " + variable + ": value refused, not in the form of @pseudonym(" + method + ")"), '__classes', { configurable: true, value: ['java.lang.Throwable', 'java.lang.Object', 'java.lang.RuntimeException', 'java.lang.IllegalArgumentException', 'java.lang.Exception'] });
+                        }
+                    }
+                }
+                utils.Pseudonyms = Pseudonyms;
+                Pseudonyms["__class"] = "org.openprovenance.prov.utils.Pseudonyms";
+            })(utils = prov.utils || (prov.utils = {}));
+        })(prov = openprovenance.prov || (openprovenance.prov = {}));
+    })(openprovenance = org.openprovenance || (org.openprovenance = {}));
+})(org || (org = {}));
 var java;
 (function (java) {
     var util;
@@ -96,7 +127,6 @@ var java;
         })(concurrent = util.concurrent || (util.concurrent = {}));
     })(util = java.util || (java.util = {}));
 })(java || (java = {}));
-var org;
 (function (org) {
     var openprovenance;
     (function (openprovenance) {

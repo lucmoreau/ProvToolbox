@@ -11,7 +11,6 @@ import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCom
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy;
-import org.openprovenance.prov.template.privacy.Pseudonyms;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
@@ -384,14 +383,38 @@ public class T31CasesTest extends TestCase {
         }
     }
 
+    /**
+     * The Java runtime's answer, {@code Pseudonyms.matches}, looked up at run time: built without {@code -am}, this
+     * module compiles against the installed {@code prov-model}, which may predate T31. Null (and noted once in the
+     * report) when the class isn't on the classpath.
+     */
+    Boolean javaMatches(String value, String pattern) throws Exception {
+        if (pseudonymsMatches == null && !javaRuntimeMissing) {
+            try {
+                pseudonymsMatches = java.lang.Class.forName("org.openprovenance.prov.utils.Pseudonyms")
+                        .getMethod("matches", String.class, String.class);
+            } catch (ClassNotFoundException e) {
+                javaRuntimeMissing = true;
+                report.append("- Java conformance skipped: Pseudonyms is not on the classpath (a prov-model older than"
+                        + " this branch; build with -am)\n");
+                System.err.println("[T31CasesTest] WARNING: Pseudonyms not on the classpath; Java conformance skipped");
+            }
+        }
+        return javaRuntimeMissing ? null : (Boolean) pseudonymsMatches.invoke(null, value, pattern);
+    }
+
+    java.lang.reflect.Method pseudonymsMatches;
+    boolean javaRuntimeMissing;
+
     /** R16: the Java runtime, the Python port and JavaScript's RegExp give the same answer; PostgreSQL when configured. */
     void conform(String where, String pattern, String value, boolean expected) throws Exception {
         String shown = value == null ? "null" : "\"" + value + "\"";
-        check(where, "Java " + (expected ? "accepts " : "refuses ") + shown, Pseudonyms.matches(value, pattern) == expected);
+        Boolean java = javaMatches(value, pattern);
+        if (java != null) check(where, "Java " + (expected ? "accepts " : "refuses ") + shown, java == expected);
         if (value == null) return;
         Boolean py = external("python3", List.of("-I", "-c",
                 "import sys; sys.path.insert(0, sys.argv[1]);"
-                        + "from org.openprovenance.prov.template.privacy.Pseudonyms import Pseudonyms;"
+                        + "from org.openprovenance.prov.utils.Pseudonyms import Pseudonyms;"
                         + "print(Pseudonyms.matches(sys.argv[3], sys.argv[2]))",
                 new File("../prov-template-library/src/main/python").getAbsolutePath(), pattern, value));
         if (py != null) check(where, "Python " + (expected ? "accepts " : "refuses ") + shown, py == expected);

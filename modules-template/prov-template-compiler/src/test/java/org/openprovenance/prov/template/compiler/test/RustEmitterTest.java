@@ -441,7 +441,7 @@ public class RustEmitterTest {
     @Test
     public void notInRust_leavesTheCallOutWithAComment() {
         // T31, Ruling 7: a client check the Rust registry doesn't map is left out of the Rust code, with its reason
-        MethodCall check = MethodCall.METHOD_CALL(ClassName.get("Pseudonyms", "org.openprovenance.prov.template.privacy"), "check",
+        MethodCall check = MethodCall.METHOD_CALL(ClassName.get("Pseudonyms", "org.openprovenance.prov.utils"), "check",
                 List.of(new Constant("ref"), new Constant("^x$"), new Constant("t"), new Constant("v"), new Constant("pt:erp-ref")));
         check.annotation.add(new org.openprovenance.prov.template.compiler.past.annotations.NotInRust("T31: v @pseudonym(pt:erp-ref) is not checked by the Rust client"));
         Class clazz = new Class("Foo").MODIFIERS(Modifier.PUBLIC).METHODS(publicMethod("log", check));

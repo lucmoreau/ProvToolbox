@@ -1,4 +1,4 @@
-package org.openprovenance.prov.template.privacy;
+package org.openprovenance.prov.utils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

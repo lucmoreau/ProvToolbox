@@ -1,3 +1,16 @@
+declare namespace org.openprovenance.prov.utils {
+    /**
+     * T31 (R16): JSweet candy of {@code org.openprovenance.prov.utils.Pseudonyms} (prov-model), so that the
+     * generated client checks a pseudonymised variable in JavaScript as it does in Java. Patterns are anchored
+     * ({@code ^...$}), so {@code RegExp.test} matches the whole value, as Java's {@code matches()} does; the {@code u} flag
+     * reads non-ASCII characters as code points.
+     * @class
+     */
+    class Pseudonyms {
+        static matches(value: string, pattern: string): boolean;
+        static check(value: string, pattern: string, template: string, variable: string, method: string): void;
+    }
+}
 declare namespace java.util.concurrent.atomic {
     /**
      * JSweet candy implementation of {@code java.util.concurrent.atomic.AtomicInteger}.

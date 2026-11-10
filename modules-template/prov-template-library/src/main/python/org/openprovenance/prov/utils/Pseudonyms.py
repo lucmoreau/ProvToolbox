@@ -6,7 +6,7 @@ from past.exception.IllegalArgumentException import IllegalArgumentException
 class Pseudonyms:
     """T31 (R9, R16): the client check of a pseudonymised template variable, called by generated code.
 
-    Python counterpart of org.openprovenance.prov.template.privacy.Pseudonyms (prov-model); both must give the same
+    Python counterpart of org.openprovenance.prov.utils.Pseudonyms (prov-model); both must give the same
     answers (conformance vectors in the compiler's tests). The pattern comes from the generated code, where it is fixed
     at generation. re.fullmatch, not search: a pattern's $ would otherwise accept a trailing newline, which Java,
     JavaScript, Rust and PostgreSQL refuse.

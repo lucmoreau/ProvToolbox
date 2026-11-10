@@ -693,7 +693,7 @@
           "approver_ref"
         ],
         "clientCheck": {
-          "approver_ref": "org.openprovenance.prov.template.privacy.Pseudonyms.check"
+          "approver_ref": "org.openprovenance.prov.utils.Pseudonyms.check"
         },
         "constraint": {
           "approver_ref": "pt:erp-ref"

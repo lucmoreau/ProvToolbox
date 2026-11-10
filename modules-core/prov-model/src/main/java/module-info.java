@@ -21,7 +21,7 @@ module prov.model {
     exports org.openprovenance.apache.commons.lang;
     exports org.openprovenance.apache.commons.lang.builder;
     // T31: the client check of pseudonymised template variables, called by generated code
-    exports org.openprovenance.prov.template.privacy;
+    exports org.openprovenance.prov.utils;
 
     opens org.openprovenance.prov.vanilla;
     opens org.openprovenance.prov.model;

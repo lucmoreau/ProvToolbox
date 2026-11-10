@@ -239,7 +239,7 @@ public interface Constants {
     String PRIVACY_FIELD = "privacy";
     /** T31 (R16): the runtime class each target language provides for the client check of a pseudonym. */
     String PRIVACY_RUNTIME_CLASS = "Pseudonyms";
-    String PRIVACY_RUNTIME_PACKAGE = "org.openprovenance.prov.template.privacy";
+    String PRIVACY_RUNTIME_PACKAGE = "org.openprovenance.prov.utils";
     String GETTER_VAR = "getter";
     String ELEM_VAR = "elem";
     String CONVERT_TO_NON_NULLABLE_TEXT = "convertToNonNullableTEXT";

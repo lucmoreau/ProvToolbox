@@ -304,8 +304,7 @@ real alternative, what it is.
 - Auditability, in view of Ruling 1: with a custom `past`, the client check's meaning lives in the application's
   runtime code, outside the generated code and outside the digest. The digest then covers only the reference
   (package, class, method). The register marks the row "client check defined in application code".
-- Proposed: allow it, marked as such. Alternative: refuse custom `past` altogether, so that every check's meaning is
-  in the generated code.
+- Allowed, and marked as such in the register (Ruling 4).
 
 *R10. Everything is fixed when the code is generated (Ruling 1).*
 - Fixed when the code is generated, like a `final` variable, for auditability:
@@ -538,8 +537,14 @@ real alternative, what it is.
   - R4, R10, R11, R15: amended to match.
   - This replaces R9's earlier "no check in the client code", whose premise was wrong: `@escape` already maps a PAST
     call to per-language runtime classes.
-- R1–R9 (as amended by Rulings 1 and 3), R12–R17 await ruling. R16's Rust choice (an error until the registry maps
-  static calls) and R17's choice (allow a custom `past`, marked) are the open questions Ruling 3 raises.
+- **Ruling 4 (Luc, 2026-11-10), on R17.** An application may give its own PAST method for a pseudonym method's
+  client check ("Allow, marked").
+  - It declares the languages it provides the method for in `targets`.
+  - `pattern` stays compulsory, for the database check and the JSON schema.
+  - The register marks the row "client check defined in application code". The digest covers only the reference.
+  - Cases P9 (allowed) and E19 (a generated language not in `targets`) test it.
+- R1–R9 (as amended by Rulings 1 and 3), R12–R16 await ruling. R16's Rust choice (an error until the registry maps
+  static calls) is still open.
 
 **What the compiler does with them.** Each item names the generator it touches, as found on `development2_0` at 77cd3d1e0:
 1. **Descriptors.** `descriptors/NameDescriptor.java` and `AttributeDescriptor.java` gain `@transient` (boolean) and

@@ -74,7 +74,7 @@ declaration, so the compiler enforces it, instead of every application rememberi
 The design comes first: written into this section and ruled by Luc before the compiler changes below are built.
 They will change to fit it.
 
-**Design (proposed 2026-11-10, awaiting Luc's ruling; nothing is built until R1–R17 are ruled).** Grounded in
+**Design (proposed 2026-11-10, ruled by Luc the same day: Rulings 1–5 below).** Grounded in
 `development2_0` at eca0e021a. The rulings asked for are numbered; each says what is proposed and, where there is a
 real alternative, what it is.
 
@@ -543,10 +543,17 @@ real alternative, what it is.
   - `pattern` stays compulsory, for the database check and the JSON schema.
   - The register marks the row "client check defined in application code". The digest covers only the reference.
   - Cases P9 (allowed) and E19 (a generated language not in `targets`) test it.
-- R1–R9 (as amended by Rulings 1 and 3), R12–R16 await ruling. R16's Rust choice (an error until the registry maps
-  static calls) is still open.
+- **Ruling 5 (Luc, 2026-11-10), on the rest.** "Accept the rest": R1–R9 (as amended by Rulings 1 and 3), R12–R16, as
+  proposed. The alternatives listed in them are rejected:
+  - R1: the policy is a file named by the catalogue's `privacy` member, not inline;
+  - R6: `pt:keyed-hash` keeps its key identifier;
+  - R14: byte identity is measured after normalising `buildDate` and JSON key order, and the webjar's bindings copy
+    stays verbatim;
+  - R16: Rust is a compile error for a pseudonym until the Rust registry maps the call.
+- All rulings are made. Phase 2 builds the design. "Done when" holds as R15 amends it.
 
-**What the compiler does with them.** Each item names the generator it touches, as found on `development2_0` at 77cd3d1e0:
+**What the compiler does with them** (as filed; superseded where the design above differs). Each item names the
+generator it touches, as found on `development2_0` at 77cd3d1e0:
 1. **Descriptors.** `descriptors/NameDescriptor.java` and `AttributeDescriptor.java` gain `@transient` (boolean) and
    `@pseudonym` (a method name). The configuration's JSON schema and `TemplatesProjectConfiguration` read them. A
    variable that is both is refused, as is an unknown method.

@@ -689,6 +689,16 @@ followed.**
     modules-template/prov-jsweet-candy-java package`; the copy to `dist` runs at `package`): run in node,
     `org.openprovenance.prov.utils.Pseudonyms.matches` accepts a reference and `null`, refuses a clear name, and
     `check` refuses without the value.
+  - End to end, 2026-11-11, on A6 (one transient, three pseudonyms), each generated client run with a valid record,
+    absent optional values, and a clear value for each pseudonym, in `logApproval` and `args2bean`:
+    - Python: the generated `ApprovalBuilder.py`, with the port `org.openprovenance.prov.utils.Pseudonyms` from
+      `prov-template-library`: the valid record is written with `approver_name`'s column empty; a clear
+      `approver_ref` and an unkeyed `customer_hash` are refused, naming template, variable and method, never the
+      value; plain text in `order_note` passes, `pt:inline-refs`' known limit (A4).
+    - JavaScript: A6 regenerated with `jsweet: true`, the client transpiled by jsweet 3.1.0 against the candy (from a
+      copy-on-write clone of `~/.m2`, `-Dmaven.repo.local`, into which `prov-model` and the candy were installed), and
+      run in node with the candy's bundle: the same answers, and absent values written as empty fields.
+    - Not exercised: the generated Java client (covered by the compiler's tests and the Java runtime's vectors).
   - Built without `-am`, the compiler module's tests compile against the installed `prov-model`, which may predate
     T31: `T31CasesTest` then looks `Pseudonyms` up at run time and skips the Java conformance, saying so in the
     report. Verified both ways.
@@ -766,8 +776,17 @@ followed.**
       doesn't export `org.openprovenance.prov.template.log2prov.interfaces`, which it implements.
     - Not caused by T31, and outside it: filed as T32 (Luc, 2026-11-11). T26 (composites) reports the same name /
       fully-qualified-name mismatch, but says simple records carry the name, which the round trip contradicts.
+  - F6, seen running the generated Python client end to end (not caused by T31): the Python emitter turns Java's
+    `x == null` into `x == 0`, so an absent value (`None`) is never treated as absent. The log writes the string
+    `None` for an absent field, and an absent `@escape` field crashes in the port's `escapeCsv`, a placeholder that
+    always quotes (`'"' + x + '"'`), where Java's quotes only when needed. The pseudonym check itself accepts `None`.
+  - F7, seen transpiling a generated client with jsweet (not caused by T31): the generated `t31_cli/jsweet/` build
+    doesn't transpile anything as generated. `jsweet.sh` is copied unfiltered (`export JAVA_HOME="${java12.home}"`,
+    a bash error), the nested `mvn` gets neither the `--add-opens` that jsweet needs on a recent JDK (the candy's
+    build passes them in `MAVEN_OPTS`) nor the caller's `-Dmaven.repo.local`, and `jsweet-pom.xml`, run from
+    `jsweet/`, finds no sources (`jsweet/src/main/java`). The antrun `if="${java12Exists}"` is true even when the
+    property is unset. Run from `t31_cli/` with the candy's `MAVEN_OPTS`, the same POM transpiles cleanly.
 - *Not done.*
-  - The Python port is exercised only by the conformance vectors.
   - Rust (Ruling 7): the Rust client has no pseudonym check; the registry still doesn't map a static call (R16).
 
 **What the compiler does with them** (as filed; superseded where the design above differs). Each item names the

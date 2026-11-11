@@ -5,3 +5,4 @@ target/
 *.DS_Store
 .claude
 .idea/workspace.xml
+__pycache__

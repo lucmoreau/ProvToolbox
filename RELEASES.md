@@ -1,7 +1,9 @@
 See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 
 `2.6.0-SNAPSHOT`
-*
+* prov-template-compiler: Fixed issue with log2prov (T32)
+* prov-template-compiler: support for @transient and @pseudonym annotations (T31) to avoid persistence of private information in provenance.
+
 
 `2.5.0`
 * Jackson 3 (3.2.4, `tools.jackson`) instead of Jackson 2 (requires Java 17): public APIs taking Jackson types change, e.g. prov-jsonld's ProvSerialiser/ProvDeserialiser take a `MapperBuilder`, and `ObjectMapper`s are now `tools.jackson.databind.ObjectMapper`; JSON output unchanged (mappers built with Jackson 2 defaults); json-schema-validator 3.0.8, swagger-core 3.0.0 (`swagger-rest`), mongojack 6.0.0, zjsonpatch now `io.github.vishwakarma:zjsonpatch` 0.6.4; pac4j and Spring Boot 2.7 (service-templates tests) still bring Jackson 2. See docs/JACKSON3_MIGRATION.md

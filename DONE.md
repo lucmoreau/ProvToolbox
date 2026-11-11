@@ -8,6 +8,7 @@
 
 ## Update history
 
+- **2026-11-11** — T35 (`pt:erp-ref` renamed `pt:ext-ref`) retired here.
 - **2026-11-11** — T31 (`@transient` and `@pseudonym` on a template's variables) retired here.
 - **2026-11-11** — T32 (log2prov cannot read a simple template's records) retired here.
 - **2026-10-24** — T29 (ttf execution is slow) retired here; T30 filed for the `dot` runs that remain.
@@ -20,6 +21,7 @@
 
 | T# | Description | Completed | Section |
 |----|-------------|-----------|---------|
+| T35 | T31's pseudonym method `pt:erp-ref` renamed `pt:ext-ref`, an external system's identifier, not necessarily an ERP's; no alias | 2026-11-11 | [T35 section](#-t35-pt-erp-ref-renamed-pt-ext-ref-2026-11-11) |
 | T31 | `@transient` and `@pseudonym("method")` on a template's variables, decided by each catalogue's privacy policy: a transient value never written (column kept, log field empty, no expanded attribute), a pseudonymised one checked for its method's form in the database and in the generated Java, Python and JavaScript clients; Rulings 1–9 | 2026-11-11 | [T31 section](#-t31-transient-and-pseudonym-on-a-templates-variables-2026-11-11) |
 | T32 | log2prov cannot read a simple template's records (fully qualified name vs short name key, no `toBean` in the client builder, `log2prov.interfaces` not exported) — fixed; round trip tested on class path and module path | 2026-11-11 | [T32 section](#-t32-log2prov-cannot-read-a-simple-templates-records-2026-11-11) |
 | T29 | ttf execution (`execute-ttf`): the merge rewrote every format once per input, every task re-read and rewrote `index.json`, the `dot` renderings ran one at a time — fixed; nextgen/template `make ttf.execute` 2 min 22 s → 15.3 s | 2026-10-24 | [T29 section](#-t29-ttf-execution-is-slow-2026-10-24) |
@@ -29,6 +31,26 @@
 | T20 | Streaming progress for `/templates/viz` (SSE endpoint, per-stage panel in the navigator) | 2026-05-19 | [T20 section](#-t20-streaming-progress-for-templatesviz-2026-05-19) |
 | T1 | template-compiler: CompilerCommon uses the new code generation pattern for the Common Bean | by 2026-05-24 | [T1 section](#-t1-template-compiler-the-common-bean-code-generation-by-2026-05-24) |
 | T14 | Template expansion keeps an association without agent but with a plan | by 2026-05-24 | [T14 section](#-t14-an-association-without-agent-but-with-a-plan-by-2026-05-24) |
+
+---
+
+## ✅ T35: `pt:erp-ref` renamed `pt:ext-ref` (2026-11-11)
+
+**Retired 2026-11-11 by Luc ("Retire and merge")**; merged into `development2_0`.
+
+**Filed 2026-11-11** from nextgen's T-610, on Luc's word: ""erp-ref" is not a good choice of name. "ext-ref" would be better, to
+mean an external system, not necessarily an ERP". The method T31 introduced names the identifier of the system of record for a
+value (an ERP, an HR system, an identity realm); the name said ERP only.
+
+**Built 2026-11-11** on branch `t35-ext-ref`: the method's key in `privacy/methods.json` and its documentation (an external
+system's identifier, that system being the system of record), the javadoc examples in `RegisterEntry` and `EffectivePrivacy`,
+T31's cases (`src/test/resources/t31/cases.json`) and the tests reading them. No alias: T31 was merged the same day and nothing
+used the old name. `DONE.md`'s T31 section keeps the name it was built with. The specification is renamed alongside
+(provenance-templates, `prov-template/index.html`).
+
+**Done when.** No `erp-ref` outside `DONE.md`; prov-template-compiler's tests pass; the specification says `pt:ext-ref`.
+
+---
 
 ---
 

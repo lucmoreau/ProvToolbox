@@ -8,6 +8,7 @@
 
 ## Update history
 
+- **2026-11-11** — T32 (log2prov cannot read a simple template's records) retired here.
 - **2026-10-24** — T29 (ttf execution is slow) retired here; T30 filed for the `dot` runs that remain.
 - **2026-10-16** — `TODO.md` and `DONE.md` restructured on the pattern of nextgen's `ODOO-TODO.md` / `ODOO-DONE.md`;
   the Done section of `TODO.md` (T27, T1, T14, T9, T19, T20) moved here. T28 filed.
@@ -18,6 +19,7 @@
 
 | T# | Description | Completed | Section |
 |----|-------------|-----------|---------|
+| T32 | log2prov cannot read a simple template's records (fully qualified name vs short name key, no `toBean` in the client builder, `log2prov.interfaces` not exported) — fixed; round trip tested on class path and module path | 2026-11-11 | [T32 section](#-t32-log2prov-cannot-read-a-simple-templates-records-2026-11-11) |
 | T29 | ttf execution (`execute-ttf`): the merge rewrote every format once per input, every task re-read and rewrote `index.json`, the `dot` renderings ran one at a time — fixed; nextgen/template `make ttf.execute` 2 min 22 s → 15.3 s | 2026-10-24 | [T29 section](#-t29-ttf-execution-is-slow-2026-10-24) |
 | T27 | ptm templates: an expanded/merged document derived from one input only — now from both (template and bindings; template1 and template2) | 2026-10-09 | [T27 section](#-t27-ptm-templates-a-document-derived-from-one-input-only-2026-10-09) |
 | T9 | Rust code generation: `bean.count + 1` on an `Option<i32>` | by 2026-05-24 | [T9 section](#-t9-rust-code-generation-arithmetic-on-an-option-by-2026-05-24) |
@@ -25,6 +27,82 @@
 | T20 | Streaming progress for `/templates/viz` (SSE endpoint, per-stage panel in the navigator) | 2026-05-19 | [T20 section](#-t20-streaming-progress-for-templatesviz-2026-05-19) |
 | T1 | template-compiler: CompilerCommon uses the new code generation pattern for the Common Bean | by 2026-05-24 | [T1 section](#-t1-template-compiler-the-common-bean-code-generation-by-2026-05-24) |
 | T14 | Template expansion keeps an association without agent but with a plan | by 2026-05-24 | [T14 section](#-t14-an-association-without-agent-but-with-a-plan-by-2026-05-24) |
+
+---
+
+## ✅ T32: log2prov cannot read a simple template's records (2026-11-11)
+
+**Filed 2026-11-11** (Luc), from T31's finding F5, confirmed by a round trip.
+
+**What happens.** A round trip on the code generated for T31's case A0 (`t31.Approval`): the generated client
+(`ApprovalBuilder.logApproval`) and log2prov builder, compiled together and run in a JVM on a plain class path, the
+record written by the client and read back with `FileBuilder.reader`.
+1. **The key.** The generated client writes the fully qualified name in the record's first column
+   (`t31.Approval,1,4711,…`), as it has since the PAST rewrite (af3fa56ec, `CompilerCommon.generateLoggerMethod`).
+   `FileBuilder.register` keys `registry` and `clientRegistry` by `getName()` (`approval`). The read doesn't reach
+   the "unknown method" skip: `clientRegistry.get` returns null, and `pm.facadeProxy(ProxySQLInterface.class, null)`
+   throws a `NullPointerException` (`FileBuilder.java:93`), which ends the read at the first record. With `approval` in
+   the first column, the same record makes its document.
+2. **The SQL path.** With a `RecordProcessor` (`Runner`, `ProvenanceKernels`), `processRecordForSql` calls
+   `clientBuilder.toBean(args)` (`FileBuilder.java:126`). No generated client builder has `toBean`; only
+   `ProxySQLInterface` declares it. The proxy finds no method of that name and throws a `NullPointerException`
+   (`ProxyManagement.java:60`).
+3. **The module path.** Loaded as a module, the generated log2prov builder can't be defined:
+   `prov.template.compiler` doesn't export `org.openprovenance.prov.template.log2prov.interfaces`, which it implements
+   (`ProxyClientAccessorInterface`). On a plain class path, as above, it loads.
+
+T26 reports the same name / fully-qualified-name mismatch for composite records, but says simple records carry the
+name, which the round trip contradicts. The two should be fixed together.
+
+**Fix (proposed).**
+- Key the registries by the fully qualified name, the record's first column (or register under both, for logs written
+  before af3fa56ec); and look the builder up before `facadeProxy`, so that an unknown record is skipped, not fatal.
+- Generate `toBean(Object[])` in the client builder (from `record2bean`, which exists), or have `processRecordForSql`
+  build the bean another way.
+- Export `org.openprovenance.prov.template.log2prov.interfaces` from `prov.template.compiler`.
+
+**DoD.** A generator test generates a catalogue, writes records with its generated client, and reads them back with
+`FileBuilder.reader`: the documents equal the template's expansions of the same values, and the SQL path yields the
+inserts. An unknown record is skipped with a message. The round trip also passes on the module path.
+
+**Fixed (2026-11-11, Claude, in a session started from T31's); retired 2026-11-11 (Luc).**
+All in `modules-template/prov-template-compiler`.
+- **The key** (`log2prov/FileBuilder`). `register` puts a builder under its fully qualified name, the record's first
+  column, and under its short name, so logs written before af3fa56ec still read (`FileBuilder.keys()`; the instance
+  `register(Map)` does the same). A short name that is already another template's key is left to it, with a warning; a
+  fully qualified name replaces, with a warning. `processRecord` looks the builder up first and skips an unknown record
+  with a warning (`unknown record <name>: skipped (known: …)`) before any proxy is made; the client builder's proxy is
+  made only for the SQL path. *Decided by Claude:* both keys rather than the fully qualified name alone (the ticket's
+  alternative), and warning level so the skip shows under log4j's default configuration.
+- **The SQL path** (`compiler/common/CompilerCommon.generateToBeanMethod`). A simple template's client builder now has
+  `toBean(Object[])`, delegating to `record2bean` (generated in Java and Python), as a composite's builder already had.
+  *Decided by Claude:* generate the method (the ticket's first option), so `ProxySQLInterface` and the composites'
+  `toBean` stay as they are. Client libraries generated before this fix still lack it, and need regenerating for the SQL path.
+- **The module path** (`module-info.java`). `org.openprovenance.prov.template.log2prov.interfaces` is exported.
+- **T26, item 1, the trivial part.** `FileBuilder.registerBuilders` skips a null slot of the generated `Init` with a
+  warning instead of `Class.forName(null)`. T26's other items (a FileBuilder for composites, the composite `toBean`'s
+  `List<Object[]>` parameter, which the proxy would call with an `Object[]`, the literal `\n` in composite records) are
+  untouched; the two-key registry covers item 2 once composites have a builder.
+- **Test** `T32Log2ProvTest` (resources `src/test/resources/t32/`: one simple template, `t32.Review`, with an `xsd:int`
+  and an escaped attribute). It generates the catalogue with `ConfigProcessor.main` in a child JVM, compiles the
+  generated cli and l2p code with a driver (javax.tools), and runs the driver in a child JVM twice: on a plain class
+  path, and with the compiler and its dependencies on the module path (`--add-modules prov.template.compiler`, checked
+  to be the named module) and the generated code on the class path. The driver writes two records with
+  `ReviewBuilder.logReview`, a record of an unknown template, and one keyed by the short name, and reads them back with
+  `FileBuilder.reader` and a `RecordSQLProcessor`. Asserted: the unknown record is skipped with the message; the three
+  documents equal the `Instantiater`'s expansions of the template with the same values (statements compared, the
+  bundle's generated name aside); the SQL holds the client's own insert head and tuples. With each of the three fixes
+  reverted in turn, the test fails with the defect as described above (the null-proxy NPE, the missing `toBean` NPE,
+  the `IllegalAccessError` on the module path).
+- **The suite.** The compiler's 168 tests pass (`mvn -o -pl modules-template/prov-template-compiler -am test` restricted to
+  the module's tests). The generation runs in a child JVM because a generation in the test JVM breaks a later
+  `CompilerTest` (the Python emitter's NPE, `Python.typeSimpleName`, noted in T31's phase 1). That is pre-existing: at
+  HEAD, `T31CasesTest` run before `CompilerTest` (`-Dsurefire.runOrder=reversealphabetical`) fails the same way; the
+  default order runs `CompilerTest` first.
+- **Seen, not fixed (pre-existing, for Luc to file or not).** In the SQL the round trip produces, a null optional
+  value is written `''`, also for the `xsd:int` column (`('r2','4712','John Doe','p10','','')`), which PostgreSQL refuses
+  for an integer; and a comment `good, "clear"` is written `'good, \"clear\"'`, with backslashes a standard SQL string
+  keeps.
 
 ---
 

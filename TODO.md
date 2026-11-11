@@ -780,12 +780,21 @@ followed.**
     `x == null` into `x == 0`, so an absent value (`None`) is never treated as absent. The log writes the string
     `None` for an absent field, and an absent `@escape` field crashes in the port's `escapeCsv`, a placeholder that
     always quotes (`'"' + x + '"'`), where Java's quotes only when needed. The pseudonym check itself accepts `None`.
-  - F7, seen transpiling a generated client with jsweet (not caused by T31): the generated `t31_cli/jsweet/` build
-    doesn't transpile anything as generated. `jsweet.sh` is copied unfiltered (`export JAVA_HOME="${java12.home}"`,
-    a bash error), the nested `mvn` gets neither the `--add-opens` that jsweet needs on a recent JDK (the candy's
-    build passes them in `MAVEN_OPTS`) nor the caller's `-Dmaven.repo.local`, and `jsweet-pom.xml`, run from
-    `jsweet/`, finds no sources (`jsweet/src/main/java`). The antrun `if="${java12Exists}"` is true even when the
-    property is unset. Run from `t31_cli/` with the candy's `MAVEN_OPTS`, the same POM transpiles cleanly.
+  - F7, seen transpiling a generated client with jsweet (not caused by T31): the jsweet build the compiler generates
+    for a client project (`CompilerMaven`: `addJsweetCall`, `jsweet/jsweet-pom.xml`, `jsweet/jsweet.sh`) predates the
+    way jsweet is now invoked, and transpiles nothing as generated. Luc (2026-11-11): the current way is
+    provenance-templates-library's, whose `pom.xml` runs `mvn -f pom-jsweet.xml jsweet:jsweet` from antrun with
+    `MAVEN_OPTS` opening `jdk.compiler`'s packages (`--add-opens …javac.api`, `.code`, `.file`, `.model`, `.parser`,
+    `.tree`, `.util`), and whose `pom-jsweet.xml`, at the project's root, names its sources
+    (`compileSourceRootsOverride`) and bundles (`bundle`, `declaration`, `dtsOut`); `prov-jsweet-candy-java` does the
+    same. The generated one instead:
+    - runs `jsweet/jsweet.sh`, which sets `JAVA_HOME` to a JDK 12 (`java12.home`, here left as the literal
+      `${java12.home}`, a bash error) and passes no `--add-opens`, so jsweet 3.1.0 fails on a recent JDK;
+    - keeps `jsweet-pom.xml` in `jsweet/`, so jsweet looks for `jsweet/src/main/java` and finds no sources;
+    - gates the run on `if="${java12Exists}"`, true even when the property is unset;
+    - doesn't pass the caller's `-Dmaven.repo.local` to the nested `mvn`.
+    Run the library's way (the same POM from `t31_cli/`, with those `MAVEN_OPTS`), it transpiles cleanly: that is how
+    the end-to-end check above ran.
 - *Not done.*
   - Rust (Ruling 7): the Rust client has no pseudonym check; the registry still doesn't map a static call (R16).
 

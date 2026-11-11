@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T31** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T32) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T32** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T33) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T32 | log2prov cannot read a simple template's records: it crashes on the first one (the record carries the fully qualified name, the registry the short name), and its SQL path calls a `toBean` no client builder has. | ⬜ BACKLOG | Template compiler / log2prov | [T32 section](#-t32-log2prov-cannot-read-a-simple-templates-records) |
 | T31 | `@transient` and `@pseudonym("method")` on a template's variables: a transient value is never persisted (no column, no expansion, no log), a pseudonymised one is checked for its method's form at write time. | 🟡 MEDIUM | Template compiler / Data protection | [T31 section](#-t31-transient-and-pseudonym-on-a-templates-variables) |
 | T30 | ttf execution: the `dot` runs left after T29 — one run per layout for the png and svg of a document; `validate-ttf` one `ajv` run per batch; `dot`'s stderr drained. | ⬜ BACKLOG | Template / Build | [T30 section](#-t30-ttf-execution-one-dot-run-per-layout) |
 | T28 | The Browser tab checks every listed record's hash at once — with ~2,000 records the browser drops ~400 checks and rows on screen can show no verdict. | 🟡 MEDIUM | Service / Dashboard | [T28 section](#-t28-the-browser-tab-checks-every-records-hash-at-once) |
@@ -37,6 +38,44 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+---
+
+### ⬜ T32: log2prov cannot read a simple template's records
+
+**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler / log2prov.
+**Filed 2026-11-11** (Luc), from T31's finding F5, confirmed by a round trip.
+
+**What happens.** A round trip on the code generated for T31's case A0 (`t31.Approval`): the generated client
+(`ApprovalBuilder.logApproval`) and log2prov builder, compiled together and run in a JVM on a plain class path, the
+record written by the client and read back with `FileBuilder.reader`.
+1. **The key.** The generated client writes the fully qualified name in the record's first column
+   (`t31.Approval,1,4711,…`), as it has since the PAST rewrite (af3fa56ec, `CompilerCommon.generateLoggerMethod`).
+   `FileBuilder.register` keys `registry` and `clientRegistry` by `getName()` (`approval`). The read doesn't reach
+   the "unknown method" skip: `clientRegistry.get` returns null, and `pm.facadeProxy(ProxySQLInterface.class, null)`
+   throws a `NullPointerException` (`FileBuilder.java:93`), which ends the read at the first record. With `approval` in
+   the first column, the same record makes its document.
+2. **The SQL path.** With a `RecordProcessor` (`Runner`, `ProvenanceKernels`), `processRecordForSql` calls
+   `clientBuilder.toBean(args)` (`FileBuilder.java:126`). No generated client builder has `toBean`; only
+   `ProxySQLInterface` declares it. The proxy finds no method of that name and throws a `NullPointerException`
+   (`ProxyManagement.java:60`).
+3. **The module path.** Loaded as a module, the generated log2prov builder can't be defined:
+   `prov.template.compiler` doesn't export `org.openprovenance.prov.template.log2prov.interfaces`, which it implements
+   (`ProxyClientAccessorInterface`). On a plain class path, as above, it loads.
+
+T26 reports the same name / fully-qualified-name mismatch for composite records, but says simple records carry the
+name, which the round trip contradicts. The two should be fixed together.
+
+**Fix (proposed).**
+- Key the registries by the fully qualified name, the record's first column (or register under both, for logs written
+  before af3fa56ec); and look the builder up before `facadeProxy`, so that an unknown record is skipped, not fatal.
+- Generate `toBean(Object[])` in the client builder (from `record2bean`, which exists), or have `processRecordForSql`
+  build the bean another way.
+- Export `org.openprovenance.prov.template.log2prov.interfaces` from `prov.template.compiler`.
+
+**DoD.** A generator test generates a catalogue, writes records with its generated client, and reads them back with
+`FileBuilder.reader`: the documents equal the template's expansions of the same values, and the SQL path yields the
+inserts. An unknown record is skipped with a message. The round trip also passes on the module path.
 
 ---
 
@@ -714,9 +753,19 @@ followed.**
       error, and the server log keeps it unless `log_error_verbosity = terse`.
     - Options: document it, or have the insert function check first and raise without the value. Ruling 9: document
       it only.
-  - F5, reported by the code survey and not checked: `log2prov`'s `FileBuilder.register` keys builders by short name
-    while the record's first column holds the fully qualified name; `processRecordForSql` calls `toBean`, which simple
-    templates don't generate.
+  - F5, reported by the code survey, confirmed on 2026-11-11 by a round trip (A0's generated client and log2prov
+    code, compiled and run in a JVM on a plain class path): `log2prov` cannot read a simple template's records.
+    - The generated client writes the fully qualified name first (`t31.Approval,1,4711,…`, since the PAST rewrite,
+      af3fa56ec); `FileBuilder.register` keys `registry` and `clientRegistry` by `getName()` (`approval`).
+    - The record as written doesn't reach the "unknown method" skip: `clientRegistry.get` returns null and
+      `pm.facadeProxy(…, null)` throws a `NullPointerException` (`FileBuilder.java:93`), ending the read.
+    - Keyed by the short name, the same record makes its document.
+    - The SQL path (`processRecordForSql`, with a `RecordProcessor`) then throws a `NullPointerException`: the client
+      builder has no `toBean` (`FileBuilder.java:126`, through the proxy's missing method).
+    - Also seen: on the module path, the generated log2prov builder can't load, since `prov.template.compiler`
+      doesn't export `org.openprovenance.prov.template.log2prov.interfaces`, which it implements.
+    - Not caused by T31, and outside it: filed as T32 (Luc, 2026-11-11). T26 (composites) reports the same name /
+      fully-qualified-name mismatch, but says simple records carry the name, which the round trip contradicts.
 - *Not done.*
   - The Python port is exercised only by the conformance vectors.
   - Rust (Ruling 7): the Rust client has no pseudonym check; the registry still doesn't map a static call (R16).

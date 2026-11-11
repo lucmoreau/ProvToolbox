@@ -161,7 +161,6 @@ public class T32Log2ProvTest extends TestCase {
         String output = java(cmd);
         Files.createDirectories(dir.toPath());
         Files.writeString(Path.of(dir.getPath(), "output.txt"), output);
-        System.out.println("T32 " + run + ":\n" + output);
         assertTrue(run + ": log2prov loaded in module " + module + ":\n" + output, output.contains("T32: log2prov in module " + module + "\n"));
 
         // the unknown record is skipped, with a message

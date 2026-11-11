@@ -18,6 +18,8 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -107,7 +109,7 @@ public class T31CasesTest extends TestCase {
 
         report.append("\n## Failed expectations\n\n").append(failures.isEmpty() ? "none\n" : String.join("\n", failures) + "\n");
         Files.writeString(Path.of(OUT + "cases.md"), report.toString());
-        System.out.println(report);
+        System.out.println("T31: " + byId.size() + " cases, " + failures.size() + " failed expectation(s); report in " + OUT + "cases.md");
         assertTrue("T31 expectations failed:\n" + String.join("\n", failures), failures.isEmpty());
     }
 
@@ -553,11 +555,20 @@ public class T31CasesTest extends TestCase {
         om.writerWithDefaultPrettyPrinter().writeValue(catalogueFile, catalogue);
         TemplatesProjectConfiguration configs = ConfigProcessor.objectMapper.readValue(catalogueFile, TemplatesProjectConfiguration.class);
 
-        try {
-            if (composite != null) {
-                generateFull(catalogueFile);
-            } else {
-                generate(configs);
+        try (PrintStream log = new PrintStream(new FileOutputStream(dir + "generation.log"), true, StandardCharsets.UTF_8)) {
+            // the compiler's own output (banners, logging, stack traces it prints) goes to the case's log, not the console
+            PrintStream out = System.out, err = System.err;
+            System.setOut(log);
+            System.setErr(log);
+            try {
+                if (composite != null) {
+                    generateFull(catalogueFile);
+                } else {
+                    generate(configs);
+                }
+            } finally {
+                System.setOut(out);
+                System.setErr(err);
             }
             warnings.put(id, PrivacyPolicy.current().warnings());
             report.append("- generated\n");

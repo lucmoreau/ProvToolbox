@@ -88,16 +88,15 @@ abstract public class FileBuilder {
     }
 
     public static void processRecord(String methodName, Object[] args, DocumentProcessor dp, RecordProcessor rp, TypesRecordProcessor tp, Map<String, String> sqlInsert, Map<QualifiedName, Set<String>> knownTypeMap, Map<QualifiedName, Set<String>> unknownTypeMap, Map<QualifiedName, Map<String, Collection<String>>> idata) {
-        FileBuilder builder=registry.get(methodName);
-        Object remoteClientBuilder=clientRegistry.get(methodName);
-        ProxySQLInterface clientBuilder=pm.facadeProxy(ProxySQLInterface.class,remoteClientBuilder);
+        FileBuilder builder=(methodName==null)? null: registry.get(methodName);
         if (builder==null) {
-            logger.info("unknown method " + methodName + " in "+ registry);
-            // skip the ones we don't understand
-            //return utils.composeResponseBadRequest("incorrect template " + method + " for builders " + builders, new UnsupportedOperationException(method));
+            // T32: skip the records we don't understand; looked up before any proxy is made of the client builder,
+            // which there isn't for an unknown record
+            logger.warn("unknown record " + methodName + ": skipped (known: " + new TreeSet<>(registry.keySet()) + ")");
         } else {
             if (dp !=null) dp.process(builder.make(args));
             if (rp !=null) {
+                ProxySQLInterface clientBuilder=pm.facadeProxy(ProxySQLInterface.class,clientRegistry.get(methodName));
                 processRecordForSql(rp, sqlInsert, args, methodName, clientBuilder);
             }
             if (tp !=null) {
@@ -163,9 +162,40 @@ abstract public class FileBuilder {
 
 
 
+    /**
+     * Registers a builder under the keys a record may carry in its first column (T32): the template's fully qualified
+     * name, which the generated client writes, and its short name, which logs written before the client wrote the fully
+     * qualified name carry. A short name that is also another template's key is left to that template.
+     * @param builder a log2prov builder
+     */
     public static void register(FileBuilder builder) {
-        registry.put(builder.getName(),builder);
-        clientRegistry.put(builder.getName(), pm.facadeProxy(ProxyClientAccessorInterface.class,builder).getClientBuilder());
+        Object clientBuilder=pm.facadeProxy(ProxyClientAccessorInterface.class,builder).getClientBuilder();
+        for (String key: builder.keys()) {
+            FileBuilder previous=registry.get(key);
+            if (previous!=null && previous!=builder && !previous.getClass().equals(builder.getClass())) {
+                if (key.equals(builder.getFullyQualifiedName())) {
+                    logger.warn("record key " + key + " of " + builder.getClass().getName() + " replaces " + previous.getClass().getName());
+                } else {
+                    logger.warn("record key " + key + " of " + builder.getClass().getName() + " already taken by " + previous.getClass().getName() + ": not registered");
+                    continue;
+                }
+            }
+            registry.put(key,builder);
+            clientRegistry.put(key,clientBuilder);
+        }
+    }
+
+    /**
+     * The keys under which this builder is registered: its fully qualified name, then its short name.
+     * @return a list of one or two distinct keys
+     */
+    public List<String> keys() {
+        List<String> keys=new LinkedList<>();
+        String fqn=getFullyQualifiedName();
+        if (fqn!=null) keys.add(fqn);
+        String name=getName();
+        if (name!=null && !keys.contains(name)) keys.add(name);
+        return keys;
     }
 
     abstract public String getName();
@@ -174,6 +204,11 @@ abstract public class FileBuilder {
     public static boolean registerBuilders(String[] builders, org.openprovenance.prov.model.ProvFactory pf) {
         boolean ok=true;
         for (String builder: builders) {
+            if (builder==null) {
+                // T26: the generated Init leaves a composite's slot empty, there being no log2prov builder for a composite yet
+                logger.warn("no log2prov builder in a slot of the catalogue's builders (a composite template?): skipped");
+                continue;
+            }
             Class<?> cl;
             try {
                 cl = Class.forName(builder);
@@ -213,7 +248,7 @@ abstract public class FileBuilder {
         return Boolean.valueOf(v.toString());
     }
     public void register(Map<String, FileBuilder> m) {
-        m.put(getName(),this);
+        for (String key: keys()) m.put(key,this);
     }
 
     private Map<String,String> variableMap=new HashMap<>();

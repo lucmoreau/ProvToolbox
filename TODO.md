@@ -77,6 +77,45 @@ name, which the round trip contradicts. The two should be fixed together.
 `FileBuilder.reader`: the documents equal the template's expansions of the same values, and the SQL path yields the
 inserts. An unknown record is skipped with a message. The round trip also passes on the module path.
 
+**Fixed (2026-11-11, Claude, in a session started from T31's), awaiting Luc's review; not retired.**
+All in `modules-template/prov-template-compiler`.
+- **The key** (`log2prov/FileBuilder`). `register` puts a builder under its fully qualified name, the record's first
+  column, and under its short name, so logs written before af3fa56ec still read (`FileBuilder.keys()`; the instance
+  `register(Map)` does the same). A short name that is already another template's key is left to it, with a warning; a
+  fully qualified name replaces, with a warning. `processRecord` looks the builder up first and skips an unknown record
+  with a warning (`unknown record <name>: skipped (known: …)`) before any proxy is made; the client builder's proxy is
+  made only for the SQL path. *Decided by Claude:* both keys rather than the fully qualified name alone (the ticket's
+  alternative), and warning level so the skip shows under log4j's default configuration.
+- **The SQL path** (`compiler/common/CompilerCommon.generateToBeanMethod`). A simple template's client builder now has
+  `toBean(Object[])`, delegating to `record2bean` (generated in Java and Python), as a composite's builder already had.
+  *Decided by Claude:* generate the method (the ticket's first option), so `ProxySQLInterface` and the composites'
+  `toBean` stay as they are. Client libraries generated before this fix still lack it, and need regenerating for the SQL path.
+- **The module path** (`module-info.java`). `org.openprovenance.prov.template.log2prov.interfaces` is exported.
+- **T26, item 1, the trivial part.** `FileBuilder.registerBuilders` skips a null slot of the generated `Init` with a
+  warning instead of `Class.forName(null)`. T26's other items (a FileBuilder for composites, the composite `toBean`'s
+  `List<Object[]>` parameter, which the proxy would call with an `Object[]`, the literal `\n` in composite records) are
+  untouched; the two-key registry covers item 2 once composites have a builder.
+- **Test** `T32Log2ProvTest` (resources `src/test/resources/t32/`: one simple template, `t32.Review`, with an `xsd:int`
+  and an escaped attribute). It generates the catalogue with `ConfigProcessor.main` in a child JVM, compiles the
+  generated cli and l2p code with a driver (javax.tools), and runs the driver in a child JVM twice: on a plain class
+  path, and with the compiler and its dependencies on the module path (`--add-modules prov.template.compiler`, checked
+  to be the named module) and the generated code on the class path. The driver writes two records with
+  `ReviewBuilder.logReview`, a record of an unknown template, and one keyed by the short name, and reads them back with
+  `FileBuilder.reader` and a `RecordSQLProcessor`. Asserted: the unknown record is skipped with the message; the three
+  documents equal the `Instantiater`'s expansions of the template with the same values (statements compared, the
+  bundle's generated name aside); the SQL holds the client's own insert head and tuples. With each of the three fixes
+  reverted in turn, the test fails with the defect as described above (the null-proxy NPE, the missing `toBean` NPE,
+  the `IllegalAccessError` on the module path).
+- **The suite.** The compiler's 168 tests pass (`mvn -o -pl modules-template/prov-template-compiler -am test` restricted to
+  the module's tests). The generation runs in a child JVM because a generation in the test JVM breaks a later
+  `CompilerTest` (the Python emitter's NPE, `Python.typeSimpleName`, noted in T31's phase 1). That is pre-existing: at
+  HEAD, `T31CasesTest` run before `CompilerTest` (`-Dsurefire.runOrder=reversealphabetical`) fails the same way; the
+  default order runs `CompilerTest` first.
+- **Seen, not fixed (pre-existing, for Luc to file or not).** In the SQL the round trip produces, a null optional
+  value is written `''`, also for the `xsd:int` column (`('r2','4712','John Doe','p10','','')`), which PostgreSQL refuses
+  for an integer; and a comment `good, "clear"` is written `'good, \"clear\"'`, with backslashes a standard SQL string
+  keeps.
+
 ---
 
 ### 🟡 T31: `@transient` and `@pseudonym` on a template's variables

@@ -31,6 +31,8 @@ module prov.template.compiler {
     exports org.openprovenance.prov.template.compiler.util;
     exports org.openprovenance.prov.template.descriptors;
     exports org.openprovenance.prov.template.log2prov;
+    // T32: the generated log2prov builders implement these interfaces (ProxyClientAccessorInterface), from their own module or the class path
+    exports org.openprovenance.prov.template.log2prov.interfaces;
     // T31: data-protection methods (R4): the SPI an application implements, and the policy's data classes
     exports org.openprovenance.prov.template.compiler.privacy;
     opens org.openprovenance.prov.template.compiler.privacy;

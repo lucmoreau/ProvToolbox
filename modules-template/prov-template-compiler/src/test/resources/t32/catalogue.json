@@ -1,0 +1,10 @@
+{
+  "group": "org.example", "name": "t32", "destination": "target/t32/libs",
+  "description": "T32: a log2prov round trip", "version": "0.1.0",
+  "root_package": "org.example.t32.catalogue", "jsweet": false,
+  "script": "t32_run", "script_dir": "target/t32/libs/bin", "python_dir": "target/t32/libs/python",
+  "jsonschema": "schema.json", "sqlFile": "template.sql", "documentation": "doc.html",
+  "templates": [ { "@type": "simple", "fullyQualifiedName": "t32.Review", "name": "review",
+                   "package": "org.example.t32.review", "template": "t32.review",
+                   "cbindings": "src/test/resources/t32/review.json" } ]
+}

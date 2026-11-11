@@ -1,0 +1,51 @@
+{
+	"var": {
+		"reviewing": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The reviewing activity",
+				"@output": "true"
+			}
+		],
+		"reviewer": [
+			{
+				"@id": "ex:agent/*",
+				"@documentation": "The reviewer",
+				"@input": "compulsory"
+			}
+		],
+		"reviewer_name": [[
+			{
+				"@type": "xsd:string",
+				"@documentation": "The reviewer's name",
+				"@input": "compulsory"
+			}
+		]],
+		"paper": [
+			{
+				"@id": "ex:*",
+				"@documentation": "The reviewed paper",
+				"@input": "compulsory"
+			}
+		],
+		"score": [[
+			{
+				"@type": "xsd:int",
+				"@documentation": "The score given",
+				"@input": "optional"
+			}
+		]],
+		"comment": [[
+			{
+				"@type": "xsd:string",
+				"@documentation": "A comment, which may contain commas and quotes",
+				"@escape": true,
+				"@input": "optional"
+			}
+		]]
+	},
+	"context": {
+		"ex": "http://example.org/"
+	},
+	"template": "https://example.org/templates/t32/review.provn"
+}

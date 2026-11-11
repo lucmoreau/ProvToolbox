@@ -1,0 +1,14 @@
+document
+ prefix tmpl <http://openprovenance.org/ns/tmpl#>
+ prefix var <http://openprovenance.org/var#>
+ prefix vargen <http://openprovenance.org/vargen#>
+ prefix ex <http://example.org/>
+
+ bundle vargen:b
+  activity(var:reviewing, [prov:type='ex:Reviewing'])
+  agent(var:reviewer, [ex:name='var:reviewer_name'])
+  wasAssociatedWith(var:reviewing, var:reviewer, -)
+  entity(var:paper, [ex:score='var:score', ex:comment='var:comment'])
+  used(var:reviewing, var:paper, -)
+ endBundle
+endDocument

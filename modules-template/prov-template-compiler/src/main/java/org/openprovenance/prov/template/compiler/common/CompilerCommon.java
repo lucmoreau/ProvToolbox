@@ -142,6 +142,7 @@ public class CompilerCommon {
 
             pastClass.METHOD(generateGetTypedSuccessorsStatic(successorTable));
             pastClass.METHOD(generateFactoryMethodToBeanWithArray(locations,"record2bean", templateName, packageName, bindingsSchema, BeanDirection.COMMON, null, null));
+            pastClass.METHOD(generateToBeanMethod("toBean", "record2bean", templateName, packageName, BeanDirection.COMMON));
             pastClass.METHOD(generateArgsToRecordMethod(templateName, templateFullyQualifiedName, packageName, bindingsSchema));
             pastClass.METHOD(generateGetRelations(allVars, bindingsSchema, indexed));
             pastClass.METHOD(generateGetAllTypesMethodStatic(indexed));
@@ -2149,6 +2150,24 @@ public class CompilerCommon {
         return method;
     }
 
+
+    /**
+     * T32: log2prov's SQL path makes a record's bean by calling {@code toBean(Object[])} on the client builder (through
+     * {@code ProxySQLInterface}); a composite's builder has one, a simple template's builder had only {@code record2bean}.
+     */
+    public Method generateToBeanMethod(String toBean, String record2bean, String template, String packge, BeanDirection direction) {
+        ClassName beanClass = get(compilerUtil.beanNameClass(template, direction), packge);
+        Method method = METHOD(toBean)
+                .MODIFIERS(Modifier.PUBLIC)
+                .RETURNS(beanClass);
+        compilerUtil.debugFileLocation(method);
+        method.PARAMETER(OBJECT_ARRAY, "record");
+        method.COMMENT("Converter to bean of type $T for template $N, as log2prov's SQL path calls it.\n", beanClass, template);
+        method.COMMENT("@param record an array of objects, the template's name or fully qualified name first\n");
+        method.COMMENT("@return a bean\n");
+        method.BODY(RETURN(METHOD_CALL(VARIABLE("this"), record2bean, List.of(VARIABLE("record")))));
+        return method;
+    }
 
     public Method generateNewBean(String template, String packge) {
         ClassName beanClass = get(compilerUtil.commonNameClass(template), packge);

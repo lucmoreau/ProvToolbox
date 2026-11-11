@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T32** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T33) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T34** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T35) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,8 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T34 | The jsweet build the compiler generates for a client project transpiles nothing: it predates provenance-templates-library's way of running jsweet (antrun `mvn -f pom-jsweet.xml` with `--add-opens`, the POM at the project's root). | ⬜ BACKLOG | Template compiler / JavaScript | [T34 section](#-t34-the-generated-jsweet-build-transpiles-nothing) |
+| T33 | The Python emitter writes Java's `null` as `0`, so a generated Python client never sees an absent value: it logs `None`, and an absent `@escape` field crashes the placeholder `escapeCsv`. | ⬜ BACKLOG | Template compiler / Python | [T33 section](#-t33-the-python-emitter-writes-null-as-0) |
 | T32 | log2prov cannot read a simple template's records: it crashes on the first one (the record carries the fully qualified name, the registry the short name), and its SQL path calls a `toBean` no client builder has. | ⬜ BACKLOG | Template compiler / log2prov | [T32 section](#-t32-log2prov-cannot-read-a-simple-templates-records) |
 | T31 | `@transient` and `@pseudonym("method")` on a template's variables: a transient value is never persisted (no column, no expansion, no log), a pseudonymised one is checked for its method's form at write time. | 🟡 MEDIUM | Template compiler / Data protection | [T31 section](#-t31-transient-and-pseudonym-on-a-templates-variables) |
 | T30 | ttf execution: the `dot` runs left after T29 — one run per layout for the png and svg of a document; `validate-ttf` one `ajv` run per batch; `dot`'s stderr drained. | ⬜ BACKLOG | Template / Build | [T30 section](#-t30-ttf-execution-one-dot-run-per-layout) |
@@ -38,6 +40,65 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+---
+
+### ⬜ T34: The generated jsweet build transpiles nothing
+
+**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler / JavaScript.
+**Filed 2026-11-11** (Luc), from T31's finding F7.
+
+**What happens.** For a catalogue with `jsweet: true`, `CompilerMaven` (`makeSubPom` → `addJsweetCall`, and the code
+writing `jsweet/jsweet-pom.xml` and `jsweet/jsweet.sh`) gives the client project a jsweet build that, as generated,
+transpiles nothing (seen on T31's case A6 regenerated with `jsweet: true`):
+- antrun runs `${project.basedir}/jsweet/jsweet.sh`, which sets `JAVA_HOME` to a JDK 12 (`java12.home`, read from
+  `compiler.properties`; here written as the literal `${java12.home}`, a bash "bad substitution") and calls
+  `mvn -f jsweet/jsweet-pom.xml jsweet:jsweet` with no `--add-opens`: jsweet 3.1.0 then fails on a recent JDK with
+  "An API incompatibility was encountered";
+- `jsweet-pom.xml` lives in `jsweet/`, so its base directory is `jsweet/` and jsweet looks for `jsweet/src/main/java`:
+  "transpilation successfully completed", with no output;
+- the run is gated on `<target if="${java12Exists}">`, which is true even when the property is unset;
+- the nested `mvn` doesn't get the caller's options (e.g. `-Dmaven.repo.local`), so it reads and writes `~/.m2`.
+
+**The current way** (Luc), in provenance-templates-library: its `pom.xml` runs, from antrun at `generate-sources`,
+`mvn -f pom-jsweet.xml jsweet:jsweet` with `MAVEN_OPTS` = `--add-opens jdk.compiler/com.sun.tools.javac.{api,code,
+file,model,parser,tree,util}=ALL-UNNAMED`; its `pom-jsweet.xml`, at the project's root, sets
+`compileSourceRootsOverride`, `outDir`, `tsOut`, `candiesJsOut`, `module` `commonjs`, `bundle`, `declaration` and
+`dtsOut`. `prov-jsweet-candy-java` runs jsweet the same way. Run like that (the generated POM from `t31_cli/`, with
+those `MAVEN_OPTS`), the generated client transpiles with no errors, and runs in node with the candy.
+
+**Fix (proposed).** Generate the client's jsweet build on the library's pattern: the `MAVEN_OPTS` exec from antrun, the
+jsweet POM at the client project's root (or with `compileSourceRootsOverride` pointing at `src/main/java`), bundled
+output copied to `dist` as now; drop `jsweet.sh`, `java12.home` and the `java12Exists` gate; pass `-Dmaven.repo.local`
+through when set.
+
+**DoD.** A catalogue generated with `jsweet: true` builds with `mvn package` on a recent JDK, producing the client's
+bundle in `dist`, and that bundle, loaded in node with the candy, writes a record through the generated builder.
+
+---
+
+### ⬜ T33: The Python emitter writes null as 0
+
+**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler / Python.
+**Filed 2026-11-11** (Luc), from T31's finding F6.
+
+**What happens.** `past/emitter/Python.java`, `convertConstant`, maps the PAST `NULL` constant to `"0"`
+(`case NULL -> "0"`, since af3fa56ec). The generated Python client's logger tests each value with `if x == 0:` where
+the Java writes `if (x == null)`, so `None` is never absent. Run on T31's case A6:
+- an absent unescaped field is written as the string `None` (`…,"n",None`), where Java and JavaScript write nothing;
+- an absent `@escape` field reaches `StringEscapeUtils.escapeCsv(None)` and crashes (`TypeError: can only concatenate
+  str (not "NoneType") to str`);
+- the Python `escapeCsv` (`prov-template-library/src/main/python/org/openprovenance/apache/commons/lang/
+  StringEscapeUtils.py`) is a placeholder ("PLACEHOLDER TO FIX") that always quotes, `'"' + x + '"'`, where Java's
+  quotes only a value with a comma, quote or line break.
+
+Any other generated Python comparing with `null`, or assigning it, is affected the same way.
+
+**Fix (proposed).** Emit `None` for `NULL`, and `is None` / `is not None` for comparisons with it; port `escapeCsv` as
+Java's (quote only when needed, double embedded quotes), with shared test vectors as T31's conformance vectors are.
+
+**DoD.** The generated Python client writes the same record as the Java client for the same values, absent ones
+included, on a template with `@escape` fields; `escapeCsv` gives Java's answers on a shared set of values.
 
 ---
 
@@ -776,11 +837,11 @@ followed.**
       doesn't export `org.openprovenance.prov.template.log2prov.interfaces`, which it implements.
     - Not caused by T31, and outside it: filed as T32 (Luc, 2026-11-11). T26 (composites) reports the same name /
       fully-qualified-name mismatch, but says simple records carry the name, which the round trip contradicts.
-  - F6, seen running the generated Python client end to end (not caused by T31): the Python emitter turns Java's
+  - F6, seen running the generated Python client end to end (not caused by T31; filed as T33): the Python emitter turns Java's
     `x == null` into `x == 0`, so an absent value (`None`) is never treated as absent. The log writes the string
     `None` for an absent field, and an absent `@escape` field crashes in the port's `escapeCsv`, a placeholder that
     always quotes (`'"' + x + '"'`), where Java's quotes only when needed. The pseudonym check itself accepts `None`.
-  - F7, seen transpiling a generated client with jsweet (not caused by T31): the jsweet build the compiler generates
+  - F7, seen transpiling a generated client with jsweet (not caused by T31; filed as T34): the jsweet build the compiler generates
     for a client project (`CompilerMaven`: `addJsweetCall`, `jsweet/jsweet-pom.xml`, `jsweet/jsweet.sh`) predates the
     way jsweet is now invoked, and transpiles nothing as generated. Luc (2026-11-11): the current way is
     provenance-templates-library's, whose `pom.xml` runs `mvn -f pom-jsweet.xml jsweet:jsweet` from antrun with

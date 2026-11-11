@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T34** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T35) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T35** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T36) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T35 | T31's pseudonym method `pt:erp-ref` renamed `pt:ext-ref`: an external system's identifier, not necessarily an ERP's. | 🟡 MEDIUM | Template compiler / Data protection | [T35 section](#-t35-pt-erp-ref-renamed-pt-ext-ref) |
 | T34 | The jsweet build the compiler generates for a client project transpiles nothing: it predates provenance-templates-library's way of running jsweet (antrun `mvn -f pom-jsweet.xml` with `--add-opens`, the POM at the project's root). | ⬜ BACKLOG | Template compiler / JavaScript | [T34 section](#-t34-the-generated-jsweet-build-transpiles-nothing) |
 | T33 | The Python emitter writes Java's `null` as `0`, so a generated Python client never sees an absent value: it logs `None`, and an absent `@escape` field crashes the placeholder `escapeCsv`. | ⬜ BACKLOG | Template compiler / Python | [T33 section](#-t33-the-python-emitter-writes-null-as-0) |
 | T30 | ttf execution: the `dot` runs left after T29 — one run per layout for the png and svg of a document; `validate-ttf` one `ajv` run per batch; `dot`'s stderr drained. | ⬜ BACKLOG | Template / Build | [T30 section](#-t30-ttf-execution-one-dot-run-per-layout) |
@@ -38,6 +39,20 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+### 🟡 T35: `pt:erp-ref` renamed `pt:ext-ref`
+
+**Filed 2026-11-11** from nextgen's T-610, on Luc's word: ""erp-ref" is not a good choice of name. "ext-ref" would be better, to
+mean an external system, not necessarily an ERP". The method T31 introduced names the identifier of the system of record for a
+value (an ERP, an HR system, an identity realm); the name said ERP only.
+
+**Built 2026-11-11** on branch `t35-ext-ref`: the method's key in `privacy/methods.json` and its documentation (an external
+system's identifier, that system being the system of record), the javadoc examples in `RegisterEntry` and `EffectivePrivacy`,
+T31's cases (`src/test/resources/t31/cases.json`) and the tests reading them. No alias: T31 was merged the same day and nothing
+used the old name. `DONE.md`'s T31 section keeps the name it was built with. The specification is renamed alongside
+(provenance-templates, `prov-template/index.html`).
+
+**Done when.** No `erp-ref` outside `DONE.md`; prov-template-compiler's tests pass; the specification says `pt:ext-ref`.
 
 ---
 

@@ -17,7 +17,7 @@ public class EffectivePrivacy {
     public enum Place { STORE, LOG, EXPANSION }
 
     public final Kind kind;
-    /** Qualified method name, e.g. {@code pt:erp-ref}. */
+    /** Qualified method name, e.g. {@code pt:ext-ref}. */
     public final String method;
     /** For a transient method: the places it keeps the value in. Empty for {@code pt:drop}. */
     public final Set<Place> keeps;

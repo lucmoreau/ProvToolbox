@@ -9,17 +9,17 @@
     "keeps": ["log"],
     "documentation": "The value stays in the caller's CSV log only, never in the store or an expanded document. Safe only while the log stays local."
   },
-  "pt:erp-ref": {
+  "pt:ext-ref": {
     "kind": "pseudonym",
     "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9_./-]+$",
     "resolver": "system of record",
-    "documentation": "The system of record's identifier, resolved and erased there: a system prefix and an identifier with no spaces, e.g. hr:person/4711. The check recognises a clear value by its shape, not its meaning; an application is expected to override it with its system's exact form."
+    "documentation": "An external system's identifier, that system (an ERP, an HR system, an identity realm) being the system of record, where the value is resolved and erased: a system prefix and an identifier with no spaces, e.g. hr:person/4711. The check recognises a clear value by its shape, not its meaning; an application is expected to override it with its system's exact form."
   },
   "pt:inline-refs": {
     "kind": "pseudonym",
     "pattern": "^([^⟨⟩]|⟨person [a-z][a-z0-9_.-]*:[A-Za-z0-9_./-]+⟩)*$",
     "resolver": "system of record",
-    "documentation": "Free text in which people appear only as references ⟨person <erp-ref>⟩. The check makes sure every reference is well-formed; it can't prove the text around them names nobody."
+    "documentation": "Free text in which people appear only as references ⟨person <ext-ref>⟩. The check makes sure every reference is well-formed; it can't prove the text around them names nobody."
   },
   "pt:keyed-hash": {
     "kind": "pseudonym",

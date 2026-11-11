@@ -12,7 +12,7 @@ import java.util.List;
 public class RegisterEntry {
     public String template;
     public String variable;
-    /** As the library's bindings schema declares it, e.g. {@code @pseudonym(pt:erp-ref)}; null when none. */
+    /** As the library's bindings schema declares it, e.g. {@code @pseudonym(pt:ext-ref)}; null when none. */
     public String declared;
     /** In effect, e.g. {@code @pseudonym(acme:staff-no)}, or {@code ignored}. */
     public String effective;

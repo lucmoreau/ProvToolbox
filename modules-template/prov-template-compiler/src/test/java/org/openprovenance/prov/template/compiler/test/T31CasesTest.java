@@ -333,7 +333,7 @@ public class T31CasesTest extends TestCase {
         Psql constraints = psql(pg, "SELECT obj_description(oid, 'pg_constraint') FROM pg_constraint WHERE conname LIKE 'approval\\_approver\\_ref\\_p%'", null);
         String p2digest = row(listOf(om.readTree(new File(OUT + "P2/libs/" + REGISTER))), "approver_ref").get("digest").asText();
         check(where, "P2 replaces approver_ref's constraint: " + constraints.output.trim(),
-                constraints.output.trim().equals("pt:erp-ref sha256:" + p2digest));
+                constraints.output.trim().equals("pt:ext-ref sha256:" + p2digest));
         check(where, "P2 refuses smith:john", psql(pg, "SELECT * FROM insert_approval('ex:agent/1', 'smith:john', 'ex:o1', NULL, NULL)", null).exitCode != 0);
     }
 

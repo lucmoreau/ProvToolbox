@@ -69,18 +69,18 @@
     },
     {
       "id": "A3",
-      "title": "@pseudonym erp-ref, unprefixed",
+      "title": "@pseudonym ext-ref, unprefixed",
       "annotations": {
         "approver_ref": {
-          "@pseudonym": "erp-ref"
+          "@pseudonym": "ext-ref"
         }
       },
       "expect": {
         "constraint": {
-          "approver_ref": "pt:erp-ref"
+          "approver_ref": "pt:ext-ref"
         },
         "privacyConstant": [
-          "approver_ref=pt:erp-ref"
+          "approver_ref=pt:ext-ref"
         ],
         "noSqlFunction": true,
         "clientCheck": {
@@ -168,7 +168,7 @@
           "@transient": true
         },
         "approver_ref": {
-          "@pseudonym": "pt:erp-ref"
+          "@pseudonym": "pt:ext-ref"
         },
         "order_note": {
           "@pseudonym": "pt:inline-refs"
@@ -222,11 +222,11 @@
     },
     {
       "id": "P2",
-      "title": "A6, application overrides pt:erp-ref's implementation",
+      "title": "A6, application overrides pt:ext-ref's implementation",
       "base": "A6",
       "policy": {
         "methods": {
-          "pt:erp-ref": {
+          "pt:ext-ref": {
             "kind": "pseudonym",
             "pattern": "^hr:person/[0-9]+$",
             "resolver": "hr"
@@ -276,7 +276,7 @@
       "policy": {
         "overrides": {
           "variable:t31.Approval#approver_ref": {
-            "@pseudonym": "pt:erp-ref",
+            "@pseudonym": "pt:ext-ref",
             "reason": "references only"
           }
         }
@@ -392,7 +392,7 @@
       "annotations": {
         "approver_name": {
           "@transient": true,
-          "@pseudonym": "pt:erp-ref"
+          "@pseudonym": "pt:ext-ref"
         }
       },
       "expect": {
@@ -445,12 +445,12 @@
       "title": "@pseudonym on an input with @sql.table (allowed: an input's value lands in the template's own column)",
       "annotations": {
         "order": {
-          "@pseudonym": "pt:erp-ref"
+          "@pseudonym": "pt:ext-ref"
         }
       },
       "expect": {
         "constraint": {
-          "order": "pt:erp-ref"
+          "order": "pt:ext-ref"
         }
       }
     },
@@ -614,7 +614,7 @@
       "annotations": {
         "approver_ref": {
           "@output": "optional",
-          "@pseudonym": "pt:erp-ref"
+          "@pseudonym": "pt:ext-ref"
         }
       },
       "expect": {
@@ -629,7 +629,7 @@
       "policy": {
         "overrides": {
           "variable:t31.Approval#approving": {
-            "@pseudonym": "pt:erp-ref",
+            "@pseudonym": "pt:ext-ref",
             "reason": "mistake"
           }
         }
@@ -687,7 +687,7 @@
       },
       "expect": {
         "warning": [
-          "approver_ref, method pt:erp-ref: the generated Rust client doesn't check this pseudonym"
+          "approver_ref, method pt:ext-ref: the generated Rust client doesn't check this pseudonym"
         ],
         "notInRust": [
           "approver_ref"
@@ -696,7 +696,7 @@
           "approver_ref": "org.openprovenance.prov.utils.Pseudonyms.check"
         },
         "constraint": {
-          "approver_ref": "pt:erp-ref"
+          "approver_ref": "pt:ext-ref"
         },
         "registerNote": {
           "approver_ref": "not checked by the generated Rust client (Ruling 7)"
@@ -712,7 +712,7 @@
       },
       "expect": {
         "warning": [
-          "approver_ref, method pt:erp-ref",
+          "approver_ref, method pt:ext-ref",
           "order_note, method pt:inline-refs",
           "customer_hash, method pt:keyed-hash"
         ],
@@ -806,7 +806,7 @@
           "approver_name": "pt:drop"
         },
         "constraint": {
-          "approver_ref": "pt:erp-ref",
+          "approver_ref": "pt:ext-ref",
           "order_note": "pt:inline-refs",
           "customer_hash": "pt:keyed-hash"
         },

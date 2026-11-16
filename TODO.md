@@ -42,10 +42,13 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 ### ⬜ T36: `@inJson` values and template subtypes
 
-**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler.  **Branch**: `t36-injson-subtypes` (off `development2_0`), not yet created.
+**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler.  **Branch**: `claude/t36-injson-subtypes-d38753` (off `development2_0`; the app named it).
 **Filed 2026-11-16** (Luc), from the first application's design of user-interaction records
 (`the first application's design note`). **Design**: `docs/T36-INJSON-SUBTYPES-DESIGN.md`, proposed
-and not yet ruled: its rulings R1–R10 are asked of Luc.
+and not yet ruled: its rulings R1–R11 are asked of Luc.
+**Checked against the code 2026-11-16** (design §11): one real correction. The `subtype` entry cannot live in
+`configs.templates`: 47 loops in 31 files take a non-simple entry for a composite and 13 cast it. So it is split out at
+loading (R11).
 
 **The need.** Applications use one compiled template for many kinds of act (nextgen: 73 templates for 213 act types)
 and put what differs in text variables holding a JSON object (`attributes`, `pattributes`), because a new key there
@@ -83,6 +86,10 @@ has no mapping for a static runtime call.
 - For a case table of subtypes: the typed bean compiles in each language emitted, converts to the general bean and
   back without loss, refuses a missing required value, and the carrier's text is the same from each language.
 - The provenance-templates specification says what `@inJson` and a subtype are.
+
+**Rulings** (Luc, in his words, dated, as given): none yet.
+
+**Built**: nothing yet.
 
 ---
 

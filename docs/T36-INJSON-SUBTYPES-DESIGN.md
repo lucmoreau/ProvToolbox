@@ -1,7 +1,7 @@
 # T36 — `@inJson` values and template subtypes: design
 
-Status: **proposed, nothing built** (2026-11-16). Ticket: `TODO.md`, T36. Grounded in `development2_0` at 0a8d9f4b1.
-The rulings asked of Luc are numbered R1–R10 in §8; each says what is proposed and, where there is a real
+Status: **proposed, nothing built** (2026-11-16); checked against the code the same day (§11). Ticket: `TODO.md`, T36.
+Grounded in `development2_0` at 0a8d9f4b1. The rulings asked of Luc are numbered R1–R11 in §8 (R11 added by the check); each says what is proposed and, where there is a real
 alternative, what it is. Nothing after stage 1 should be built before the rulings it depends on.
 
 Paths are relative to `modules-template/prov-template-compiler/src/main/java/org/openprovenance/prov/template/`
@@ -52,18 +52,26 @@ Read on 2026-11-16. Items marked (T31) are taken from T31's findings in `DONE.md
   `@type`, `@documentation`, `@escape`, `@examplar`, `@input`, `@output`, `@sql.type`, `@sql.foreign`, `@unique`,
   `@transient`, `@pseudonym`. `descriptors/NameDescriptor` (a node) takes `@id`, `@type`, `@escape`, `@role`,
   `@documentation`, `@examplar`, `@input`, `@output`, `@sql.type`, `@sql.table`, `@sql.new.inputs`,
-  `@sql.also.outputs`. The descriptors are read with defaults that fail on an unknown member, so a compiler older than
-  T36 refuses a library that carries `@inJson`: it fails closed (T31).
-- **Every generator gets a template's variables from one place.** `compiler/CompilerUtil.getBindingsSchema` reads
-  each `cbindings` file once and caches it; the compiler calls it in about thirty places. `DescriptorUtils.fieldNames(schema)`
-  lists the variables in order and 21 generators use it (T31). Others read `schema.getVar()` directly
-  (`CompilerJsonSchema.generateJSonSchema`, `CompilerBeanGenerator.generateBean`).
-- **Two kinds of template.** `compiler/configuration/TemplateCompilerConfig` has two subclasses,
-  `SimpleTemplateCompilerConfig` (`@type: simple`; `template`, `cbindings`, `interfaces`) and
-  `CompositeTemplateCompilerConfig` (`@type: composite`; `consistsOf`, `sharing`), named in
-  `TemplateConfigurationEnum` and in `src/main/resources/schema/template-project-schema.json`.
-  `ConfigProcessor`'s main loop tests `isSimple` and casts everything else to the composite class: a third kind
-  falls into that cast today.
+  `@sql.also.outputs`. The descriptors are read by `ConfigProcessor.objectMapper`, a Jackson 3 mapper built with `builderWithJackson2Defaults()`
+  (`ConfigProcessor.java:63`), whose defaults fail on an unknown member, so a compiler older than T36 refuses a library
+  that carries `@inJson`: it fails closed (T31). A value is an array of one `AttributeDescriptor`, a node an object
+  (`DescriptorUtils.setupDeserializer`); member names are flat and dotted (`@sql.type`), so `@inJson.key` fits.
+- **Every generator gets a template's variables from one place.** `compiler/CompilerUtil.getBindingsSchema(String)` is the
+  only code that reads a `cbindings` file into a `TemplateBindingsSchema` (it applies T31's privacy policy right after
+  reading); the two overloads taking a `SimpleTemplateCompilerConfig` cache its result by the `cbindings` path as the
+  configuration gives it. The compiler calls them in about thirty places. `DescriptorUtils.fieldNames(schema)`
+  lists the variables in order and 21 generators use it (T31; counted again on 2026-11-16: 22 files mention it). 22 files
+  read `schema.getVar()` directly (`CompilerJsonSchema`, `CompilerBeanGenerator`, `CompilerCommon` at 17 places,
+  `CompilerLogger`, `PrivacyPolicy`, …). Nothing else in the repository reads the descriptor classes: the services and
+  plugins only name the `cbindings` file or copy it.
+- **Two kinds of template, and no single place that tells them apart.** `compiler/configuration/TemplateCompilerConfig`
+  has two subclasses, `SimpleTemplateCompilerConfig` (`@type: simple`; `template`, `cbindings`, `interfaces`) and
+  `CompositeTemplateCompilerConfig` (`@type: composite`; `consistsOf`, `sharing`), named in `@JsonSubTypes` and in
+  `src/main/resources/schema/template-project-schema.json`. Everything iterates one array, `configs.templates`: 47
+  loops in 31 generator files. Where a loop distinguishes, "not simple" means composite: 23 tests of that form, and
+  13 unconditional casts to the composite class (`ConfigProcessor` four times, then the bean, enactor, completer,
+  merger, history, checker and query-invoker generators). A third kind placed in that array would be taken for a
+  composite by all of them and fail on the cast. This is a larger change than the design first said (R11).
 - **A bean is a PAST class.** `CompilerBeanGenerator.generateBean` builds a
   `compiler/past/Class` (`CLASS`, `FIELD`, `METHOD`, …) and returns a `SpecificationFile` of four generators: Java
   (`past/emitter/Poet`), Python, JavaScript and Rust. It already makes extra input beans over one template
@@ -160,7 +168,10 @@ Refused at compile time: `refines` naming no simple template; a fixed variable t
 template (a node, an output, a carrier, an in-JSON value), or whose constant does not fit its type; a carried name
 that is not an in-JSON value of that template; two subtypes of one template with the same fixed values.
 
-`ConfigProcessor`'s loop, `TemplateConfigurationEnum` and `template-project-schema.json` gain the kind.
+`template-project-schema.json` gains the kind. Where its entry lives is R11: proposed, the entry is written in the
+catalogue's `templates` array, as `simple` and `composite` are, but is taken out of `configs.templates` as soon as the
+configuration is read, into `configs.subtypes`. The 47 loops then never see a subtype, which is the same device as R1:
+split once at the point of loading, so existing code is untouched. Only the subtype generators read `configs.subtypes`.
 
 A subtype adds nothing to the server side: no table, no insert function, no builder, no entry in the catalogue's
 dispatch, no log2prov reader. A store that loads the library sees the general template only.
@@ -306,6 +317,11 @@ Each stage ends with the module's tests green and can be judged before the next.
 - **R10. The names.** `subtype`, `refines`, `fixed`, `carries`, `toGeneral`, `fromGeneral`, and the runtime class's
   name and module.
 
+- **R11. Where a subtype entry lives after loading** (added by the check, §11). Proposed: written in `templates`,
+  moved at loading into `configs.subtypes` (§5.1). Alternatives: a member of its own in the catalogue
+  (`"subtypes": [...]`), which needs no moving and reads as plainly; or a third class in `templates` with every one of
+  the 47 loops taught to skip it, which is the risk the check found.
+
 ## 9. Out of scope
 
 - An application's roster and the program that turns it into `cbindings` and subtype entries.
@@ -319,9 +335,33 @@ Each stage ends with the module's tests green and can be judged before the next.
 - The emitters were not read in full. Whether the two conversions, written with the PAST nodes of §3, come out right
   in Python and JavaScript without a new node or a new emitter rule is for stage 3 and 4 to show. The type checker may
   need the runtime class registered as an external type.
-- Whether something checks a `cbindings` file's variables against the template document's, and would object to an
-  in-JSON value that is not in the document, was not looked for.
-- Readers of `cbindings` outside the compiler (the service's pages, log2prov, an application's own tools) were not
-  listed. The split of R1 is inside the compiler; a reader that parses the file itself sees the new entries.
+- The Rust registry (`rust-registry.json`) and the claim that it maps no static call are T31's finding, not read again.
 - The items marked (T31) in §3 are T31's findings as written in `DONE.md`.
 - The figures of §1 are nextgen's roster as read on 2026-11-16.
+- The specification repository (`provenance-templates-specification`), which holds the bindings schema, was not read.
+
+## 11. Check against the code (2026-11-16)
+
+Done on the worktree branch of `development2_0` at 0a8d9f4b1 by reading `descriptors/*`, `CompilerUtil`, `ConfigProcessor`,
+`configuration/*`, `CompilerJsonSchema`, `CompilerDocumentation`, `PrivacyPolicy` and the loops over `configs.templates`.
+Nothing was built for this check. What changed in the design, and why:
+
+1. **§3 and §5.1, the third kind of template** (the one real correction). The design said `ConfigProcessor`'s main loop
+   casts anything not simple to the composite class. It is 47 loops in 31 files, 23 of which treat "not simple" as
+   composite and 13 of which cast. A subtype placed in `templates` would break most generators. §5.1 now proposes
+   splitting subtypes out at loading, and R11 asks it.
+2. **§3, how the descriptors are read.** It is Jackson 3 with Jackson-2 defaults, not "Jackson 2"; the behaviour the
+   design relies on (an unknown member fails) is unchanged. Not run: stage 1's test will show it.
+3. **§3, where bindings are read.** There is one reader, `getBindingsSchema(String)`; the cache sits in two thin
+   overloads keyed by the configured `cbindings` path; the privacy policy is applied right after reading. R1's split
+   goes in that reader, **before** the policy is applied, so a policy scope naming an in-JSON value is refused as an
+   unknown variable (a consequence of R8, now stated: that message says "unknown variable").
+4. **§3, the counts.** 22 files use `fieldNames` (the design said 21, from T31), 22 read `getVar()` directly.
+5. **§10, two items answered.** Nothing in the compiler cross-checks a `cbindings` file's variables against the
+   template document: the parameters of every generated class come from the bindings (`fieldNames`), never from the
+   document. That is the reason the split of R1 is needed (an in-JSON value left in `var` would become a bean field
+   and a column), and it means an in-JSON value absent from the document raises nothing. And no code in the
+   repository other than the compiler reads the descriptor classes (§3). A tool that parses a `cbindings` file itself
+   was looked for in the services and the Maven plugin and not found; applications' own tools are not in this repository.
+
+What the check left as written: §4 (the annotation, the refusals, the test), §5.2–5.6, §6, and R1–R10.

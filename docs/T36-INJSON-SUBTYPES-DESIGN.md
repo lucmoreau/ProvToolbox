@@ -950,7 +950,7 @@ Checked against the code and the real case, what changed:
 - `of` on a stood thing; two flows in one catalogue; a flow whose user subtype has no reply value (no `answer`).
 - The Turtle terms of a flow with a parser other than rdflib; the table in a browser.
 
-## 14. Part F — the flow expresses more requests (T41; proposed 2026-11-16; not built)
+## 14. Part F — the flow expresses more requests (T41; rulings G1 to G5 given 2026-11-16; stages in §14.10)
 
 Luc, 2026-11-16, relayed by the session that started this one: "Delegate the extension to the T36 session". Ticket: `TODO.md`, T41 (chosen by him: "New ticket T41
 (Recommended)"). The first application tried the flow of §13 on all of its 46 commands: 2 go through a generated flow, 44 cannot be declared. Four reasons, read
@@ -1061,11 +1061,18 @@ then inserted, the second chaining from the outputs of the first and carrying it
 kinds beside every assignment in Java, Python and JavaScript, the documentation and the Turtle. **Compatibility**: the declarations of the tests of §13 compile
 to the same class (the generated Java is equal, file for file, to what stage 9 wrote), and a catalogue without a flow is unchanged.
 
-### 14.7 Rulings asked
+### 14.7 Rulings
 
-G1 (NS: `stood` optional, the nodes from the application), G2 (XT: (b) with (a) as the fallback, one flow per case), G3 (MR: `records`, the shorthand kept, chaining
-from an earlier record), G4 (the list: (C), compose flows; (B) later), G5 (LD: not built; (1) or (2)), and the four findings of the first application (§14.8).
-Recorded here in Luc's words, dated, once given.
+Ruled by Luc, 2026-11-16, in the session that builds it, in the options he chose (each the one recommended):
+
+- **G1. NS. "stood optional, nodes from the application (Recommended)"**: a flow may declare no stood thing; the application names the nodes through rules.
+- **G2. XT. "(b) typed record of its own template (Recommended)"**: `of` may name any subtype or template of the catalogue; the guards and the carrying still work; one flow for
+  each case when the template varies at run time. (a) stays what it already is: `record.<node>: supplied`.
+- **G3. MR. "records, shorthand kept (Recommended)"**: ordered records, chaining from an earlier record's bean and outputs, one reply at the end; the stage 9 declarations unchanged.
+- **G4. Lists. "(C) compose flows; (B) later (Recommended)"**: the compiler repeats nothing: one flow for each line, the application loops.
+- **G5. LD. "Not built; ask for (1) (Recommended)"**: the application declares its ledger statements as templates; nothing in the compiler.
+- **Findings** (§14.8): "(2) type checker noise: fix in T41". The other three are not fixed here and become tickets: (1) `JsonText.text` exponent forms: **T42**; (3) an annotated copy
+  writes its template's own beans: **T43**; (4) the `InteropFramework` `ClassNotFoundException`: **T44**.
 
 ### 14.8 The compiler findings of the first application
 

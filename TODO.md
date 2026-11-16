@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T41** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T42) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T44** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T45) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,9 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T44 | A `ClassNotFoundException` for `org.openprovenance.prov.interop.InteropFramework` is logged while the template compiler generates a library; the generated classes compile and run, the build succeeds. | ⬜ BACKLOG | Template compiler | [T44 section](#-t44-classnotfoundexception-for-interopframework-during-generation) |
+| T43 | Compiling an annotated copy of a template (to add `@inJson` to a template of another library) also writes that template's own beans, which the application's jar then has to exclude. | ⬜ BACKLOG | Template compiler | [T43 section](#-t43-an-annotated-copy-of-a-template-writes-the-templates-own-beans) |
+| T42 | `JsonText.text` of a number writes the exponent forms of RFC 8785 (`1e+21`, `1e-7`) where the first application expected plain digits. | ⬜ BACKLOG | Template compiler / Runtime | [T42 section](#-t42-jsontext-text-writes-exponent-forms) |
 | T41 | The `flow` entry of T36 expresses one request that makes one record on a previous record of the same template. Extend it: a flow with nothing that stood, a stood record made by another template, and several records in one flow; and the compiler findings of the first application. | ⬜ BACKLOG | Template compiler / Flow | [T41 section](#-t41-the-flow-entry-expresses-more-requests) |
 | T40 | The catalogue's root JSON schema constrains `isA` to the pattern of the last template written, so a record of any other template (and of a subtype) fails the root schema. | ⬜ BACKLOG | Template compiler / JSON schema | [T40 section](#-t40-the-root-json-schema-keeps-the-isa-pattern-of-the-last-template) |
 | T39 | `CompilerTest` fails when another test of the module generates before it: it does not reset the compiler's static coordinators (`SpecificationFile`), so it depends on running first in a fresh JVM. | ⬜ BACKLOG | Template compiler / Tests | [T39 section](#-t39-compilertest-depends-on-running-first) |
@@ -44,6 +47,30 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+### ⬜ T44: ClassNotFoundException for InteropFramework during generation
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler.  **Found 2026-11-16** by the first application, reported with T41.
+
+Generating a library prints a `java.lang.ClassNotFoundException: org.openprovenance.prov.interop.InteropFramework`; the generated classes compile and run and the build succeeds. **Not investigated**: where the class is looked up, and whether the lookup is needed.
+
+---
+
+### ⬜ T43: An annotated copy of a template writes the template's own beans
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler.  **Found 2026-11-16** by the first application, reported with T41.
+
+A library that adds `@inJson` to a template of another library compiles an annotated copy of its declaration; the compiler then also writes that template's own beans (`client` classes in the other library's package), which the application's jar excludes. **Proposed**: a catalogue option that leaves the template's own beans out, or generates only the subtype's. Not decided.
+
+---
+
+### ⬜ T42: JsonText.text writes exponent forms
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Runtime.  **Found 2026-11-16** by the first application, reported with T41.
+
+`JsonText.text` (the conversion "as text" of a flow, T36 E4) writes a number by the RFC 8785 rule (T36 R5), so a very large or very small number is `1e+21` or `1e-7` where plain digits were expected by the first application's hand-written conversion. A price never reaches those magnitudes. Changing it changes a ruling of T36 (plain digits for `text` only, in the three ports and the shared vectors). **Not decided**: Luc, 2026-11-16, chose to file it and not to fix it in T41.
+
+---
 
 ### ⬜ T41: The flow entry expresses more requests
 

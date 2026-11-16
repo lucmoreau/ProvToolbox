@@ -102,7 +102,7 @@ public class T36NodeAndPackageTest extends T36Fixture {
         assertTrue(doc, doc.contains("approver = alice"));
     }
 
-    /** A node declared with a type holds a value of that type: fixed, it is a constant of that type (nextgen's nodes are xsd:int, the first application's actions xsd:string). */
+    /** A node declared with a type holds a value of that type: fixed, it is a constant of that type (some applications' nodes are xsd:int, others' xsd:string). */
     public void testAFixedNodeOfTypeIntIsANumber() throws Exception {
         intNode = true;
         generate("intnode", false, List.of(), List.of(inActions(subtype("seven_line", "{\"approver\":7}", "{\"priceBefore\":\"required\"}"))));

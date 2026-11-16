@@ -104,8 +104,7 @@ whether it or the specification's copy is the source.
 ### ⬜ T36: `@inJson` values and template subtypes
 
 **Priority**: ⬜ BACKLOG.  **Category**: Template compiler.  **Branch**: `claude/t36-injson-subtypes-d38753` (off `development2_0`; the app named it).
-**Filed 2026-11-16** (Luc), from the first application's design of user-interaction records
-(`the first application's design note`). **Design**: `docs/T36-INJSON-SUBTYPES-DESIGN.md`, proposed
+**Filed 2026-11-16** (Luc), from the first application's design of user-interaction records. **Design**: `docs/T36-INJSON-SUBTYPES-DESIGN.md`, proposed
 and ruled 2026-11-16 (R1–R11, below and design §8).
 **Checked against the code 2026-11-16** (design §11): one real correction. The `subtype` entry cannot live in
 `configs.templates`: 47 loops in 31 files take a non-simple entry for a composite and 13 cast it. Luc ruled (R11) that it is a third
@@ -241,7 +240,7 @@ has no mapping for a static runtime call.
 - **Verified, stage 5**: catalogues without subtypes, `turtle` or `turtleNamespace` are unchanged (T31's 25 cases, 2410 files, and `CompilerTest`'s 93 files, against the base commit, as above).
 - **Not verified, stage 5**: the Turtle with another parser than rdflib; the documentation page in a browser; `ajv` on the project schema; the JSON schema of a subtype in jsonform (the schema is used by a form generator).
 - **Committed on 2026-11-16 at Luc's word, on my branch only (never pushed)**: `9f19ddcf9` the loop-skip lines, the config class and `isSubtype` (32 files, compiled alone in a clean worktree); `f60c1c077` the rest of stages 2 to 5 (30 files); the next commit, this file and the design. Stage 6 is in the specification's repository, uncommitted.
-- **Stage 6, the specification, 2026-11-16 (committed `fb01ff2`, with the text of parts D and E, on the branch `t36-injson-subtypes` of the specification's own repository, `provenance-templates`; never pushed)**:
+- **Stage 6, the specification, 2026-11-16 (committed `fb01ff2`, with the text of parts D and E, on the branch `t36-injson-subtypes` of the specification's own repository, provenance-templates; never pushed)**:
   - `provenance-templates-specification/prov-template/index.html`: two rows in the table of annotations (`@inJson`, `@inJson.key`); a section **In-JSON values** (`#in-json`: what an in-JSON value and a carrier are, the refusals as MUST NOT, a carrier is open, the text of a value by RFC 8785's number rule with
     declared keys first); a section **Subtypes** in the template compiler's description (`#template-subtypes`: the catalogue entry and its rules, the typed beans and their two conversions, the `Subtypes` class, the JSON text class, the documentation, the JSON schema, the Turtle and its `tpl:` vocabulary);
     a sentence in the compiler's introduction; a line in "Changes since PROV-TEMPLATE 2014-06-07".
@@ -261,7 +260,7 @@ has no mapping for a static runtime call.
   - The specification (in its own repository, committed with stage 6): `@performative` in the table and the schema, a section Performatives (`#performative`), a section Requests and replies (`#requests-replies`), a line in the changes.
 - **Verified, stage 7**: T31's 25 cases (2410 files) and `CompilerTest`'s catalogue (93 files) equal the base commit's (a worktree at 0a8d9f4b1, same normalisations and method as above); the same catalogue with and without the annotation differs in exactly the four classes, `doc.html`, `schema.json` and the copy of the bindings schema;
   the Java classes compile and run (the Jackson body of the design's §12.1 cannot set a value the caller does not give); the emitted Python and JavaScript run against a stand-in typed bean; a request body is valid and invalid against the request definition (networknt); the Turtle is read by rdflib.
-- **Not verified, stage 7**: the Turtle with another parser than rdflib; the request schema in jsonform; the classes in a real application's build (the worked example in the first application was read, not compiled with the new classes); T33 (Python `into` copies `None` over the typed bean's map of other keys when the request has none) and T34 (no JavaScript client is built) are not fixed;
+- **Not verified, stage 7**: the Turtle with another parser than rdflib; the request schema in jsonform; the classes in a real application's build (the first application's worked example was read, not compiled with the new classes); T33 (Python `into` copies `None` over the typed bean's map of other keys when the request has none) and T34 (no JavaScript client is built) are not fixed;
   the specification page rendered by ReSpec; `ajv` on the specification schema was run on one file with the member, accepted, and one with a wrong word, refused.
 - **Stage 8, two findings of the first application, 2026-11-16 (rulings F1 and F2, Luc: "Yes, fix a node's local part (Recommended)", "Honour the declared package (Recommended)")**:
   - A subtype may fix a node input by its local part (a text without prefix): `SubtypeChecker` accepts it (an output or a non-input is still refused, with the right message), the typed bean has no field for it, `toGeneral`/`fromGeneral`/the dispatcher and the Turtle treat it as a fixed text.

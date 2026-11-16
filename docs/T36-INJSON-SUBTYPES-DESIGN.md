@@ -28,8 +28,7 @@ Luc's requirements, in his words:
 - 2026-11-16: "The compiler extension would have to generate PAST expressions so that generated beans can be
   compiled to multiple target languages."
 
-The first application is the first application, whose design note
-(`the first application's design note`) records each request a person makes on one template,
+The first application's design records each request a person makes on one template,
 `user_interacting`, with one subtype per action. ProvToolbox must not depend on it: everything here is stated for any
 library.
 
@@ -456,8 +455,7 @@ those inputs come from three hands:
 - **the service, before it acts**: who asked and about what, as nodes of the store, and the time;
 - **the service, after it acted**: what became of the request (an outcome, the version made, a refusal's code).
 
-The typed bean does not tell them apart. Two things were found with the first application (the first application, a trial
-on 2026-11-16 with the beans of stage 3):
+The typed bean does not tell them apart. Two things were found with the first application (a trial on 2026-11-16 with the beans of stage 3):
 
 - Its JSON reader fills a typed bean straight from the body of a request, so a body
   `{"unitPrice": 2, "agent": 99, "outcome": "accepted"}` sets `agent` and `outcome`, which are not the caller's to set.
@@ -681,10 +679,9 @@ Checked against the code on 2026-11-16 while building:
 
 Luc, 2026-11-16, in the parent session: "a 'Java Pattern' connecting all the beans together according to flow.svg",
 "If it works, we might even extend T36 to generated this", and, once it had worked by hand in the first application:
-"ok, can you generate the flow in the compiler?". The real case is read, not copied:
-`the first application's source`, `RepricingRfqLineFlow.java` (the pattern as it runs in
-the service), `docs/REPRICE-INTERACTION.md` §3 and §5 (what was found; a first proposal of the declaration),
-`action-templates/src/main/resources/actions/actions.yaml` and `docs/worked-example-reprice/flow.svg`. The fixture of this
+"ok, can you generate the flow in the compiler?". The real case is read, not copied, from the first application's own repository: its `RepricingRfqLineFlow.java` (the pattern as it
+runs in the service), its report of what was found with a first proposal of the declaration, its roster of actions, and the
+drawing of the flow. The fixture of this
 part is T36's own.
 
 ### 13.1 Why
@@ -911,7 +908,7 @@ Asked of Luc in the session that builds it, each with the proposal and the view.
 ### 13.10 Not verified
 
 - Nothing of part E is built or run. The real case was read, not run.
-- That the six kinds cover every the first application request: one case was studied.
+- That the six kinds cover every request of the first application: one case was studied.
 - Whether the interface of rules can be written for Rust, and whether a Python or JavaScript application wants it.
 
 ### 13.11 Built (stage 9) and what the code changed in this section
@@ -940,7 +937,7 @@ Checked against the code and the real case, what changed:
    rules exists only when the flow has a supplied value.
 6. **`of`** (the subtype of a stood thing's record) is read and checked (it must refine the same template as `to`) and used for the beans of that thing; it is not
    tested.
-7. **The real case.** The flow of the hand pattern was written in this declaration, against a copy of the first application's catalogue made in a scratch directory (nothing of the first application was
+7. **The real case.** The flow of the hand pattern was written in this declaration, against a copy of the first application's catalogue made in a scratch directory (nothing of that application was
    changed or copied in): the compiler wrote `RepricingRfqLineFlow` with the 31 assignments into the backend's bean the hand pattern has (5 asked, 2 chained, 19 carried
    over, 3 constant, 2 supplied) and the same guards, and it compiles against the beans the compiler wrote for that catalogue. What differs: the agent and the clock are
    rules (E3), not parameters of `ask`, and the estimate's rule is given beans.

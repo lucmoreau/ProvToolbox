@@ -22,7 +22,9 @@ import java.util.Objects;
         "@input",
         "@output",
         "@sql.type",
-        "@sql.foreign"
+        "@sql.foreign",
+        "@inJson",
+        "@inJson.key"
 
 })
 public class AttributeDescriptor implements Descriptor {
@@ -50,6 +52,13 @@ public class AttributeDescriptor implements Descriptor {
     @JsonProperty("@unique")
     private boolean unique;
 
+    /** T36: the text variable (carrier) this value is encoded in, as a key of its JSON object. Never a bean field or a column. */
+    @JsonProperty("@inJson")
+    private String inJson;
+    /** T36 (R2): the key in the carrier when it differs from the variable's name. */
+    @JsonProperty("@inJson.key")
+    private String inJsonKey;
+
     /** T31: {@code true}, {@code false} or a transient method name, as declared in the bindings schema. */
     @JsonProperty("@transient")
     private Object transientDeclared;
@@ -59,6 +68,26 @@ public class AttributeDescriptor implements Descriptor {
     /** T31: the annotation in effect once the application's policy is applied; set by the compiler, never serialised. */
     @JsonIgnore
     private EffectivePrivacy effectivePrivacy;
+
+    @JsonProperty("@inJson")
+    public String getInJson() {
+        return inJson;
+    }
+
+    @JsonProperty("@inJson")
+    public void setInJson(String inJson) {
+        this.inJson = inJson;
+    }
+
+    @JsonProperty("@inJson.key")
+    public String getInJsonKey() {
+        return inJsonKey;
+    }
+
+    @JsonProperty("@inJson.key")
+    public void setInJsonKey(String inJsonKey) {
+        this.inJsonKey = inJsonKey;
+    }
 
     @JsonProperty("@transient")
     public Object getTransient() {
@@ -211,12 +240,12 @@ public class AttributeDescriptor implements Descriptor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AttributeDescriptor that = (AttributeDescriptor) o;
-        return Objects.equals(value, that.value) && Objects.equals(type, that.type) && Objects.equals(documentation, that.documentation) && Objects.equals(escape, that.escape) && Objects.equals(examplar, that.examplar) && input == that.input && output == that.output && Objects.equals(sqlType, that.sqlType) && Objects.equals(sqlForeign, that.sqlForeign);
+        return Objects.equals(value, that.value) && Objects.equals(type, that.type) && Objects.equals(documentation, that.documentation) && Objects.equals(escape, that.escape) && Objects.equals(examplar, that.examplar) && input == that.input && output == that.output && Objects.equals(sqlType, that.sqlType) && Objects.equals(sqlForeign, that.sqlForeign) && Objects.equals(inJson, that.inJson) && Objects.equals(inJsonKey, that.inJsonKey);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, type, documentation, escape, examplar, input, output, sqlType, sqlForeign);
+        return Objects.hash(value, type, documentation, escape, examplar, input, output, sqlType, sqlForeign, inJson, inJsonKey);
     }
 
     @JsonIgnore

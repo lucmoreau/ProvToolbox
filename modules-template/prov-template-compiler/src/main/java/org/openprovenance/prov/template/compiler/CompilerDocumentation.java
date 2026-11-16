@@ -6,6 +6,9 @@ import com.networknt.schema.Schema;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
+import org.openprovenance.prov.template.descriptors.AttributeDescriptorList;
+import org.openprovenance.prov.template.descriptors.InJsonValue;
+import org.openprovenance.prov.template.descriptors.InputFieldValue;
 import org.openprovenance.prov.template.descriptors.Descriptor;
 import org.openprovenance.prov.template.descriptors.EffectivePrivacy;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
@@ -157,6 +160,21 @@ public class CompilerDocumentation {
                 }
                 os.println(makeSpan(documentation,"csv_doc"));
 
+                // T36: the values this text variable holds as keys of its JSON object (empty, so nothing written, without @inJson)
+                List<InJsonValue> inJson = bindingsSchema.getInJsonOf(key);
+                if (!inJson.isEmpty()) {
+                    os.println("<div class='csv_injson'>Keys of the JSON object this variable holds (other keys are allowed):</div>");
+                    os.println("<ul class='csv_injson_keys'>");
+                    for (InJsonValue v : inJson) {
+                        os.println("<li>" + makeSpan(v.getKey(), "csv_injson_key")
+                                + makeSpan(convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(
+                                        Map.of(v.getName(), List.of(wrap(v))), v.getName()).getName()), "csv_type")
+                                + makeSpan(inJsonInput(v), "csv_input")
+                                + makeSpan(v.getDocumentation() == null ? "" : v.getDocumentation(), "csv_doc") + "</li>");
+                    }
+                    os.println("</ul>");
+                }
+
                 os.println("</li>");
 
                 column++;
@@ -179,6 +197,18 @@ public class CompilerDocumentation {
         }
 
 
+    }
+
+    /** T36: a value's descriptor as the one-item list the type lookups expect. */
+    private static Descriptor wrap(InJsonValue v) {
+        AttributeDescriptorList l = new AttributeDescriptorList();
+        l.setItems(List.of(v.getDescriptor()));
+        return l;
+    }
+
+    private static String inJsonInput(InJsonValue v) {
+        if (v.getInput() == InputFieldValue.Compulsory) return "I*";
+        return v.getInput() == InputFieldValue.Optional ? "I" : "";
     }
 
     public String makeSpan(String key, String classe) {

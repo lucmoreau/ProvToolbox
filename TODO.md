@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T36** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T37) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T37** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T38) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T37 | The bindings JSON schema in `prov-template` (`jsonschema/bindings-schema.json`, used by the plugin's `validate-bindings`) lacks most members the compiler reads: `@escape`, `@unique`, `@sql.foreign`, `@role`, `@sql.new.inputs`, `@sql.also.outputs`, `@semantic.type`, `@transient`, `@pseudonym`. | ⬜ BACKLOG | Template compiler / Tools | [T37 section](#-t37-the-bindings-json-schema-lacks-members-the-compiler-reads) |
 | T36 | `@inJson` declares the values a template keeps inside a JSON text variable, and a `subtype` of a template gets a typed bean generated from PAST for each target language; the Turtle says how each subtype relates to its general template. | ⬜ BACKLOG | Template compiler | [T36 section](#-t36-injson-values-and-template-subtypes) |
 | T34 | The jsweet build the compiler generates for a client project transpiles nothing: it predates provenance-templates-library's way of running jsweet (antrun `mvn -f pom-jsweet.xml` with `--add-opens`, the POM at the project's root). | ⬜ BACKLOG | Template compiler / JavaScript | [T34 section](#-t34-the-generated-jsweet-build-transpiles-nothing) |
 | T33 | The Python emitter writes Java's `null` as `0`, so a generated Python client never sees an absent value: it logs `None`, and an absent `@escape` field crashes the placeholder `escapeCsv`. | ⬜ BACKLOG | Template compiler / Python | [T33 section](#-t33-the-python-emitter-writes-null-as-0) |
@@ -39,6 +40,26 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+### ⬜ T37: The bindings JSON schema lacks members the compiler reads
+
+**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler / Tools.
+**Found 2026-11-16**, while adding `@inJson` to it for T36 (which added `@inJson` and `@inJson.key` and nothing else).
+
+`modules-template/prov-template/src/main/resources/jsonschema/bindings-schema.json` is what the Maven plugin's
+`validate-bindings` goal (`BindingsSchemaValidator`) hands to `ajv`. Its descriptor definitions are
+`additionalProperties: false` and name none of `@escape`, `@unique`, `@sql.foreign`, `@role`, `@sql.new.inputs`,
+`@sql.also.outputs`, `@semantic.type`, `@transient`, `@pseudonym` (counted by name in the file on 2026-11-16), all of which
+`NameDescriptor` and `AttributeDescriptor` read. T31's edit of the bindings schema went to the specification
+repository's copy (`prov-template/schemas/bindings-schema.json`), not to this one.
+
+**Not verified**: whether `validate-bindings` is run on a library that uses those members, and so whether it fails or only
+warns (the plugin has a `warning` switch); whether this copy is meant to follow the specification's.
+
+**Proposed**: bring the file level with `AttributeDescriptor` and `NameDescriptor`, or generate it from them; decide
+whether it or the specification's copy is the source.
+
+---
 
 ### ⬜ T36: `@inJson` values and template subtypes
 
@@ -99,7 +120,30 @@ has no mapping for a static runtime call.
   R10 "Accept as proposed"; R11 "Third class, all loops skip it" (47 loops in 31 files taught to skip it). R9 and R11
   are the two where he did not take the proposal. Table in the design, §8.
 
-**Built**: nothing yet.
+**Built** (branch `claude/t36-injson-subtypes-d38753`):
+- **Stage 1, `@inJson`, 2026-11-16** (R1, R2, R3 given; nothing else was needed):
+  - Descriptor: `@inJson` and `@inJson.key` on `AttributeDescriptor`; `@inJson` is also read on `NameDescriptor`, only to refuse it by name.
+  - Split at loading (R1): `InJsonSplitter.split`, called by `CompilerUtil.getBindingsSchema(String)` right after the file is read and
+    before the privacy policy. `TemplateBindingsSchema.getVar()` keeps the ordinary variables, so no generator changed;
+    `getInJson()` and `getInJsonOf(carrier)` hold the in-JSON values in the order of the file (`InJsonValue`).
+  - Refusals, each naming the file, the template and the variable (`InJsonException`, "T36: …"): carrier absent, a node,
+    itself in-JSON, or not `xsd:string`/`json`; `@inJson` on a node; no `@type` or one `getPastClassForType` does not know; an
+    empty `@inJson` or `@inJson.key`; `@inJson.key` alone; a repeated carrier and key; and `@inJson` with `@sql.type`,
+    `@sql.foreign`, `@unique`, `@escape`, `@output`, `@transient` (R8) or `@pseudonym` (R8). The same key in two carriers is accepted.
+  - Listing: the documentation page lists each carrier's keys under it, saying other keys are allowed; the generated JSON
+    schema adds them to the carrier's description (its type stays a string, and no property is added). A machine-readable
+    form waits for the Turtle (stage 5).
+  - The bindings schema of `prov-template` accepts the two members (see T37 for what else it lacks).
+  - Tests: `T36InJsonTest`, 7 cases. The whole module: 175 tests, 0 failures (168 before).
+- **Verified, 2026-11-16**: with in-JSON values added to a carrier of T31's approval template, the generated tree differs from
+  the tree without them in exactly `doc.html` and `schema.json` (apart from the verbatim copy of the bindings file), and no
+  other generated file mentions an in-JSON value's name. And a catalogue using none of T36 compiles as before: T31's 25
+  generated cases (2410 files) and `CompilerTest`'s catalogue (93 source files) are identical to the base commit's, run
+  in a second worktree at 0a8d9f4b1 and compared after the normalisations of T31's R14 (build date, `tmp_Conv`
+  counters, JSON key order) and the absolute path of the run.
+- **Not verified**: the Python, JavaScript and Rust trees of the second comparison beyond what the first two lists cover
+  (the Python files of `CompilerTest`'s catalogue are in it; Rust and jsweet output are not generated by either).
+  A reader of a `cbindings` file outside the compiler (the webjar copies it verbatim, with the `@inJson` entries).
 
 ---
 

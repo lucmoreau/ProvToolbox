@@ -111,7 +111,15 @@ public class CompilerJsonSchema {
                     privacyMark = " [@transient(" + ep.method + "): never persisted]";
                 }
             }
-            atype.put("description", documentation + " (" + jsonType + ")" + privacyMark);
+            // T36: a text variable that holds in-JSON values says which keys of its object they are; its type stays a string
+            String inJsonMark = "";
+            List<org.openprovenance.prov.template.descriptors.InJsonValue> inJson = bindingsSchema.getInJsonOf(key);
+            if (!inJson.isEmpty()) {
+                inJsonMark = " [a JSON object; declared keys, others allowed: " + inJson.stream()
+                        .map(v -> v.getKey() + " (" + convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(Map.of(v.getName(), List.of(wrapInJson(v))), v.getName()).getName()) + ")")
+                        .collect(java.util.stream.Collectors.joining(", ")) + "]";
+            }
+            atype.put("description", documentation + " (" + jsonType + ")" + privacyMark + inJsonMark);
 
 
 
@@ -190,6 +198,12 @@ public class CompilerJsonSchema {
 
         ((List<Map<String,Object>>)jsonSchemaAsAMap.get("allOf")).add(ifThenBlock);
 
+    }
+
+    private static Descriptor wrapInJson(org.openprovenance.prov.template.descriptors.InJsonValue v) {
+        org.openprovenance.prov.template.descriptors.AttributeDescriptorList l = new org.openprovenance.prov.template.descriptors.AttributeDescriptorList();
+        l.setItems(List.of(v.getDescriptor()));
+        return l;
     }
 
     public Object defaultValue(String jsonType) {

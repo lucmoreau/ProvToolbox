@@ -146,6 +146,16 @@
                 },
                 "@sql.type" : {
                     "type": "string"
+                },
+                "@inJson" : {
+                    "description": "T36: the text variable (a carrier) this value is encoded in, as a key of its JSON object; it is no bean field and no column",
+                    "type": "string",
+                    "minLength": 1
+                },
+                "@inJson.key" : {
+                    "description": "T36: the key in the carrier, when it differs from the variable's name",
+                    "type": "string",
+                    "minLength": 1
                 }
             },
             "additionalProperties": false

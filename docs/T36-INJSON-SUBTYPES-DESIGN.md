@@ -171,7 +171,7 @@ T36 compiles to exactly what it compiled to before.
 - `carries`: the in-JSON values of the general template this subtype has, each `required` or `optional`.
 
 Refused at compile time: `refines` naming no simple template; a fixed variable that is not an input value of that
-template (a node, an output, a carrier, an in-JSON value), or whose constant does not fit its type; a carried name
+template (an output, a carrier, an in-JSON value; a node input may be fixed by its local part, §13.8 F1, Luc 2026-11-16), or whose constant does not fit its type; a carried name
 that is not an in-JSON value of that template; two subtypes of one template with the same fixed values.
 
 `template-project-schema.json` gains the kind. **R11, ruled by Luc, 2026-11-16: "Third class, all loops skip it"**: the
@@ -188,7 +188,8 @@ dispatch, no log2prov reader. A store that loads the library sees the general te
 
 ### 5.2 The typed bean
 
-One PAST class per subtype, in the package the general template's input bean is in, named as beans are
+One PAST class per subtype, in the package the subtype declares (first built in the general template's package, the declared one ignored; changed
+2026-11-16, §13.8 F2: "Honour the declared package"), named as beans are
 (`Repricing_rfq_lineInputs`):
 
 - a constant `isA`, the subtype's fully qualified name, and a constant `refines`, the general template's;
@@ -675,4 +676,241 @@ Checked against the code on 2026-11-16 while building:
    carrier's text written from them); the Jackson body of §12.1; the documentation; the schema, with a request body checked against the
    request definition; the Turtle, read by rdflib; Python and JavaScript run against a stand-in typed bean (`check_request_reply.py`, `.js`); Rust.
    What T33 spoils is printed (`BLOCKED T33`), and T34 stops the JavaScript from being built into a client.
+
+## 13. Part E — the flow (proposed 2026-11-16; rulings E1 to E6, F1 and F2 given the same day; F1 and F2 built as stage 8, the flow as stage 9)
+
+Luc, 2026-11-16, in the parent session: "a 'Java Pattern' connecting all the beans together according to flow.svg",
+"If it works, we might even extend T36 to generated this", and, once it had worked by hand in the first application:
+"ok, can you generate the flow in the compiler?". The real case is read, not copied:
+`the first application's source`, `RepricingRfqLineFlow.java` (the pattern as it runs in
+the service), `docs/REPRICE-INTERACTION.md` §3 and §5 (what was found; a first proposal of the declaration),
+`action-templates/src/main/resources/actions/actions.yaml` and `docs/worked-example-reprice/flow.svg`. The fixture of this
+part is T36's own.
+
+### 13.1 Why
+
+With parts A to D a request has a request class, a user bean (the typed bean of a user subtype), a reply class, and the
+backend's record has a typed bean of its own (a subtype of the template the store loads). Nothing connects them. The
+application fills the backend's bean by hand from the user bean and from the records that made things as they stood, and
+nothing says where each value came from. Written by hand once (the reprice of an RFQ line), the connection is one class of
+three steps:
+
+```
+the request --ask--> the user bean --record--> the backend's inputs --(the store)--> its outputs --answer--> the reply
+                                         ^
+                  what stood: the inputs and the outputs of each record that made a thing as it stood
+```
+
+- **ask**: the request class becomes the user bean (`request.into`), and the user bean's own values are given: the caller's
+  node, the clock, the node of the document the request addresses (the output of the record that made it).
+- **record**: the user bean and the records that made things as they stood become the backend's typed bean.
+- **answer**: what the store made becomes the reply class (`Reply.of`). A refused and a failed request have their reply too.
+
+Every assignment is of one of six kinds, said beside it: **AS ASKED** (the value is the request's), **CHAINED** (the node
+is one a previous record made), **CARRIED OVER** (the value is a previous record's, unchanged), **CONSTANT** (the same for
+every record of this kind of act), **SUPPLIED** (the application computes it: a rule, not a copy), **AS MADE** (the backend
+record's, given back to the caller). The point is that every value of the backend's bean has **one stated origin**, so
+that the backend's record can be shown faithful to what the person asked: a value the person did not give cannot be
+passed off as asked. In the real case, counted by hand: of the 31 assignments into the backend's bean, 5 are as asked, 2
+chained, 19 carried over (13 from the line's record, 6 from the document's), 3 constant, 2 supplied. All but the two
+rules are mechanical once the origin is said.
+
+What the real case found, and the design takes from it:
+
+1. **Two previous records, not one.** The document as it stood and the line as it stood are made by two different
+   records as soon as another line changed in between. The declaration names each thing that stood.
+2. **The open keys of a carrier.** The line's undeclared keys are carried over; the act's are not (a removal's reason would
+   leak into the next reprice). The declaration says which, for each carrier.
+3. **A supplied value needs the beans, not strings picked out of them.** The estimate is the service's own sum of lines.
+4. **Types differ.** The user bean has a `Double` and an `Integer` where the backend has text.
+
+### 13.2 The declaration
+
+A new kind of catalogue entry, `"@type": "flow"`, in `templates` beside `simple` and `subtype`. For the real case:
+
+```json
+{ "@type": "flow",
+  "name": "repricing_rfq_line_flow",
+  "fullyQualifiedName": "com.example.flows.RepricingRfqLineFlow",
+  "package": "com.example.flows",
+  "from": "com.example.actions.RepricingRfqLine",
+  "to":   "com.example.records.ChangingLine",
+  "stood": {
+    "document": { "node": "document0", "madeBy": "document1", "addressed": "subject0" },
+    "line":     { "node": "part0",     "madeBy": "part1",     "identity": { "user": "line", "backend": "partLine" } }
+  },
+  "ask": {
+    "agent": { "supplied": "caller" },
+    "time":  { "supplied": "clock" }
+  },
+  "record": {
+    "agent": "asked", "time": "asked",
+    "partLine":      { "asked": "line",      "as": "text" },
+    "priceUnit":     { "asked": "unitPrice", "as": "text" },
+    "partPriceUnit": { "asked": "unitPrice", "as": "text" },
+    "priceBefore":     { "carried": "line.partPriceUnit" },
+    "partPriceBefore": { "carried": "line.partPriceUnit" },
+    "atype":           { "constant": "RepricingPurchaseOrderLine" },
+    "overwrite":       { "constant": "true" },
+    "partPriceSource": { "constant": "repriced" },
+    "estimate":        { "supplied": "estimate" },
+    "erpId1":          { "supplied": "version" },
+    "attributesOther": "absent"
+  },
+  "carry": { "line": "rest", "document": ["items", "currency", "type", "name1", "state1", "tenant"] },
+  "carryOpen": { "pattributes": "line" },
+  "reply": {
+    "answer":  { "outcome": { "when": { "made": "document1" }, "is": "accepted", "otherwise": "failed" },
+                 "result":  { "recorded": "erpId1" } },
+    "refused": { "outcome": { "constant": "refused" }, "code": { "argument": true } },
+    "failed":  { "outcome": { "constant": "failed" } }
+  }
+}
+```
+
+- `from`, `to`: the user subtype and the backend subtype it connects, by fully qualified name, both of the catalogue.
+- `stood`: each thing that stood before, by a name of the flow's own. `node` is the backend's input node that is the thing
+  (`document0`); `madeBy` is the output node of the previous record that made it (`document1`): CHAINED. `addressed` (optional):
+  the user bean's node that must be that same node (`subject0`): it is CHAINED in `ask`, and checked in `record` (the second
+  guard). `identity` (optional): the user value and the backend value that say which thing it is (`line` and `partLine`): checked in
+  `record` (the first guard), the user value converted to the backend's type.
+  Each stood thing is a previous record: a typed bean of the subtype `to` (or of the subtype named by an optional `of`), and
+  the outputs bean of its template, which `record` takes as arguments.
+- `ask`: the user bean's own values the request class does not give: each `supplied` or `constant`. The node `addressed` is
+  accounted for by `stood`.
+- `record`: every input of the backend subtype's typed bean that `carry` does not cover, with its kind: `asked` (the user
+  value of the same name, or `{"asked": name}`, with an optional `"as"`), `constant`, `supplied`, `{"carried": "thing.value"}`
+  (one value from one thing, under another name), or `absent` (deliberately left unset, with the reason as a comment).
+- `carry`: from which stood thing the remaining values come, by their own name: an explicit list, or `"rest"` (every input
+  of the backend's bean not accounted for otherwise, for at most one thing). `carryOpen`: for each carrier of the backend's
+  bean, the stood thing whose other keys (`<carrier>Other`) are carried; a carrier not named is left unset, and must say
+  so (`absent`).
+- `reply`: for each of `answer`, `refused`, `failed`, how each value of the reply class is given: `constant`;
+  `recorded` (a value of the backend's inputs just built, converted if needed: AS MADE); `made` (an output of the store);
+  `when`/`is`/`otherwise` (one of two constants according to whether an output exists); `supplied`; `argument` (a
+  parameter of the generated method, as a refusal's code is: SUPPLIED by the caller).
+
+**The rule that makes it worth having: every input is accounted for exactly once.** An input of the backend's typed bean is
+a field of it: the ordinary inputs the subtype does not fix, the carried in-JSON values, the map of other keys of each
+carrier. Each is in `record`, in `carry`, in `stood.*.node`, or in `carryOpen`, once. The same of the user bean's own
+values (not the request's, which `into` gives, nor the reply's, which `reply` gives) and of the reply's values in `answer`.
+The compiler refuses a declaration that leaves one out or names one twice.
+
+### 13.3 What is generated
+
+One PAST class `<Name>` in the flow's package (written by the same emitters), and one PAST interface
+`<Name>Rules`:
+
+```java
+public static Repricing_rfq_lineInputs ask(Repricing_rfq_lineRequest request, Rules rules, Document_collection_insertingOutputs documentMade)
+public static Changing_lineInputs record(Repricing_rfq_lineInputs asked,
+        Changing_lineInputs line, Document_collection_insertingOutputs lineMade,
+        Changing_lineInputs document, Document_collection_insertingOutputs documentMade, Rules rules)
+public static Repricing_rfq_lineReply answer(Repricing_rfq_lineInputs asked, Changing_lineInputs recorded, Document_collection_insertingOutputs made)
+public static Repricing_rfq_lineReply refused(Repricing_rfq_lineInputs asked, String code)
+public static Repricing_rfq_lineReply failed(Repricing_rfq_lineInputs asked)
+```
+
+- **Statements.** One assignment per origin, each preceded by a PAST `COMMENT` statement naming its kind (`AS ASKED`,
+  `CHAINED`, `CARRIED OVER`, `CONSTANT`, `SUPPLIED`, `AS MADE`) and what it is, in every language: the four emitters write
+  `COMMENT` statements already (read in `Poet`, `Python`, `JavaScript`, `Rust`), so PAST needs nothing added.
+- **Guards.** The two of §13.2, thrown as `IllegalArgumentException` through PAST `THROW`, naming the flow and the values.
+- **The rules interface.** One method per supplied value, named as the declaration names it, returning the type of the value
+  it fills, with, as arguments, the beans in scope in the step that uses it: for `ask`, the user bean so far and the
+  outputs of what stood; for `record`, the user bean and each stood thing's inputs and outputs; the application implements
+  it. The bodies of the rules are the application's and are not generated.
+- **Conversions.** `"as": "text"` is a call to a new method of the runtime class, `JsonText.text(value)`: an integer as its
+  digits, a double as the number text of §5.4 (`5.0` is `5`), a boolean as `true`/`false`, a string as itself, and `null` as
+  `null`. One method in each of the three ports, with vectors in the shared table. **The known limit stays**: `2.50` is `"2.5"`
+  until there is a decimal type (R6); the service that wrote `"2.50"` before is no longer faithful on that one point, and
+  a test states it. Another conversion is refused.
+- **Open keys.** A carried map is copied (`JsonText.others(map, [])`, which is a copy), the copy made only when the map is
+  present.
+- **Other kinds of value.** A value converted through `as` has the type of its target; a carried value is of the type it
+  has in both beans (the same type is checked).
+
+### 13.4 The refusals
+
+At compile time, naming the flow and the value, generation stops when:
+
+- `from` or `to` names no subtype of the catalogue, or the two are not subtypes (their templates may differ);
+- a value of the backend's bean, or of the user bean's own, or of the reply, is accounted for twice or not at all (the
+  declaration names the value, the places, and says which);
+- a name in the declaration is no value: an unknown input, a value that is a reply value where an own value is meant, a
+  node where a value is meant, an output where an input is meant;
+- `madeBy` is no output node of the stood thing's template, or `node` no input node of the backend's; the two are not of
+  the same type;
+- `asked` names a value that is not a request value of `from`; a carried value is not in the stood thing's bean or has a
+  different type from the target's; `as` is a conversion the compiler does not have, or a type it does not convert;
+- `rest` is used for two stood things; a `supplied` name is used twice;
+- `carryOpen` names a carrier the subtype does not carry, or an `absent` is given for a value that is compulsory in the
+  template and has no other origin (no value of the bean may be unset without being said).
+
+### 13.5 The descriptions
+
+- **Documentation.** For each flow, a table, one row per value of the backend's bean (then the user bean's own, then the
+  reply's): the kind, and where the value comes from (`the request's unitPrice, as text`; `the line's partPriceUnit`; `the
+  constant "repriced"`; `the application's rule estimate`). It is the page a person reads to see that the backend's record
+  is what they asked.
+- **Turtle.** A flow is a node of the `tpl:` vocabulary: `tpl:from` and `tpl:to` its two subtypes, and for each value a
+  blank node with `tpl:value`, `tpl:kind` and `tpl:source`. Proposed; nothing in the Turtle yet says anything of a value's
+  origin.
+- **JSON schema.** None: a flow has no record; the schema describes records.
+- **Specification.** The kind of entry, the six kinds and the rule, as parts C and D did.
+
+### 13.6 The languages
+
+Java, Python and JavaScript, as for the typed beans (T33 spoils the Python test for an absent map; T34 stops the
+JavaScript from being built into a client). Rust: none, as for the conversions (R4): the flow calls the runtime class, and
+the Rust emitter has no mapping for it; the rules interface is a trait the application would implement, not designed here.
+
+### 13.7 The test
+
+A fixture of T36's own: two previous records, a user subtype and a backend subtype, a flow that uses each kind (including
+`rest`, a `carried` under another name, `absent`, `carryOpen`, a conversion, the `when` form, an `argument`). The generated
+class is compiled and run against stand-ins of the application's rules: the backend's bean it builds equals a bean written by hand
+beside the test, field for field; each guard refuses a mismatch; a changed request value changes exactly the values that came
+from it (the test of the real case, `FlowCheck`: 2 of 13 differ); each kind of comment is beside its assignment; each refusal
+of §13.4. The same catalogue without the flow generates the same tree: a catalogue with no `flow` entry is unchanged.
+
+### 13.8 Rulings asked
+
+Asked of Luc in the session that builds it, each with the proposal and the view. **Ruled by Luc, 2026-11-16**, in the options he chose
+(the first of each, the one recommended):
+
+- **E1. Where the entry lives. "Entry in templates (Recommended)"**: `@type: flow` in `templates`, a fourth class; a base class for the client-side entries; the 36 skip lines call one method.
+- **E2. How "exactly once" is written. "rest and absent (Recommended)"**: `rest` for at most one stood thing; `absent` accounts for a value left unset; every other input named once.
+- **E3. The supplied values. "Rules interface (Recommended)"**: one method per supplied value, the beans as arguments; a refusal's code is an argument of `refused`.
+- **E4. Conversions. "Text only, via JsonText.text (Recommended)"**: a new null-safe runtime method in all three ports with vectors; other conversions refused until a case needs one.
+- **E5. What describes a flow. "Documentation and Turtle (Recommended)"**: a table in the page and `tpl:` terms in the Turtle (the names are mine); nothing in the JSON schema.
+- **E6. Rust. "No flow in Rust (Recommended)"**: the same decision as the conversions of R4.
+- **F1. A subtype fixes a node. "Yes, fix a node's local part (Recommended)"**: a node input may be fixed with a text constant without prefix; the node is no request or reply value.
+  Built (stage 8): `SubtypeChecker` accepts it, the constant is the text the bean's field holds, the Turtle and the documentation say `variable = local part`.
+- **F2. The subtype's package. "Honour the declared package (Recommended)"**: the typed bean, the request and the reply are in the subtype's `package`, under `.client.integrator`.
+  Built (stage 8): `ConfigProcessor` registers the subtype's package, `typedBeanType` and `messageType` use it; the dispatcher imports from there. A flow takes its own declared package.
+
+### 13.9 Check against the code (2026-11-16)
+
+1. **PAST has what is needed.** `Comment` is a `Statement` (`StatementKind.COMMENT`) and the four emitters write it; a class
+   can be an interface (`pastFactory.INTERFACE`, used by the completers and enactors). Nothing is added to PAST.
+2. **A fourth class of entry** is the largest change, as R11 was: every loop over `configs.templates` already skips
+   a `SubtypeTemplateCompilerConfig` through `TemplateConfigurationEnum.isSubtype`. A flow is skipped by the same loops. Proposed: one
+   base class for the entries that are client side only, and the skip made by a method that says so, replacing the 36
+   call sites mechanically (checked by an unchanged tree).
+3. **The outputs bean** of the general template has a public field for each output variable, named as the variable
+   (`ApprovalOutputs.approving`), as the real case uses it (`docMade.document1`).
+4. **`JsonText.toText` writes `null` as the text `null`**, so it cannot be the conversion: a null value must stay null.
+   A null-safe `text` is added to the runtime.
+5. **A subtype's `package` is ignored** (finding of the real case, confirmed: `typedBeanType` takes the package of the
+   general template's input bean; the checker only requires the member to be present). A flow's class is not a bean of a
+   template, so it takes its own declared `package`.
+6. **A subtype cannot fix a node variable** (finding, confirmed: `SubtypeChecker` refuses it, "is a node, not a value").
+   In the real case this made one backend subtype stand for adding and repricing, and the act type became a constant of the
+   flow.
+
+### 13.10 Not verified
+
+- Nothing of part E is built or run. The real case was read, not run.
+- That the six kinds cover every the first application request: one case was studied.
+- Whether the interface of rules can be written for Rust, and whether a Python or JavaScript application wants it.
 

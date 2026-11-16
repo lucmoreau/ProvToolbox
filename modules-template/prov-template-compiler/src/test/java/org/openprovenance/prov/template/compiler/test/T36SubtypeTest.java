@@ -83,8 +83,9 @@ public class T36SubtypeTest extends T36Fixture {
         refused("refines a composite", List.of(subtype("x", "{}", "{}").replace("\"refines\":\"" + FQN, "\"refines\":\"t31.ApprovalComposite"),
                 "{\"@type\":\"composite\",\"fullyQualifiedName\":\"t31.ApprovalComposite\",\"name\":\"approval_composite\","
                         + "\"package\":\"p\",\"consistsOf\":\"" + FQN + "\",\"sharing\":[\"approving\"]}"), "not a simple template");
-        refused("fixes a node", List.of(subtype("x", "{\"approver\":\"ex:a\"}", "{}")), "fixed variable approver", "is a node");
-        refused("fixes an output", List.of(subtype("x", "{\"approving\":\"ex:a\"}", "{}")), "fixed variable approving", "is a node");
+        refused("fixes a node with a prefixed name", List.of(subtype("x", "{\"approver\":\"ex:a\"}", "{}")), "fixed variable approver", "is a node", "local part", "without prefix");
+        refused("fixes a node with a number", List.of(subtype("x", "{\"approver\":3}", "{}")), "fixed variable approver", "is a node", "local part");
+        refused("fixes an output", List.of(subtype("x", "{\"approving\":\"a\"}", "{}")), "fixed variable approving", "is not an input");
         refused("fixes an unknown variable", List.of(subtype("x", "{\"nobody\":\"a\"}", "{}")), "nobody is not a variable");
         refused("fixes a carrier", List.of(subtype("x", "{\"customer_hash\":\"a\"}", "{}")), "customer_hash is a carrier");
         refused("fixes an in-JSON value", List.of(subtype("x", "{\"priceBefore\":1.5}", "{}")), "priceBefore is an in-JSON value");

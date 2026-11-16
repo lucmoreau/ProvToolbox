@@ -80,12 +80,16 @@ public class SubtypeChecker {
                 if (!var.containsKey(v) || var.get(v) == null) {
                     throw refusal(st, "fixed variable " + v + " is not a variable of " + st.refines);
                 }
-                if (!du.getAttributeVariable(v, var.get(v).get(0)).isPresent()) {
-                    throw refusal(st, "fixed variable " + v + " is a node, not a value");
-                }
                 if (!du.isInput(v, schema)) throw refusal(st, "fixed variable " + v + " is not an input of " + st.refines);
                 if (du.isOutput(v, schema)) throw refusal(st, "fixed variable " + v + " is an output of " + st.refines);
                 String type = du.getFromDescriptor(var.get(v).get(0), AttributeDescriptor::getType, nd -> null);
+                if (!du.getAttributeVariable(v, var.get(v).get(0)).isPresent()) {
+                    // Luc, 2026-11-16: "Yes, fix a node's local part": the bean's field holds the node's local part as text
+                    if (!(constant instanceof String) || ((String) constant).isEmpty() || ((String) constant).contains(":")) {
+                        throw refusal(st, "fixed variable " + v + " is a node: its constant is the node's local part, a text without prefix (not " + constant + ")");
+                    }
+                    type = "xsd:string";
+                }
                 String why = misfit(type, constant);
                 if (why != null) throw refusal(st, "fixed variable " + v + " (" + type + "): the constant " + constant + " " + why);
                 fixedText.put(v, String.valueOf(constant));

@@ -201,6 +201,7 @@ public class CompilerTurtle {
     private String constant(TemplateBindingsSchema schema, String variable, Object value) {
         String type = ConfigProcessor.descriptorUtils.getFromDescriptor(schema.getVar().get(variable).get(0),
                 org.openprovenance.prov.template.descriptors.AttributeDescriptor::getType, nd -> null);
+        if (type == null) return literal(String.valueOf(value));   // a node: its local part
         switch (type) {
             case "xsd:boolean": return String.valueOf(value);
             case "xsd:string": return literal(String.valueOf(value));

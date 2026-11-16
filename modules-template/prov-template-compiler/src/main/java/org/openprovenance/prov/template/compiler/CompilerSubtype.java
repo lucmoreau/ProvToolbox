@@ -94,9 +94,9 @@ public class CompilerSubtype {
         return res;
     }
 
-    /** The class of a subtype's typed bean, named as the beans are, in the package of the refined template's input bean. */
+    /** The class of a subtype's typed bean, named as the beans are, in the subtype's own package (Luc, 2026-11-16: "Honour the declared package"). */
     ClassName typedBeanType(Locations locations, SimpleTemplateCompilerConfig simple, SubtypeTemplateCompilerConfig st) {
-        return get(compilerUtil.beanNameClass(st.name, BeanDirection.INPUTS), locations.getBeansPackage(simple.fullyQualifiedName, BeanDirection.INPUTS));
+        return get(compilerUtil.beanNameClass(st.name, BeanDirection.INPUTS), locations.getBeansPackage(st.fullyQualifiedName, BeanDirection.INPUTS));
     }
 
     ClassName generalBeanType(Locations locations, SimpleTemplateCompilerConfig simple) {
@@ -318,6 +318,7 @@ public class CompilerSubtype {
     /** A fixed constant, of the PAST type of the variable's declared type. */
     Expression constant(TemplateBindingsSchema schema, String variable, Object value) {
         String type = descriptorUtils.getFromDescriptor(schema.getVar().get(variable).get(0), AttributeDescriptor::getType, nd -> null);
+        if (type == null) return CONSTANT((String) value);   // a node: its local part, as text
         switch (type) {
             case "xsd:int": return CONSTANT(((Number) value).intValue());
             case "xsd:long": return CONSTANT(((Number) value).longValue());
@@ -432,7 +433,7 @@ public class CompilerSubtype {
     /** {@code <Name>Request} or {@code <Name>Reply}, in the package of the subtype's typed bean. */
     ClassName messageType(Locations locations, SimpleTemplateCompilerConfig simple, SubtypeTemplateCompilerConfig st, String performative) {
         String suffix = PerformativeChecker.REQUEST.equals(performative) ? REQUEST_SUFFIX : REPLY_SUFFIX;
-        return get(compilerUtil.capitalize(st.name) + suffix, locations.getBeansPackage(simple.fullyQualifiedName, BeanDirection.INPUTS));
+        return get(compilerUtil.capitalize(st.name) + suffix, locations.getBeansPackage(st.fullyQualifiedName, BeanDirection.INPUTS));
     }
 
     private SpecificationFile generateRequestOrReply(TemplatesProjectConfiguration configs, Locations locations, SubtypeTemplateCompilerConfig st,

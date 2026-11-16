@@ -75,7 +75,7 @@ public abstract class T36Fixture extends TestCase {
 
     String subtype(String name, String fixed, String carries) {
         return "{\"@type\":\"subtype\",\"name\":\"" + name + "\",\"fullyQualifiedName\":\"t31." + name + "\","
-                + "\"package\":\"org.example.t31.approval\",\"refines\":\"" + FQN + "\","
+                + "\"package\":\"org.example.t36.approval\",\"refines\":\"" + FQN + "\","
                 + "\"fixed\":" + fixed + ",\"carries\":" + carries + "}";
     }
 
@@ -172,4 +172,32 @@ public abstract class T36Fixture extends TestCase {
         return new String[]{String.valueOf(p.waitFor()), out};
     }
 
+
+    /** Compiles the given generated sources (paths below the client project's java directory) with what they refer to; null when JsonText is not on the class path. */
+    ClassLoader compileSources(String id, List<String> relativePaths) throws Exception {
+        Class<?> jt = T36JsonTextTest.runtime();
+        if (jt == null) {
+            System.out.println("[T36] JsonText is not in the prov-model on the classpath: the generated classes are not compiled (build with -am)");
+            return null;
+        }
+        Path src = Path.of(OUT + id + "/libs/t36/t36_cli/src/main/java");
+        Path out = Path.of(OUT + id + "/classes");
+        Files.createDirectories(out);
+        List<String> cp = new ArrayList<>();
+        for (String prop : List.of("java.class.path", "jdk.module.path")) {
+            String v = System.getProperty(prop);
+            if (v != null && !v.isEmpty()) cp.addAll(Arrays.asList(v.split(File.pathSeparator)));
+        }
+        cp.add(new File(jt.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath());
+        List<String> args = new ArrayList<>(List.of("-proc:none", "-nowarn", "-d", out.toString(), "-sourcepath", src.toString(), "-classpath", String.join(File.pathSeparator, cp)));
+        for (String f : relativePaths) args.add(src.resolve(f).toString());
+        StringWriter messages = new StringWriter();
+        int rc = ToolProvider.getSystemJavaCompiler().run(null, null, new java.io.OutputStream() {
+            public void write(int b) {
+                messages.write(b);
+            }
+        }, args.toArray(new String[0]));
+        assertEquals("the generated classes compile: " + messages, 0, rc);
+        return new URLClassLoader(new URL[]{out.toUri().toURL()}, getClass().getClassLoader());
+    }
 }

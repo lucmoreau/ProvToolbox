@@ -346,6 +346,8 @@ public class ConfigProcessor implements Constants {
         packages.put(configs.name, configs.root_package);
 
         for (TemplateCompilerConfig aconfig: configs.templates) {
+            // T36 (Luc, 2026-11-16: "Honour the declared package"): the typed bean, the request and the reply of a subtype are in the subtype's own package
+            if (aconfig instanceof SubtypeTemplateCompilerConfig && aconfig.package_ != null) packages.put(aconfig.fullyQualifiedName, aconfig.package_);
             if (TemplateConfigurationEnum.isSubtype(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             shortNames.put(aconfig.fullyQualifiedName, aconfig.name);
 

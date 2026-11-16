@@ -884,4 +884,14 @@ public class T36FlowTest extends T36FlowFixture {
         wellFormed("emitxt", List.of(LINE_CHANGE, ASK_SEND, SENDING, xt("t36.LineChange")), "SendFlow", "SendFlowRules");
         wellFormed("emitmr", List.of(LINE_CHANGE, LINE_REGISTERING, REPRICE, FLOW_MR), "AddFlow", "AddFlowRules");
     }
+
+    // ---- the generator's own type checker (T41, finding of the first application) --------------------------------------------------
+
+    public void testTheTypeCheckerKnowsTheTypesOfTheJsonTextRuntime() throws Exception {
+        generate("typecheck", List.of(LINE_CHANGE, LINE_REGISTERING, REPRICE, FLOW_MR));
+        String log = Files.readString(Path.of(OUT + "typecheck/generation.log"));
+        assertFalse("no 'cannot assign Object to Map' for JsonText.newObject(): " + log.lines().filter(l -> l.contains("Incompatible")).limit(3).collect(Collectors.toList()),
+                log.contains("Incompatible types"));
+        assertFalse(log, log.contains("  ERROR:"));
+    }
 }

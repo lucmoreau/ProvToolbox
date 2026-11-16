@@ -156,6 +156,11 @@
                     "description": "T36: the key in the carrier, when it differs from the variable's name",
                     "type": "string",
                     "minLength": 1
+                },
+                "@performative" : {
+                    "description": "T36 part D: whose content the value is: the caller's (request) or the service's (reply). Absent: the service's own. A subtype gets a request and a reply class from it.",
+                    "type": "string",
+                    "enum": ["request", "reply"]
                 }
             },
             "additionalProperties": false

@@ -42,6 +42,11 @@ public class InJsonValue {
         return descriptor.getDocumentation();
     }
 
+    /** T36 part D: {@code "request"}, {@code "reply"} or null (the service's own). */
+    public String getPerformative() {
+        return descriptor.getPerformative();
+    }
+
     public InputFieldValue getInput() {
         return descriptor.getInput();
     }

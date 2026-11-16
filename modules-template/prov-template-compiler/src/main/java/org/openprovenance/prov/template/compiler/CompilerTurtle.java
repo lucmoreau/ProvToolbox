@@ -63,23 +63,43 @@ public class CompilerTurtle {
         sb.append("@prefix tpl: <").append(TPL).append("> .\n");
         sb.append("@prefix : <").append(iri(configs.turtleNamespace)).append("> .\n\n");
 
-        vocabulary(sb);
-
         List<SubtypeTemplateCompilerConfig> subtypes = CompilerSubtype.subtypes(configs);
+        boolean performative = false;   // part D: the term tpl:performative is declared only when some value has one
+        if (configs.templates != null) {
+            for (TemplateCompilerConfig c : configs.templates) {
+                if (c instanceof SimpleTemplateCompilerConfig && !performatives(compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) c)).isEmpty()) performative = true;
+            }
+        }
+        vocabulary(sb, performative);
+
         if (configs.templates != null) {
             for (TemplateCompilerConfig c : configs.templates) {
                 if (!(c instanceof SimpleTemplateCompilerConfig)) continue;
                 SimpleTemplateCompilerConfig simple = (SimpleTemplateCompilerConfig) c;
                 TemplateBindingsSchema schema = compilerUtil.getBindingsSchema(simple);
                 List<SubtypeTemplateCompilerConfig> mine = subtypes.stream().filter(st -> st.refines.equals(simple.fullyQualifiedName)).collect(Collectors.toList());
-                if (schema.getInJson().isEmpty() && mine.isEmpty()) continue;
+                if (schema.getInJson().isEmpty() && mine.isEmpty() && performatives(schema).isEmpty()) continue;
                 template(sb, simple, schema, mine);
             }
         }
         return sb.toString();
     }
 
-    private void vocabulary(StringBuilder sb) {
+    /** Part D (R15, ruled): the ordinary values of the template that have a performative, by name. They get a term, as in-JSON values do. */
+    static Map<String, String> performatives(TemplateBindingsSchema schema) {
+        Map<String, String> res = new java.util.LinkedHashMap<>();
+        for (Map.Entry<String, List<org.openprovenance.prov.template.descriptors.Descriptor>> e : schema.getVar().entrySet()) {
+            org.openprovenance.prov.template.descriptors.Descriptor d = e.getValue().get(0);
+            if (d instanceof org.openprovenance.prov.template.descriptors.AttributeDescriptorList) {
+                org.openprovenance.prov.template.descriptors.AttributeDescriptor ad = ((org.openprovenance.prov.template.descriptors.AttributeDescriptorList) d).getItems().get(0);
+                if (ad.getPerformative() != null) res.put(e.getKey(), ad.getPerformative());
+            }
+        }
+        for (InJsonValue v : schema.getInJson().values()) if (v.getPerformative() != null) res.put(v.getName(), v.getPerformative());
+        return res;
+    }
+
+    private void vocabulary(StringBuilder sb, boolean performative) {
         sb.append("# The vocabulary\n");
         property(sb, "fullyQualifiedName", "owl:DatatypeProperty", "fully qualified name", "The catalogue's fully qualified name of the template or subtype a class stands for.");
         property(sb, "inJson", "owl:DatatypeProperty", "in JSON", "The text variable (the carrier) of the template that holds this value, as a key of its JSON object.");
@@ -89,6 +109,9 @@ public class CompilerTurtle {
         property(sb, "value", "owl:DatatypeProperty", "value", "The constant a subtype fixes a variable to.");
         property(sb, "requires", "owl:ObjectProperty", "requires", "An in-JSON value every record of the subtype must give.");
         property(sb, "mayCarry", "owl:ObjectProperty", "may carry", "An in-JSON value a record of the subtype may give. A carrier is open: other keys are allowed.");
+        if (performative) {
+            property(sb, "performative", "owl:DatatypeProperty", "performative", "\"request\" or \"reply\": whose content the value is, the caller's or the service's. A value without it is the service's own.");
+        }
         sb.append("\n");
     }
 
@@ -114,7 +137,21 @@ public class CompilerTurtle {
                     .append("    rdfs:range ").append(range(v.getType())).append(" ;\n")
                     .append("    tpl:inJson ").append(literal(v.getCarrier())).append(" ");
             if (!v.getKey().equals(v.getName())) sb.append(";\n    tpl:key ").append(literal(v.getKey())).append(" ");
+            if (v.getPerformative() != null) sb.append(";\n    tpl:performative ").append(literal(v.getPerformative())).append(" ");
             sb.append(".\n\n");
+        }
+
+        // part D (R15, ruled): an ordinary value that has a performative has a term too, without tpl:inJson
+        for (Map.Entry<String, String> p : performatives(schema).entrySet()) {
+            if (schema.getInJson().containsKey(p.getKey())) continue;
+            org.openprovenance.prov.template.descriptors.AttributeDescriptor ad =
+                    ((org.openprovenance.prov.template.descriptors.AttributeDescriptorList) schema.getVar().get(p.getKey()).get(0)).getItems().get(0);
+            sb.append(property(simple, p.getKey())).append(" a owl:DatatypeProperty ;\n")
+                    .append("    rdfs:label ").append(literal(p.getKey())).append(" ;\n");
+            if (ad.getDocumentation() != null) sb.append("    rdfs:comment ").append(literal(ad.getDocumentation())).append(" ;\n");
+            sb.append("    rdfs:domain ").append(cls).append(" ;\n")
+                    .append("    rdfs:range ").append(range(ad.getType())).append(" ;\n")
+                    .append("    tpl:performative ").append(literal(p.getValue())).append(" .\n\n");
         }
 
         for (SubtypeTemplateCompilerConfig st : subtypes) {
@@ -137,7 +174,11 @@ public class CompilerTurtle {
     // ---- terms and literals ------------------------------------------------------------------------------------------------
 
     private static String property(SimpleTemplateCompilerConfig simple, InJsonValue v) {
-        return ":" + local(simple.name) + "-" + local(v.getName());
+        return property(simple, v.getName());
+    }
+
+    private static String property(SimpleTemplateCompilerConfig simple, String valueName) {
+        return ":" + local(simple.name) + "-" + local(valueName);
     }
 
     /** A local name: letters, digits and underscores; anything else is replaced by an underscore. */

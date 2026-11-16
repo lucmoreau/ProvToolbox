@@ -481,6 +481,7 @@ public class ConfigProcessor implements Constants {
             // T36 (stage 5): the schema of each subtype's typed bean, beside the templates'
             for (SubtypeTemplateCompilerConfig st : CompilerSubtype.subtypes(configs)) {
                 compilerJsonSchema.generateSubtypeJSonSchema(st, compilerUtil.getBindingsSchema(CompilerSubtype.refined(configs, st)), "#/definitions/");
+                compilerJsonSchema.generateMessageJSonSchemas(st, compilerUtil.getBindingsSchema(CompilerSubtype.refined(configs, st)), "#/definitions/");
             }
             compilerJsonSchema.generateJSonSchemaEnd(configs.jsonschema, cli_src_dir +"/../resources");
         }
@@ -549,6 +550,8 @@ public class ConfigProcessor implements Constants {
         // T36 (stage 3): the typed beans of the catalogue's subtypes and their dispatcher; nothing for a catalogue without subtype.
         // Generated before the project's POM is written, which needs prov-model (JsonText) when there is one.
         for (SpecificationFile typedBean : compilerSubtype.generateTypedBeans(configs, locations)) typedBean.save();
+        // T36 part D: the request and the reply of each subtype that has a value with a performative
+        for (SpecificationFile message : compilerSubtype.generateRequestReplyClasses(configs, locations)) message.save();
         SpecificationFile subtypes = compilerSubtype.generateDispatcher(configs, locations, SUBTYPES);
         if (subtypes != null) subtypes.save();
 

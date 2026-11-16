@@ -195,10 +195,15 @@ public class CompilerSubtype {
      * take the derives of the struct away), which only the conversions use.
      */
     private Class withoutMethods(Class c) {
+        return withoutMethods(c, "The conversions $N and $N, the constant $N and the maps of other keys are not in Rust: its registry maps no static call to the JSON text runtime (T36, R4).\n",
+                "toGeneral", "fromGeneral", REFINES);
+    }
+
+    /** The class with its fields and no method, and the given comment saying why. */
+    private Class withoutMethods(Class c, String why, Object... arguments) {
         Class r = compilerUtil.getPastFactory().CLASS(c.name).MODIFIERS(c.modifiers.toArray(new Modifier[0]));
         r.comments.addAll(c.comments);
-        r.COMMENT("The conversions $N and $N, the constant $N and the maps of other keys are not in Rust: its registry maps no static call to the JSON text runtime (T36, R4).\n",
-                "toGeneral", "fromGeneral", REFINES);
+        r.COMMENT(why, arguments);
         for (Field f : c.fields) {
             if (f.modifiers.contains(Modifier.STATIC) || f.name.endsWith(OTHER_SUFFIX)) continue;
             Field g = FIELD(f.name, f.type).MODIFIERS(f.modifiers.toArray(new Modifier[0]));
@@ -321,6 +326,177 @@ public class CompilerSubtype {
             case "xsd:boolean": return CONSTANT((Boolean) value);
             default: return CONSTANT((String) value);
         }
+    }
+
+    // ---- the request and the reply (part D, §12) -------------------------------------------------------------------------
+
+    public static final String REQUEST_SUFFIX = "Request";
+    public static final String REPLY_SUFFIX = "Reply";
+
+    /** A value of a typed bean, with the performative it was declared with ({@code request}, {@code reply} or null: the service's own). */
+    static final class Value {
+        final String name;
+        final TypeName type;
+        final String documentation;
+        final String performative;
+        /** For an in-JSON value, its carrier and key; null for an ordinary value. */
+        final String carrier;
+        final String key;
+
+        Value(String name, TypeName type, String documentation, String performative, String carrier, String key) {
+            this.name = name;
+            this.type = type;
+            this.documentation = documentation;
+            this.performative = performative;
+            this.carrier = carrier;
+            this.key = key;
+        }
+    }
+
+    /**
+     * The values of a subtype's typed bean, in the order of its fields: the ordinary inputs it keeps, then the in-JSON values
+     * it carries, with the performative of each (design §12.4: a value is the subtype's when it is an ordinary input the
+     * subtype does not fix, or an in-JSON value it carries).
+     */
+    List<Value> values(TemplateBindingsSchema schema, SubtypeTemplateCompilerConfig st) {
+        Map<String, List<Descriptor>> var = schema.getVar();
+        List<Value> res = new ArrayList<>();
+        for (String key : ordinaryInputs(schema, st)) {
+            Descriptor d = var.get(key).get(0);
+            String doc = descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+            String performative = descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getPerformative, NameDescriptor::getPerformative);
+            res.add(new Value(key, compilerUtil.getPastTypeForDeclaredType(var, key), doc, performative, null, null));
+        }
+        for (Map.Entry<String, List<InJsonValue>> e : carried(schema, st).entrySet()) {
+            for (InJsonValue v : e.getValue()) {
+                res.add(new Value(v.getName(), compilerUtil.getPastClassForType(v.getType()), v.getDocumentation(), v.getPerformative(), e.getKey(), v.getKey()));
+            }
+        }
+        return res;
+    }
+
+    /**
+     * The names of a subtype's values by whose content they are: {@code request}, {@code reply}, and {@code service} for the rest
+     * (no performative), each in the order of the typed bean's fields. Groups with no value are not in the map.
+     */
+    static Map<String, List<String>> messageGroups(TemplateBindingsSchema schema, SubtypeTemplateCompilerConfig st) {
+        Map<String, List<String>> groups = new LinkedHashMap<>();
+        for (String g : List.of(PerformativeChecker.REQUEST, PerformativeChecker.REPLY, "service")) groups.put(g, new ArrayList<>());
+        for (String key : ordinaryInputs(schema, st)) {
+            String p = descriptorUtils.getFromDescriptor(schema.getVar().get(key).get(0), AttributeDescriptor::getPerformative, NameDescriptor::getPerformative);
+            groups.get(p == null ? "service" : p).add(key);
+        }
+        for (List<InJsonValue> values : carried(schema, st).values()) {
+            for (InJsonValue v : values) groups.get(v.getPerformative() == null ? "service" : v.getPerformative()).add(v.getName());
+        }
+        groups.values().removeIf(List::isEmpty);
+        return groups;
+    }
+
+    /**
+     * The carriers whose other-keys map the request class keeps (R13, ruled): those the subtype carries values in, of which
+     * every value the <em>template</em> declares is a request value. A carrier that also holds a reply value, or a value of
+     * the service's own that this subtype does not carry, gets none: a key under such a value's name would let the caller
+     * set it.
+     */
+    static List<String> requestCarriers(TemplateBindingsSchema schema, SubtypeTemplateCompilerConfig st) {
+        List<String> res = new ArrayList<>();
+        for (String carrier : carried(schema, st).keySet()) {
+            boolean allRequest = true;
+            for (InJsonValue v : schema.getInJsonOf(carrier)) {
+                if (!PerformativeChecker.REQUEST.equals(v.getPerformative())) allRequest = false;
+            }
+            if (allRequest) res.add(carrier);
+        }
+        return res;
+    }
+
+    /** The request and reply classes of every subtype that has a request or a reply value; empty when no value has a performative. */
+    public List<SpecificationFile> generateRequestReplyClasses(TemplatesProjectConfiguration configs, Locations locations) {
+        List<SpecificationFile> res = new ArrayList<>();
+        for (SubtypeTemplateCompilerConfig st : subtypes(configs)) {
+            SimpleTemplateCompilerConfig simple = refined(configs, st);
+            TemplateBindingsSchema schema = compilerUtil.getBindingsSchema(simple);
+            List<Value> values = values(schema, st);
+            for (String performative : List.of(PerformativeChecker.REQUEST, PerformativeChecker.REPLY)) {
+                List<Value> mine = new ArrayList<>();
+                for (Value v : values) if (performative.equals(v.performative)) mine.add(v);
+                List<String> others = PerformativeChecker.REQUEST.equals(performative) ? requestCarriers(schema, st) : List.of();
+                if (mine.isEmpty()) continue;
+                res.add(generateRequestOrReply(configs, locations, st, simple, performative, mine, others));
+            }
+        }
+        return res;
+    }
+
+    /** {@code <Name>Request} or {@code <Name>Reply}, in the package of the subtype's typed bean. */
+    ClassName messageType(Locations locations, SimpleTemplateCompilerConfig simple, SubtypeTemplateCompilerConfig st, String performative) {
+        String suffix = PerformativeChecker.REQUEST.equals(performative) ? REQUEST_SUFFIX : REPLY_SUFFIX;
+        return get(compilerUtil.capitalize(st.name) + suffix, locations.getBeansPackage(simple.fullyQualifiedName, BeanDirection.INPUTS));
+    }
+
+    private SpecificationFile generateRequestOrReply(TemplatesProjectConfiguration configs, Locations locations, SubtypeTemplateCompilerConfig st,
+                                                     SimpleTemplateCompilerConfig simple, String performative, List<Value> values, List<String> otherCarriers) {
+        found = true;
+        StackTraceElement stackTraceElement = compilerUtil.thisMethodAndLine();
+        ClassName typed = typedBeanType(locations, simple, st);
+        ClassName self = messageType(locations, simple, st, performative);
+        boolean request = PerformativeChecker.REQUEST.equals(performative);
+
+        Class pastClass = compilerUtil.getPastFactory().CLASS(self.simpleName).MODIFIERS(Modifier.PUBLIC)
+                .COMMENT("The $N of the subtype $N: only the values that are content of the $N (declared with @performative \"$N\").\n",
+                        request ? "request" : "reply", st.fullyQualifiedName, request ? "request" : "reply", performative)
+                .COMMENT("It is copied into the typed bean $N with $N, and built from one with $N; it has no field for any other value.\n",
+                        typed.simpleName, "into", "of");
+        for (Value v : values) {
+            pastClass.FIELDS(FIELD(v.name, v.type).MODIFIERS(Modifier.PUBLIC)
+                    .COMMENT("$N: $L\n", v.name, v.documentation == null ? CompilerBeanGenerator.JAVADOC_NO_DOCUMENTATION : v.documentation));
+        }
+        for (String carrier : otherCarriers) {
+            pastClass.FIELDS(FIELD(otherKeysField(carrier), MAP_STRING_OBJECT).MODIFIERS(Modifier.PUBLIC)
+                    .COMMENT("The other keys of $N: its members that no value of the subtype declares. Every value the template declares in $N is of the request, so the caller may add keys (the carrier is open).\n", carrier, carrier));
+        }
+
+        Method into = METHOD("into").MODIFIERS(Modifier.PUBLIC).RETURNS(typed).PARAMETER(typed, TYPED)
+                .COMMENT("Copies these fields into the typed bean and returns it. No other field of the bean is touched.\n")
+                .commentFileLocation();
+        for (Value v : values) {
+            into.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE(TYPED), v.name), VARIABLE(v.name, org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE)));
+        }
+        for (String carrier : otherCarriers) {
+            Expression field = VARIABLE(otherKeysField(carrier), org.openprovenance.prov.template.compiler.past.Variable.VariableKind.FIELD_VARIABLE);
+            // an absent map leaves the typed bean's own (empty) one
+            into.BODY(IF(BINARY_OP(field, "!=", Constant.getNull()),
+                    List.of(ASSIGNMENT(METHOD_CALL(VARIABLE(TYPED), otherKeysField(carrier)), field)), List.of()));
+        }
+        into.BODY(RETURN(VARIABLE(TYPED)));
+
+        String local = Constants.GENERATED_VAR_PREFIX + (request ? "request" : "reply");
+        Method of = METHOD("of").MODIFIERS(Modifier.PUBLIC, Modifier.STATIC).RETURNS(self).PARAMETER(typed, TYPED)
+                .COMMENT("The $N of a typed bean: the values of its fields that are content of the $N.\n", request ? "request" : "reply", request ? "request" : "reply")
+                .commentFileLocation();
+        of.BODY(DEFINITION(self, VARIABLE(local), CONSTRUCTOR_CALL(self, List.of())));
+        for (Value v : values) {
+            of.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE(local), v.name), METHOD_CALL(VARIABLE(TYPED), v.name)));
+        }
+        for (String carrier : otherCarriers) {
+            of.BODY(ASSIGNMENT(METHOD_CALL(VARIABLE(local), otherKeysField(carrier)), METHOD_CALL(VARIABLE(TYPED), otherKeysField(carrier))));
+        }
+        of.BODY(RETURN(VARIABLE(local)));
+        pastClass.METHOD(into);
+        pastClass.METHOD(of);
+        generated.add(pastClass);
+
+        String packge = self.packge;
+        String directory = locations.convertToDirectory(packge);
+        Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
+        Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, stackTraceElement);
+        // Rust: the fields only. The Rust emitter writes the assignment of one bean's field to another's as Some(x.to_string()) or Some(x),
+        // which does not compile when the field is an Option, as every field of a bean is (checked with cargo on the generated file), and it is not extended here.
+        Class rustClass = withoutMethods(pastClass, "The methods $N and $N are not in Rust: its emitter does not write the copy of one bean's field into another's correctly (T36 part D). The map of other keys is not either.\n", "into", "of");
+        Supplier<Boolean> rustGenerator = () -> generateRust(rustClass, packge, locations, stackTraceElement);
+        return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
     }
 
     // ---- the dispatcher (R9) ---------------------------------------------------------------------------------------------

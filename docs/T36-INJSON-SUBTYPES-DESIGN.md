@@ -1,6 +1,7 @@
 # T36 — `@inJson` values and template subtypes: design
 
 Status: **rulings R1–R11 given 2026-11-16 (§8); stages 1–6 built (see `TODO.md`, T36, for what is committed and what is not)**; checked against the code the same day (§11). Ticket: `TODO.md`, T36.
+**Part D (§12), the request and the reply classes: proposed 2026-11-16; R12 to R16 ruled by Luc 2026-11-16 (§12.8); built as stage 7 (committed on the T36 branch).**
 Grounded in `development2_0` at 0a8d9f4b1. The rulings asked of Luc are numbered R1–R11 in §8 (R11 added by the check); each says what is proposed and, where there is a real
 alternative, what it is. Nothing after stage 1 should be built before the rulings it depends on.
 
@@ -321,6 +322,7 @@ Each stage ends with the module's tests green and can be judged before the next.
    **Built (stage 6)**: in the specification repository (`provenance-templates-specification/prov-template/index.html` and
    `schemas/bindings-schema.json`): a section on in-JSON values, a section on subtypes in the compiler's description, the two
    annotations in the table and the schema, a line in the changes, and editor's notes where the page and the compiler disagree.
+7. **The request and the reply** (part D, §12): built (R16), the rulings R12 to R15 and the method names given 2026-11-16 (§12.8). See §12.10 for what the code changed in the section.
 
 ## 8. Rulings
 
@@ -339,6 +341,8 @@ Each stage ends with the module's tests green and can be judged before the next.
 | R9 | **"Generate it per catalogue now"**: the dispatcher is in T36 (§5.7). My proposal was to leave it out. |
 | R10 | "Accept as proposed": `subtype`, `refines`, `fixed`, `carries`, `toGeneral`, `fromGeneral`, `<carrier>Other`, `org.openprovenance.prov.utils.JsonText` in prov-model with a jsweet candy and a Python port. |
 | R11 | **"Third class, all loops skip it"** (§5.1). My proposal was to move subtypes out at loading. |
+
+R12–R16 are ruled in §12.8, for part D (Luc, 2026-11-16).
 
 The text of each ruling below is what was asked; where it differs from the table, the table is what Luc ruled.
 
@@ -431,3 +435,244 @@ Nothing was built for this check. What changed in the design, and why:
    effect, with three details put back to him.
 
 What the check left as written: §4's refusals and test, §5.4–5.5, §7, and R1, R2, R4–R11 as proposed.
+
+## 12. Part D — the request and the reply (proposed 2026-11-16; not built)
+
+Luc, 2026-11-16: "Add the asking and the answer classes to the T36 design. Does it require change to the
+declarations?" And, on the name of the annotation, the same day: "What about @performative", then "go for
+performative".
+
+**The word.** A performative is the kind of act a message performs: a request, a reply, a refusal. The term comes
+from the languages agents use to talk to one another. Here it names the two messages of one exchange between a caller
+and a service: **the request** (what Luc first called the asking) and **the reply** (the answer).
+
+### 12.1 Why
+
+The typed bean of a subtype holds every input of a record. Where the record is of a request that a program served,
+those inputs come from three hands:
+
+- **the caller**: what was asked (a line, a price);
+- **the service, before it acts**: who asked and about what, as nodes of the store, and the time;
+- **the service, after it acted**: what became of the request (an outcome, the version made, a refusal's code).
+
+The typed bean does not tell them apart. Two things were found with the first application (the first application, a trial
+on 2026-11-16 with the beans of stage 3):
+
+- Its JSON reader fills a typed bean straight from the body of a request, so a body
+  `{"unitPrice": 2, "agent": 99, "outcome": "accepted"}` sets `agent` and `outcome`, which are not the caller's to set.
+- It writes by hand one class for the body of each request and one for each response. They say again what the
+  declaration says, and nothing holds the two together.
+
+Part D adds two generated classes per subtype: **the request**, with only what the caller gives, and **the reply**,
+with only what the service returns. Both feed the one record through the typed bean. The typed bean, the general
+template's beans and the SQL are unchanged.
+
+### 12.2 Does it need a change to the declarations
+
+**Yes: one optional annotation on the values concerned. No existing declaration has to change**, and a declaration
+without it generates exactly what it generates today.
+
+It is needed because nothing in a declaration says which hand a value comes from. `@input` says whether the record
+must be given the value, not who gives it.
+
+- **The request can be guessed only for some templates.** Where a template keeps nothing but the caller's values in
+  its carriers, the request is what the subtype carries. That is true of the first application's interaction template by design. It
+  is false of nextgen's templates: in the record of one repricing, 17 of the 19 values in the two carriers are the
+  service's.
+- **The reply cannot be guessed at all.** `outcome`, `result` and `code` are ordinary inputs, declared like `agent`
+  and `time`.
+
+Three places it could be said:
+
+| | where | for | against |
+|---|---|---|---|
+| (a) | an annotation on the variable, in the general template's declaration | said once per template, every subtype follows; the template's page, schema and Turtle can show it; nothing is generated where it is absent | a new annotation: a compiler without part D refuses the file |
+| (b) | two lists on each subtype entry of the catalogue | the declarations are untouched | repeated in every subtype, the reply being the same list each time; a template's own page cannot show it |
+| (c) | a rule: the request is what the subtype carries, and only the reply is said, by (a) or (b) | less to write | wrong, and silently, for a template whose carriers hold the service's values |
+
+**Proposed: (a)** (R12). Luc's ruling on the annotation's name (R14) takes (a) as given; he was not asked to choose
+between the three in so many words.
+
+### 12.3 The annotation
+
+On a value's descriptor (`AttributeDescriptor`), beside `@input`:
+
+```json
+"unitPrice": [[{ "@value": "*", "@type": "xsd:double",
+                 "@documentation": "The unit price the person asks for",
+                 "@input": "optional", "@inJson": "attributes", "@performative": "request" }]],
+
+"outcome":   [[{ "@value": "*", "@type": "xsd:string",
+                 "@documentation": "accepted, refused or failed",
+                 "@input": "compulsory", "@performative": "reply" }]]
+```
+
+- `"request"`: the value is content of the request: the caller gives it.
+- `"reply"`: the value is content of the reply: the service returns it.
+- Absent: neither. The value is the service's own.
+- Allowed on an ordinary input value and on an in-JSON value. One performative per value.
+
+A performative is a property of a message, and the annotation is written on a value. It is to be read as "this value
+is content of the message that performs this act".
+
+Refused at compile time, with the template and the variable named:
+
+- a value other than the two;
+- `@performative` on a node (`NameDescriptor`): a caller gives names, and the service finds the nodes;
+- `@performative` on an output;
+- `@performative` on a carrier that holds in-JSON values: its values each say their own.
+
+Effect on what a general template generates: none, as for `@inJson` (§4.2), except that its documentation page and its
+schema say the performative of each value. The annotation is read on the descriptor and kept there. Only part D's
+generator and the descriptions read it, so no existing generator changes.
+
+**What the annotation does not mean.** The compiler sorts values into two classes and does nothing else with the
+word. It does not check that a reply follows a request. And the reply is not one act: whether it is an agreement, a
+refusal or a failure is said by a value inside it (`outcome`, in the first application), which the compiler treats as
+any other value.
+
+### 12.4 The two classes
+
+For a subtype, the request class is generated when the subtype has at least one request value, and the reply class
+when it has at least one reply value. A subtype has a value when it is an ordinary input the subtype does not fix, or
+an in-JSON value the subtype carries. Both are PAST classes in the typed bean's package, written by the same emitters.
+
+`<Name>Request`:
+
+- one field per request value of the subtype, of the type it has in the typed bean;
+- `into(typed)`: copies its fields into the typed bean it is given and returns it. It touches no other field;
+- static `of(typed)`: the request of a typed bean.
+
+`<Name>Reply`: the same, with the reply values.
+
+A variable the subtype fixes is in neither: the subtype sets it. Neither class checks anything: the check of required
+values stays in `toGeneral()` (§5.3), which every record passes through. Neither calls the runtime class of §5.4, since
+they only copy fields.
+
+As they would read in Java (written by hand here; nothing is generated yet):
+
+```java
+public class Repricing_rfq_lineRequest {
+  public Integer line;
+  public Double unitPrice;
+  public String reason;
+  public Repricing_rfq_lineInputs into(Repricing_rfq_lineInputs typed) { … }
+  public static Repricing_rfq_lineRequest of(Repricing_rfq_lineInputs typed) { … }
+}
+
+public class Repricing_rfq_lineReply {
+  public String outcome;
+  public String result;
+  public String code;
+  public Repricing_rfq_lineInputs into(Repricing_rfq_lineInputs typed) { … }
+  public static Repricing_rfq_lineReply of(Repricing_rfq_lineInputs typed) { … }
+}
+```
+
+And how an application would use them (its JSON reader and its store are its own):
+
+```java
+Repricing_rfq_lineRequest asked = read(body, Repricing_rfq_lineRequest.class);
+Repricing_rfq_lineInputs in = asked.into(new Repricing_rfq_lineInputs());
+in.agent = …; in.subject0 = …; in.time = …;        // the service's own, before it acts
+…                                                    // the service acts
+in.outcome = "accepted"; in.result = version;        // the reply
+store.process(in.toGeneral(), key);
+return Repricing_rfq_lineReply.of(in);
+```
+
+A body that names `agent` or `outcome` then cannot set them: the request class has no such field.
+
+**Keys nobody declared (R3).** A carrier is open, and an attribute nobody anticipated has to be able to reach the
+record. Proposed (R13): the request class has the other-keys map (`<carrier>Other`) of each carrier whose declared
+values, in the template, are all request values, and `into` copies it to the typed bean. For a carrier that also holds
+values of the service, the request class has no such map, and an undeclared key reaches the record only if the
+application puts it in the typed bean itself. Alternative: no map in the request class at all.
+
+**The languages.** As the typed bean: Java, Python (an absent optional value is right only once T33 is fixed),
+JavaScript (emitted; built only once T34 is fixed). Rust: the fields. R4 left the conversions out of Rust because they
+call a runtime class; `into` and `of` call none, so they may be possible there. Not tried.
+
+### 12.5 The descriptions
+
+- **Documentation.** For each subtype, its values in three groups: of the request, of the reply, the service's own.
+- **JSON schema.** Two more definitions per subtype, for the two classes. An application can publish the first as the
+  schema of its request body. They have no `isA`, so T40 does not touch them.
+- **Turtle.** `tpl:performative "request"` or `"reply"` on the value's property. Today only an in-JSON value has a
+  term (§6). An ordinary value that has a performative would need one too, named the same way
+  (`<template name>-<value name>`), without `tpl:inJson` (R15).
+- **Specification.** The annotation in the table and in the bindings schema, as stage 6 did for `@inJson`.
+
+### 12.6 What it does not do
+
+- It reads and writes no JSON and knows nothing of HTTP. Values an application takes from an address or a header
+  (which document, which line, who is calling) are copied by the application.
+- No decimal type (R6): a requested price is a double until that ticket.
+- The template's outputs bean is unchanged, and the reply class does not hold the identifiers the store mints.
+- Nothing changes for a catalogue that uses no `@performative`.
+
+### 12.7 The test of part D
+
+- For the fixture of §5.6 with performatives added: `of(asked.into(t))` gives back `asked`, and the same for the
+  reply; `into` leaves every other field of the typed bean as it was; the request class has no field for a reply value
+  or for a value of the service, and the reply class none for a request value.
+- The same catalogue without `@performative` gives the same generated tree, but for the two classes and the
+  descriptions. A catalogue that uses none of T36 compiles to what it compiled to before.
+- Each refusal of §12.3.
+
+### 12.8 Rulings
+
+- **R12. Where the performative of a value is said. Ruled by Luc, 2026-11-16: "Annotation on the variable (Recommended)"**,
+  the option that read: `@performative: request|reply` in the general template's declaration; said once, every subtype
+  follows; no existing declaration changes. Proposed (a) of §12.2; the alternatives were two lists on each subtype entry (b), and the rule that the
+  request is what the subtype carries (c).
+- **R13. Keys nobody declared, in the request class. Ruled by Luc, 2026-11-16: "Map only for all-request carriers (Recommended)"**,
+  the option that read: the request class has `<carrier>Other` where every value the template declares in that carrier is a
+  request value; `into` copies it to the typed bean. Alternative: no map in the request class.
+- **R14. The names. Ruled by Luc, 2026-11-16: "go for performative".** The annotation is `@performative`. It
+  had first been proposed as `@side`, with the values `asking` and `answer`; Luc asked "why did you call this @side?",
+  proposed `@inSubtype`, then `@performative`. His ruling answers a proposal that put with it the values `request`
+  and `reply`, the class names `<Name>Request` and `<Name>Reply`, and the Turtle property `tpl:performative`; those
+  three are taken as accepted with it and he did not word them himself. **The methods, ruled 2026-11-16: "into and of (Recommended)"**:
+  `typed = request.into(new XInputs())` and `XRequest.of(typed)`.
+- **R15. The Turtle. Ruled by Luc, 2026-11-16: "Yes, a term for it (Recommended)"**, the option that read: `<template>-<value>` without
+  `tpl:inJson`, with `tpl:performative`; the template becomes a class when any value has a performative. The property
+  `tpl:performative` came with R14.
+- **R16. Where it is built. Ruled by Luc, 2026-11-16**, asked whether to build it now as stage 7 or keep it as
+  design until T36 is merged: "and then request the subsession to implement". So it is stage 7 of T36, on its branch,
+  built by T36's own session.
+
+### 12.9 Not verified
+
+- The Rust classes are fields only; the methods were tried and do not compile (§12.10).
+- The Turtle with a parser other than rdflib; the documentation page in a browser; the request schema in jsonform; the
+  classes inside a real application's build. The trial of §12.1 is now a test (Jackson 3 with its defaults reading a body into the
+  typed bean and into the request class), but a reader other than Jackson was not tried.
+- The agent communication languages the word comes from were not consulted for this section; `request` and `reply`
+  are chosen as plain names of the two messages, not taken from one of them.
+
+### 12.10 Built (stage 7) and what the code changed in this section
+
+Checked against the code on 2026-11-16 while building:
+
+1. **§12.3, one more refusal.** `@performative` on a value that is no input of the template is refused: such a value is in neither
+   class (the typed bean keeps inputs only), so the annotation would say nothing. The refusals are in
+   `descriptors/PerformativeChecker`, called by `CompilerUtil.getBindingsSchema` after the `@inJson` split, so it can tell a carrier;
+   each names the file, the template and the variable. `NameDescriptor` reads the member only to refuse it.
+2. **§12.4, the map of other keys.** The request's map has no initial value, and `into` copies it only when it is present, so an
+   absent map leaves the typed bean's own (empty) one; `of` copies the reference. The test of "present" is the only comparison with
+   null in the classes, and the Python emitter writes it `!= 0` (T33): in Python `into` then copies `None`.
+3. **§12.4, Rust: tried, it cannot.** The Rust emitter writes the copy of one bean's field into another's as `Some(x.to_string())`
+   or `Some(x)`, which does not compile for an `Option` field (`cargo check` on the generated file: "`Option<String>` doesn't
+   implement `Display`", "expected `i32`, found `Option<i32>`"). The classes are fields only in Rust, with the derive, no map of other
+   keys, and a comment saying why. The Rust emitter was not extended (Luc's word is needed).
+4. **§12.5, names.** The schema definitions are `<subtype fqn>Request` and `<subtype fqn>Reply` (`t31.repriceRequest`), with no
+   `isA`, so no `if isA then $ref` block. The general template's page and schema say the performative of each value (`[@performative: request]`
+   in a description; `key (type, request)` in the list of a carrier's keys), and add nothing without it. The Turtle declares
+   `tpl:performative` only when some value has one, so a catalogue without it gets the same Turtle as before.
+5. **§12.7, the tests** are `T36PerformativeTest` (12): each refusal; the same catalogue with and without the annotation differing in exactly
+   the four classes, `doc.html`, `schema.json` and the copy of the bindings schema; the classes compiled and run (fields, `into`, `of`, the
+   carrier's text written from them); the Jackson body of §12.1; the documentation; the schema, with a request body checked against the
+   request definition; the Turtle, read by rdflib; Python and JavaScript run against a stand-in typed bean (`check_request_reply.py`, `.js`); Rust.
+   What T33 spoils is printed (`BLOCKED T33`), and T34 stops the JavaScript from being built into a client.
+

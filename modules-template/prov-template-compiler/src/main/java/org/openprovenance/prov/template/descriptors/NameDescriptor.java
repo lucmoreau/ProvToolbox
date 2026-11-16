@@ -73,6 +73,10 @@ public class NameDescriptor implements Descriptor {
     @JsonProperty("@inJson")
     private String inJson;
 
+    /** T36 part D: read only to refuse it with a clear message: {@code @performative} is for a value, not a node. */
+    @JsonProperty("@performative")
+    private String performative;
+
     /** T31: {@code true}, {@code false} or a transient method name, as declared in the bindings schema. */
     @JsonProperty("@transient")
     private Object transientDeclared;
@@ -82,6 +86,16 @@ public class NameDescriptor implements Descriptor {
     /** T31: the annotation in effect once the application's policy is applied; set by the compiler, never serialised. */
     @JsonIgnore
     private EffectivePrivacy effectivePrivacy;
+
+    @JsonProperty("@performative")
+    public String getPerformative() {
+        return performative;
+    }
+
+    @JsonProperty("@performative")
+    public void setPerformative(String performative) {
+        this.performative = performative;
+    }
 
     @JsonProperty("@inJson")
     public String getInJson() {

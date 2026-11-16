@@ -325,6 +325,8 @@ public class CompilerUtil {
                     bindingsSchema = objectMapper.readValue(new File(bindings), TemplateBindingsSchema.class);
                     // T36 (R1): the @inJson values are split out here, before the privacy policy, so no generator sees them as variables
                     org.openprovenance.prov.template.descriptors.InJsonSplitter.split(bindingsSchema, bindings);
+                    // T36 part D (R12): the refusals of @performative, which are read on the ordinary values and the in-JSON values just split
+                    org.openprovenance.prov.template.descriptors.PerformativeChecker.check(bindingsSchema, bindings);
                     // T31: the application's privacy policy applies wherever a bindings schema is read
                     org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy privacy =
                             org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy.current();

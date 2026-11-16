@@ -167,6 +167,9 @@ public class CompilerDocumentation {
                     documentation="";
                 }
                 os.println(makeSpan(documentation,"csv_doc"));
+                // T36 part D: whose content the value is (nothing written without @performative)
+                String performative = descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getPerformative, NameDescriptor::getPerformative);
+                if (performative != null) os.println(makeSpan(html(performative), "csv_performative"));
 
                 // T36: the values this text variable holds as keys of its JSON object (empty, so nothing written, without @inJson)
                 List<InJsonValue> inJson = bindingsSchema.getInJsonOf(key);
@@ -178,6 +181,7 @@ public class CompilerDocumentation {
                                 + makeSpan(convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(
                                         Map.of(v.getName(), List.of(wrap(v))), v.getName()).getName()), "csv_type")
                                 + makeSpan(inJsonInput(v), "csv_input")
+                                + (v.getPerformative() == null ? "" : makeSpan(html(v.getPerformative()), "csv_performative"))
                                 + makeSpan(v.getDocumentation() == null ? "" : v.getDocumentation(), "csv_doc") + "</li>");
                     }
                     os.println("</ul>");
@@ -215,6 +219,14 @@ public class CompilerDocumentation {
                                 + makeSpan(convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(Map.of(v.getName(), List.of(wrap(v))), v.getName()).getName()), "csv_type")
                                 + makeSpan(k.getValue(), "csv_input")
                                 + makeSpan(v.getDocumentation() == null ? "" : html(v.getDocumentation()), "csv_doc") + "</li>");
+                    }
+                    // T36 part D: the subtype's values by whose content they are, when any value has a performative
+                    Map<String, List<String>> groups = CompilerSubtype.messageGroups(bindingsSchema, st);
+                    if (groups.containsKey("request") || groups.containsKey("reply")) {
+                        for (Map.Entry<String, List<String>> g : groups.entrySet()) {
+                            os.println("<li>" + makeSpan(g.getKey().equals("service") ? "the service's own" : "of the " + g.getKey(), "csv_performative")
+                                    + makeSpan(html(String.join(", ", g.getValue())), "csv_doc") + "</li>");
+                        }
                     }
                     os.println("</ul>");
                     os.println("</li>");

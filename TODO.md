@@ -159,6 +159,18 @@ has no mapping for a static runtime call.
   from subtype's name"; R8 "Refuse the combination"; R9 "Generate it per catalogue now" (a dispatcher is in T36);
   R10 "Accept as proposed"; R11 "Third class, all loops skip it" (47 loops in 31 files taught to skip it). R9 and R11
   are the two where he did not take the proposal. Table in the design, §8.
+- **R12–R16, ruled 2026-11-16**: part D of the design (§12), added at Luc's word ("Add the asking
+  and the answer classes to the T36 design. Does it require change to the declarations?"). Two more generated classes
+  per subtype: the request (only what the caller gives) and the reply (only what the service returns), each copied into
+  and out of the typed bean. It needs one optional annotation on the values concerned; no existing declaration has to
+  change. **R14, Luc: "go for performative"**: the annotation is `@performative` (first proposed as
+  `@side`), and with it, as proposed to him and not worded by him, the values `request` and `reply`, the classes
+  `<Name>Request` and `<Name>Reply`, and `tpl:performative` in the Turtle. **R16, Luc: "and then request
+  the subsession to implement"**: part D is stage 7 of T36, built on its branch by its own session. Then, asked in this
+  session: **R12 "Annotation on the variable (Recommended)"**; **R13 "Map only for all-request carriers (Recommended)"**
+  (the request class has `<carrier>Other` where every value the template declares in the carrier is a request value);
+  **R15 "Yes, a term for it (Recommended)"** (an ordinary value that has a performative has a Turtle term); **the methods
+  "into and of (Recommended)"**. Table and text in the design, §12.8.
 
 **Built** (branch `claude/t36-injson-subtypes-d38753`):
 - **Stage 1, `@inJson`, 2026-11-16** (R1, R2, R3 given; nothing else was needed):
@@ -237,6 +249,20 @@ has no mapping for a static runtime call.
   - Editor's notes on the page, as T31 did, say what disagrees: the schema's `@type` list (five types) is narrower than the compiler's (it rejects `xsd:double`, `xsd:long`, `xsd:date`, `json`); in Rust the typed bean has fields and no conversions; Python writes an absent optional value as 0; the generated JavaScript build transpiles nothing.
 - **Verified, stage 6**: the page's sections, tables and lists are balanced, its ids are unique and every `#` link on it resolves; the schema parses; `ajv` accepts a bindings file with `@inJson` and `@inJson.key` against the new schema, rejects it against the schema before (additional property), and rejects `"@inJson": 3`.
 - **Not verified, stage 6**: the page rendered by ReSpec (it loads ReSpec from w3.org; not opened); the bibliography entry `[[RFC8785]]` resolving; `ajv` on T36's own fixture files (they use `xsd:double`, which the schema's type list rejects, as above, and `@escape`-style members the specification's note already lists); the text of the specification read by anyone but me.
+- **Stage 7, the request and the reply (part D), 2026-11-16 (committed, the commit after `97f4b566f`)**:
+  - `@performative` (`request` or `reply`) on `AttributeDescriptor` (read on `NameDescriptor` only to refuse it); `PerformativeChecker` refuses, naming file, template and variable: a node, a word other than the two, an output, a value that is no input
+    (a refusal the design did not list: such a value would be in neither class), a carrier that holds in-JSON values. It is allowed on an ordinary input value and on an in-JSON value. Added to `bindings-schema.json` of `prov-template`.
+  - Per subtype, `<Name>Request` and `<Name>Reply` (`CompilerSubtype.generateRequestReplyClasses`), PAST classes through the existing emitters: a field per value, `into(typed)` and static `of(typed)`, no runtime class. The request has `<carrier>Other` for a carrier all of
+    whose template-declared values are request values (R13); `into` copies it when present. A class is generated only when the subtype has a value of that kind.
+  - Descriptions: the documentation says each value's performative and groups a subtype's values (request, reply, the service's own); the JSON schema has the definitions `<subtype fqn>Request` and `Reply` (no `isA`), and says the performative in a value's description;
+    the Turtle declares `tpl:performative` and gives it to the properties of in-JSON values and, R15, of ordinary values (which are then described, their template too). Nothing is added for a catalogue without `@performative`.
+  - Rust: tried, and not possible without extending the Rust emitter, which was not done: it writes `typed.f = Some(self.f.to_string())` (does not compile for an `Option` field; `cargo check`). The Rust classes are fields only, with a comment saying why.
+  - Tests: `T36PerformativeTest` (12), `check_request_reply.py` and `.js`. Module: 209 tests, 0 failures (run with `-am`, so that `JsonText` is on the class path: without it the tests that compile the generated Java are skipped with a message).
+  - The specification (uncommitted, in its own repository): `@performative` in the table and the schema, a section Performatives (`#performative`), a section Requests and replies (`#requests-replies`), a line in the changes.
+- **Verified, stage 7**: T31's 25 cases (2410 files) and `CompilerTest`'s catalogue (93 files) equal the base commit's (a worktree at 0a8d9f4b1, same normalisations and method as above); the same catalogue with and without the annotation differs in exactly the four classes, `doc.html`, `schema.json` and the copy of the bindings schema;
+  the Java classes compile and run (the Jackson body of the design's §12.1 cannot set a value the caller does not give); the emitted Python and JavaScript run against a stand-in typed bean; a request body is valid and invalid against the request definition (networknt); the Turtle is read by rdflib.
+- **Not verified, stage 7**: the Turtle with another parser than rdflib; the request schema in jsonform; the classes in a real application's build (the worked example in the first application was read, not compiled with the new classes); T33 (Python `into` copies `None` over the typed bean's map of other keys when the request has none) and T34 (no JavaScript client is built) are not fixed;
+  the specification page rendered by ReSpec; `ajv` on the specification schema was run on one file with the member, accepted, and one with a wrong word, refused.
 - **Verified, stage 4**: catalogues without a subtype are unchanged, Python files included (T31's 25 cases, 2410 files, and `CompilerTest`'s 93 source and Python files, against the base commit, as above).
 - **Not verified, stage 4**: the generated jsweet client project built as a whole (T34); numbers beyond 2^53 (the vectors avoid them: Java and Python read them exactly, JavaScript cannot); a JavaScript or Python `float` for `xsd:float` (they have one number type; Java's `Float`
   writes its own shortest digits).

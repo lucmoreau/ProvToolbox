@@ -8,7 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SimpleTemplateCompilerConfig.class, name = "simple"),
-        @JsonSubTypes.Type(value = CompositeTemplateCompilerConfig.class, name = "composite")
+        @JsonSubTypes.Type(value = CompositeTemplateCompilerConfig.class, name = "composite"),
+        @JsonSubTypes.Type(value = SubtypeTemplateCompilerConfig.class, name = "subtype")
 })
 abstract public class TemplateCompilerConfig {
     public String type_;

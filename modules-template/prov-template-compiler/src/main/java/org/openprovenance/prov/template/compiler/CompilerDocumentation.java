@@ -4,6 +4,8 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import com.networknt.schema.Schema;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.configuration.SubtypeTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptorList;
@@ -47,6 +49,12 @@ public class CompilerDocumentation {
 
 
     public void generateDocumentation(String documentationFile, String templateName, String templateFullyQualifiedName, String root_dir, TemplateBindingsSchema bindingsSchema, List<String> sharing) {
+        generateDocumentation(documentationFile, templateName, templateFullyQualifiedName, root_dir, bindingsSchema, sharing, List.of());
+    }
+
+    /** @param subtypes the subtypes of this template (T36), listed after its variables; none for a template without. */
+    public void generateDocumentation(String documentationFile, String templateName, String templateFullyQualifiedName, String root_dir, TemplateBindingsSchema bindingsSchema, List<String> sharing,
+                                      List<SubtypeTemplateCompilerConfig> subtypes) {
 
         if (os==null) {
             new File(root_dir).mkdirs();
@@ -188,6 +196,31 @@ public class CompilerDocumentation {
 
 
             os.println("</ul>");
+
+            // T36 (stage 5): the subtypes of the template: what each fixes and carries (nothing written for a template without)
+            if (!subtypes.isEmpty()) {
+                os.println("<div class='csv_subtypes'>Subtypes: a record of a subtype is a record of this template, with some inputs fixed and some values kept in a JSON text variable.</div>");
+                os.println("<ul class='csv_subtypes_list'>");
+                for (SubtypeTemplateCompilerConfig st : subtypes) {
+                    os.println("<li>" + makeSpan(html(st.fullyQualifiedName), "csv_subtype")
+                            + makeSpan("typed bean " + html(compilerUtil.beanNameClass(st.name, BeanDirection.INPUTS)), "csv_doc"));
+                    os.println("<ul>");
+                    for (Map.Entry<String, Object> f : st.fixed.entrySet()) {
+                        os.println("<li>" + makeSpan("fixes", "csv_doc") + makeSpan(html(f.getKey()) + " = " + html(String.valueOf(f.getValue())), "csv_fixed") + "</li>");
+                    }
+                    for (Map.Entry<String, String> k : st.carries.entrySet()) {
+                        InJsonValue v = bindingsSchema.getInJson().get(k.getKey());
+                        os.println("<li>" + makeSpan("carries", "csv_doc")
+                                + makeSpan(html(v.getKey()) + " in " + html(v.getCarrier()), "csv_carried")
+                                + makeSpan(convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(Map.of(v.getName(), List.of(wrap(v))), v.getName()).getName()), "csv_type")
+                                + makeSpan(k.getValue(), "csv_input")
+                                + makeSpan(v.getDocumentation() == null ? "" : html(v.getDocumentation()), "csv_doc") + "</li>");
+                    }
+                    os.println("</ul>");
+                    os.println("</li>");
+                }
+                os.println("</ul>");
+            }
             os.println("</div>");
 
 
@@ -197,6 +230,10 @@ public class CompilerDocumentation {
         }
 
 
+    }
+
+    private static String html(String text) {
+        return org.apache.commons.text.StringEscapeUtils.escapeHtml4(text);
     }
 
     /** T36: a value's descriptor as the one-item list the type lookups expect. */

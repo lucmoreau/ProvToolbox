@@ -414,7 +414,8 @@ public class CompilerUtil {
         throw new UnsupportedOperationException("This exception is never reached");
     }
 
-    private ClassName getPastClassForType(String keyType) {
+    /** The PAST type of a declared {@code @type} such as {@code xsd:double} (public since T36: typed beans use it for in-JSON values). */
+    public ClassName getPastClassForType(String keyType) {
         return switch (keyType) {
             case "xsd:int" -> INTEGER;
             case "xsd:long" -> ClassName.LONG;

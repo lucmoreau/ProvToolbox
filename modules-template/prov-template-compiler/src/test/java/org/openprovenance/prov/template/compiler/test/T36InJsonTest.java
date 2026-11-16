@@ -54,6 +54,13 @@ public class T36InJsonTest extends TestCase {
     final ObjectMapper sorted = JsonMapper.builderWithJackson2Defaults()
             .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true).build();
 
+    /** The compiler keeps its coordinators in statics: leave them as a fresh JVM has them for a test that does not reset them (CompilerTest). */
+    @Override
+    protected void tearDown() {
+        org.openprovenance.prov.template.compiler.configuration.SpecificationFile.resetTypeCheckCoordinator();
+        org.openprovenance.prov.template.compiler.configuration.SpecificationFile.resetCodeGenCoordinator();
+    }
+
     // ---- the in-JSON values added to the fixture's carrier --------------------------------------------------------
 
     /** Adds three in-JSON values to the carrier {@code customer_hash}, one with a key of its own. */

@@ -76,6 +76,52 @@
             ],
             "additionalProperties": false
         },
+        "SubtypeTemplateDescriptor": {
+            "description": "T36: a subtype of a simple template: its records are that template's records, with some inputs fixed and some in-JSON values carried. It adds nothing to the server side.",
+            "type": "object",
+            "properties": {
+                "@type": {
+                    "type": "string"
+                },
+                "fullyQualifiedName": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                },
+                "package": {
+                    "type": "string"
+                },
+                "refines": {
+                    "description": "The fully qualified name of the simple template this refines.",
+                    "type": "string"
+                },
+                "fixed": {
+                    "description": "Inputs of that template given a constant for every record of the subtype, by variable name.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": ["string", "number", "boolean"]
+                    }
+                },
+                "carries": {
+                    "description": "The in-JSON values of that template this subtype has, each required or optional.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string",
+                        "enum": ["required", "optional"]
+                    }
+                }
+            },
+            "required": [
+                "@type",
+                "fullyQualifiedName",
+                "name",
+                "package",
+                "refines"
+            ],
+            "additionalProperties": false
+        },
         "TemplateDescriptor": {
             "anyOf": [
                 {
@@ -83,6 +129,9 @@
                 },
                 {
                     "$ref": "#/definitions/CompositeTemplateDescriptor"
+                },
+                {
+                    "$ref": "#/definitions/SubtypeTemplateDescriptor"
                 }
             ]
         },
@@ -201,6 +250,14 @@
             "type": "boolean"
         },
         "jsonschema": {
+            "type": "string"
+        },
+        "turtle": {
+            "description": "T36: the Turtle file describing the subtypes and the in-JSON values of the catalogue's templates; needs turtleNamespace.",
+            "type": "string"
+        },
+        "turtleNamespace": {
+            "description": "T36: the namespace (an IRI) of the terms of the Turtle file.",
             "type": "string"
         },
         "documentation": {

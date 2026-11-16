@@ -7,7 +7,9 @@ import com.networknt.schema.Schema;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.descriptors.AttributeDescriptor;
 import org.openprovenance.prov.template.descriptors.Descriptor;
+import org.openprovenance.prov.template.compiler.configuration.SubtypeTemplateCompilerConfig;
 import org.openprovenance.prov.template.descriptors.EffectivePrivacy;
+import org.openprovenance.prov.template.descriptors.InJsonValue;
 import org.openprovenance.prov.template.descriptors.NameDescriptor;
 import org.openprovenance.prov.template.descriptors.TemplateBindingsSchema;
 import tools.jackson.core.JacksonException;
@@ -204,6 +206,81 @@ public class CompilerJsonSchema {
         org.openprovenance.prov.template.descriptors.AttributeDescriptorList l = new org.openprovenance.prov.template.descriptors.AttributeDescriptorList();
         l.setItems(List.of(v.getDescriptor()));
         return l;
+    }
+
+    /**
+     * T36 (stage 5): the schema of a subtype's typed bean: its own {@code isA}, the inputs it keeps as fields of their own
+     * (not the fixed ones), each carried value as a typed property (required when the subtype requires it), and for each carrier
+     * an object of the other keys, whose members are free (the carrier is open). A catalogue's general template keeps its schema:
+     * there the carrier is one string.
+     */
+    @SuppressWarnings("unchecked")
+    public void generateSubtypeJSonSchema(SubtypeTemplateCompilerConfig st, TemplateBindingsSchema schema, String idPrefix) {
+        Map<String, List<Descriptor>> theVar = schema.getVar();
+        Map<String, Object> aSchema = new HashMap<>();
+        aSchema.put(get$id(), idPrefix + st.fullyQualifiedName);
+        aSchema.put("type", "object");
+        Map<String, Object> properties = new HashMap<>();
+        aSchema.put("properties", properties);
+        List<String> requiredProperties = new LinkedList<>();
+
+        Map<String, Object> isA = new HashMap<>();
+        isA.put(get$id(), idPrefix + st.fullyQualifiedName + "/properties/isA");
+        isA.put("title", "isA");
+        isA.put("type", "string");
+        isA.put("readOnly", "true");
+        isA.put("default", st.fullyQualifiedName);
+        isA.put("pattern", "^" + st.fullyQualifiedName + "$");
+        properties.put("isA", isA);
+        requiredProperties.add("isA");
+
+        for (String key : CompilerSubtype.ordinaryInputs(schema, st)) {
+            Map<String, Object> atype = new HashMap<>();
+            atype.put(get$id(), idPrefix + st.fullyQualifiedName + "/properties/" + key);
+            atype.put("title", title(key));
+            final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(theVar, key).getName());
+            atype.put("type", jsonType);
+            Descriptor descriptor = theVar.get(key).get(0);
+            String documentation = descriptorUtils.getFromDescriptor(descriptor, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+            atype.put("description", (documentation == null ? "" : documentation) + " (" + jsonType + ")");
+            properties.put(key, atype);
+            if (descriptorUtils.isCompulsoryInput(key, schema)) requiredProperties.add(key);
+        }
+
+        for (Map.Entry<String, List<InJsonValue>> e : CompilerSubtype.carried(schema, st).entrySet()) {
+            for (InJsonValue v : e.getValue()) {
+                Map<String, Object> atype = new HashMap<>();
+                atype.put(get$id(), idPrefix + st.fullyQualifiedName + "/properties/" + v.getName());
+                atype.put("title", title(v.getName()));
+                final String jsonType = convertToJsonType(compilerUtil.getJavaTypeForDeclaredType(Map.of(v.getName(), List.of(wrapInJson(v))), v.getName()).getName());
+                atype.put("type", jsonType);
+                boolean required = SubtypeTemplateCompilerConfig.REQUIRED.equals(st.carries.get(v.getName()));
+                atype.put("description", (v.getDocumentation() == null ? "" : v.getDocumentation()) + " (" + jsonType + ("json".equals(v.getType()) ? ", JSON text" : "")
+                        + "; the key \"" + v.getKey() + "\" of " + e.getKey() + ", " + (required ? "required" : "optional") + ")");
+                properties.put(v.getName(), atype);
+                if (required) requiredProperties.add(v.getName());
+            }
+            String other = CompilerSubtype.otherKeysField(e.getKey());
+            Map<String, Object> others = new HashMap<>();
+            others.put(get$id(), idPrefix + st.fullyQualifiedName + "/properties/" + other);
+            others.put("title", title(other));
+            others.put("type", "object");
+            others.put("additionalProperties", true);
+            others.put("description", "The other keys of " + e.getKey() + ": its members that no value of this subtype declares (the carrier is open)");
+            properties.put(other, others);
+        }
+
+        aSchema.put("required", requiredProperties);
+        aSchema.put("additionalProperties", false);
+        ((Map<String, Object>) jsonSchemaAsAMap.get("definitions")).put(st.fullyQualifiedName, aSchema);
+
+        Map<String, Object> ifThenBlock = new HashMap<>();
+        Map<String, Object> ifBlock = new HashMap<>();
+        ifThenBlock.put("if", ifBlock);
+        ifThenBlock.put("then", Map.of("$ref", idPrefix + st.fullyQualifiedName));
+        ifBlock.put("type", "object");
+        ifBlock.put("properties", Map.of("isA", Map.of("const", st.fullyQualifiedName)));
+        ((List<Map<String, Object>>) jsonSchemaAsAMap.get("allOf")).add(ifThenBlock);
     }
 
     public Object defaultValue(String jsonType) {

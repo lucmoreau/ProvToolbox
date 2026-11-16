@@ -239,6 +239,11 @@ public interface Constants {
     String PRIVACY_FIELD = "privacy";
     /** T31 (R16): the runtime class each target language provides for the client check of a pseudonym. */
     String PRIVACY_RUNTIME_CLASS = "Pseudonyms";
+    /** T36: the JSON text runtime of the typed beans of template subtypes (in prov-model, a candy in jsweet, a port in Python). */
+    String JSON_TEXT_RUNTIME_CLASS = "JsonText";
+    String JSON_TEXT_RUNTIME_PACKAGE = "org.openprovenance.prov.utils";
+    /** T36 (R9): the per-catalogue dispatcher from a general bean to the typed bean of its subtype. */
+    String SUBTYPES = "Subtypes";
     String PRIVACY_RUNTIME_PACKAGE = "org.openprovenance.prov.utils";
     String GETTER_VAR = "getter";
     String ELEM_VAR = "elem";

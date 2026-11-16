@@ -34,6 +34,10 @@ public class TemplatesProjectConfiguration {
     public boolean jsweet;
 
     public String jsonschema;
+    /** T36 stage 5: the Turtle file describing the catalogue's subtypes and in-JSON values (written beside the JSON schema); needs {@link #turtleNamespace}. */
+    public String turtle;
+    /** T36 stage 5: the namespace (an IRI) of the terms of the Turtle file: the catalogue's templates, subtypes and in-JSON values. */
+    public String turtleNamespace;
     public String sqlFile;
     public List<String> search;
 
@@ -76,7 +80,8 @@ public class TemplatesProjectConfiguration {
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
     @JsonSubTypes({
             @JsonSubTypes.Type(value = SimpleTemplateCompilerConfig.class, name = "simple"),
-            @JsonSubTypes.Type(value = CompositeTemplateCompilerConfig.class, name = "composite")
+            @JsonSubTypes.Type(value = CompositeTemplateCompilerConfig.class, name = "composite"),
+            @JsonSubTypes.Type(value = SubtypeTemplateCompilerConfig.class, name = "subtype")
     })
     @JsonProperty("templates")
     public TemplateCompilerConfig [] templates;

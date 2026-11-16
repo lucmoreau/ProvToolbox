@@ -1114,3 +1114,43 @@ Checked against the code while building, what changed in §14.1 to §14.5:
 - `of` naming a template whose general input bean has no value the flow carries is refused by name, not tried on a large template.
 - LD is not built (G5); the findings (1), (3) and (4) are tickets T42, T43, T44.
 
+### 14.12 A request that gives nothing (built) and a composite record (designed, not built)
+
+**A request that gives nothing** (built, no ruling needed: a relaxation like G1). The address names the document and the body is empty: the user subtype carries no request
+value, so it has no request class (the compiler generated none already), and the flow's `ask` takes no request (the rules and what the stood things made), and makes the user bean.
+The user bean's own values are still accounted for exactly once. The stage 9 classes are unchanged (golden test); `T36FlowTest` has the case.
+
+**A composite record.** The compiler's composite (`consistsOf`, `sharing`) generates an input bean that holds the composite's own values, a list of element beans (the general bean of
+the template it consists of, one instance each) and mutators for the variables the elements share. A flow knows no composite: a record's `to` is a subtype of a simple template. Proposed:
+
+- **What it is in a flow.** A record may name a composite instead of a subtype: `"composite": "<fqn of the composite entry>"`. Its bean is the composite's input bean. It declares `record`,
+  `carry`, `carryOpen` and `stood` for the composite's own values, as any record does, and `elements`, the declaration of **one** element: its `stood` (what the element stands on:
+  a bill's previous record, per element), `record`, `carry`, `carryOpen`, for the fields of the element bean. The variables the composite shares between its elements are
+  said once, in `shared`, each with a kind (they are applied to every element), and the variables it makes distinct are said `distinct`.
+- **Who loops.** The application (G4: the flow repeats nothing). The generated class has, for the record, `recordRun` (the composite's own values; returns the composite bean with no
+  element) and `recordRunElement` (one element: the user bean, the composite so far, what that element stands on, the rules; returns the element bean). The application calls the
+  second for each item the request lists and adds the element with the bean's own `addElements`, then calls `recordRunShare` (the shared variables, by the composite's mutators) and
+  sends the bean. A rule of the element receives the element's index no more than it receives the other elements: what an element derives from its position is a rule of the application.
+- **Every input accounted for exactly once, for the elements.** Each input of the composite bean is said once in the record, each input of the element bean once in `elements`
+  (that declaration applies to every element: the table says "for each element"), each shared variable once in `shared`. An element's value cannot be said by the composite's
+  record, nor the reverse.
+- **Refusals.** A composite that is no composite of the catalogue; an element input not said, or said twice; a shared variable that the composite does not share; an element declaration
+  without a composite.
+- **Rust**: none, as the flow. **Tests**: a composite record whose elements stand on a previous record each, run with two and with no element.
+
+Put to Luc: build it as designed, or not (G6).
+
+### 14.13 The four findings of the first application's second report
+
+1. **A rule's name belongs to one value in a flow.** Intended: a rule is one computation with one signature, typed by the value it fills and given the beans in scope of its step; two values
+   are two rules. A relaxation is possible (the same rule for several values of one step and one type) and costs only the one refusal; not asked for by anything but convenience.
+2. **A subtype shared by several flows must have every value it carries said by each.** Intended (the rule that makes a flow worth having), but it does force an application that shares a
+   subtype to hide what its service derives in one supplied map. A shape that lets flows account for different values: **a flow narrows the subtype**: in `record`, `"rest": "absent"`
+   says that every input not said otherwise is left unset, which is refused for a value compulsory in the subtype and written as `absent` rows in the table, so that nothing is
+   hidden and each flow lists what it leaves out. (A shared subtype then carries every value any flow gives, as optional, and each flow says which.) Put to Luc (G7).
+3. **A JSON object the person gives cannot be spread into a carrier's open keys.** Not supported: a request value of type `json` is text, and the map of other keys is filled from other
+   keys only. A form `{"spread": "profile"}` for the open keys of a carrier would read the text as an object and merge its members (refusing a key the subtype declares). A new kind
+   of origin (a seventh: as asked, through a parse); needs a ruling and the runtime's `parse`, which exists in the three ports. Put to Luc with G7.
+4. **The runtime refuses a JSON library's tree nodes** ("not a JSON value"). Intended: the runtime takes JSON values only (null, text, number, boolean, map, list) and depends on no JSON
+   library; the application converts a tree to plain values first. Not a defect; to say in the specification, and the refusal could name the class it met.
+

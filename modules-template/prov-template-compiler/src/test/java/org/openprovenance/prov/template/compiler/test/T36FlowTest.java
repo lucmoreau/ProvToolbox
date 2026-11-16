@@ -573,4 +573,117 @@ public class T36FlowTest extends T36FlowFixture {
             for (String m : contains) assertTrue(title + ": " + m + " in " + e.getMessage(), e.getMessage().contains(m));
         }
     }
+
+    // ---- XT: a stood record made by another template (T41, design §14.2) ---------------------------------------------------------
+
+    static List<String> xtSources() {
+        return List.of(FLOWS + "SendFlow.java", FLOWS + "SendFlowRules.java",
+                "org/example/t36flow/backend/client/integrator/SendingInputs.java", "org/example/t36flow/backend/client/integrator/ExchangingOutputs.java",
+                "org/example/t36flow/backend/client/integrator/Line_changeInputs.java", "org/example/t36flow/backend/client/integrator/ChangingInputs.java",
+                "org/example/t36flow/backend/client/integrator/ChangingOutputs.java",
+                "org/example/t36flow/actions/client/integrator/Ask_sendInputs.java", "org/example/t36flow/actions/client/integrator/Ask_sendRequest.java",
+                "org/example/t36flow/actions/client/integrator/Ask_sendReply.java");
+    }
+
+    static String xt(String of) {
+        return FLOW_XT.replace("\"OF\"", "\"" + of + "\"");
+    }
+
+    /** Runs the sending of a document: the previous record is of the type the flow names, and made the document D1. */
+    void sendsADocument(String id, String of, String previousClass) throws Exception {
+        generate(id, List.of(LINE_CHANGE, ASK_SEND, SENDING, xt(of)));
+        List<String> sources = new ArrayList<>(xtSources());
+        ClassLoader l = compile(id, sources);
+        if (l == null) return;
+        Class<?> flow = l.loadClass(FLOWS_PKG + "SendFlow");
+        // the previous record is typed by its own template, not by the one made: its inputs and its outputs
+        java.lang.reflect.Method record = null;
+        for (java.lang.reflect.Method m : flow.getMethods()) if (m.getName().equals("record")) record = m;
+        assertEquals(BACKEND_PKG + previousClass, record.getParameterTypes()[1].getName());
+        assertEquals("what the store made of the previous record is the outputs bean of ITS template", BACKEND_PKG + "ChangingOutputs", record.getParameterTypes()[2].getName());
+        assertEquals("the record made is of the template the flow ends in", BACKEND_PKG + "SendingInputs", record.getReturnType().getName());
+
+        Map<String, Object> answers = new LinkedHashMap<>();
+        answers.put("caller", "agent-7");
+        answers.put("clock", "2026-11-16T10:00:00Z");
+        Calls calls = new Calls();
+        Object rules = rulesOf(l, "SendFlowRules", answers, calls);
+        Object previous = make(l, BACKEND_PKG + previousClass, "name1", "RFQ-1");
+        Object previousMade = make(l, BACKEND_PKG + "ChangingOutputs", "document1", "D1");
+        Object request = make(l, ACTIONS_PKG + "Ask_sendRequest", "vendor", "acme", "reference", "RFQ-1");
+        Object asked = T36SubtypeTest.invoke(null, flow, "ask", request, rules, previousMade);
+        assertEquals("CHAINED from the other template's outputs", "D1", T36SubtypeTest.get(asked, "subject0"));
+        Object recorded = T36SubtypeTest.invoke(null, flow, "record", asked, previous, previousMade);   // no rule is used in this record
+        Map<String, Object> expected = new TreeMap<>();
+        expected.put("agent", "agent-7");
+        expected.put("time", "2026-11-16T10:00:00Z");
+        expected.put("document0", "D1");     // CHAINED
+        expected.put("atype", "Sending");    // CONSTANT
+        expected.put("vendor", "acme");      // AS ASKED
+        expected.put("name1", "RFQ-1");      // CARRIED OVER from the other template's bean
+        Map<String, Object> got = fieldsOf(recorded);
+        assertEquals(Map.of(), got.remove("attributesOther"));
+        for (Map.Entry<String, Object> e : got.entrySet()) assertEquals(e.getKey(), expected.get(e.getKey()), e.getValue());
+        assertEquals(expected.keySet(), got.entrySet().stream().filter(e -> e.getValue() != null).map(Map.Entry::getKey).collect(Collectors.toSet()));
+
+        // the guards read the other template's bean and outputs
+        try {
+            T36SubtypeTest.invoke(null, flow, "record", asked, make(l, BACKEND_PKG + previousClass, "name1", "RFQ-2"), previousMade);
+            fail("a previous record of another reference");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("the previous record of the document is of another name1 than the request's reference"));
+        }
+        try {
+            T36SubtypeTest.invoke(null, flow, "record", asked, previous, make(l, BACKEND_PKG + "ChangingOutputs", "document1", "D2"));
+            fail("a document the previous record did not make");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("addresses another document than the one the previous record made"));
+        }
+        // the reply, from the outputs of the template the flow ends in
+        Object made = make(l, BACKEND_PKG + "ExchangingOutputs", "document1", "D2");
+        Object reply = T36SubtypeTest.invoke(null, flow, "answer", asked, recorded, made);
+        assertEquals("accepted", T36SubtypeTest.get(reply, "outcome"));
+        assertEquals("RFQ-1", T36SubtypeTest.get(reply, "result"));
+    }
+
+    public void testAStoodRecordMadeByAnotherTemplateIsTypedByItsOwnSubtype() throws Exception {
+        sendsADocument("xt", "t36.LineChange", "Line_changeInputs");
+    }
+
+    public void testAStoodRecordMayBeOfATemplateThatHasNoSubtype() throws Exception {
+        sendsADocument("xt2", "t36.Changing", "ChangingInputs");
+    }
+
+    public void testTheTableSaysWhereTheOtherTemplatesValuesCameFrom() throws Exception {
+        generate("xtdoc", List.of(LINE_CHANGE, ASK_SEND, SENDING, xt("t36.LineChange")));
+        String doc = Files.readString(Path.of(OUT + "xtdoc/libs/" + DOC));
+        assertTrue(doc, doc.contains("<tr><td>record</td><td>document0</td><td class='csv_kind'>chained</td><td>the document as it stood: document1 of the record that made it</td></tr>"));
+        assertTrue(doc, doc.contains("<tr><td>record</td><td>name1</td><td class='csv_kind'>carried over</td><td>the document's name1, unchanged</td></tr>"));
+    }
+
+    void refusedXt(String title, Consumer<ObjectNode> edit, String... contains) throws Exception {
+        ObjectNode flow = (ObjectNode) om.readTree(xt("t36.LineChange"));
+        edit.accept(flow);
+        ObjectNode c = catalogue("refusal", List.of(LINE_CHANGE, ASK_SEND, SENDING, om.writeValueAsString(flow)));
+        TemplatesProjectConfiguration configs = ConfigProcessor.objectMapper.readValue(om.writeValueAsString(c), TemplatesProjectConfiguration.class);
+        try {
+            new ConfigProcessor(pf).checkSubtypes(configs, ".");
+            fail(title + ": accepted");
+        } catch (FlowException e) {
+            for (String m : contains) assertTrue(title + ": " + m + " in " + e.getMessage(), e.getMessage().contains(m));
+        }
+    }
+
+    public void testWhatAStoodRecordOfAnotherTemplateMustHave() throws Exception {
+        refusedXt("of names nothing", f -> ((ObjectNode) obj(f, "stood").get("document")).put("of", "t36.Nope"), "stood.document.of names t36.Nope", "no subtype or template");
+        refusedXt("madeBy is no output of THAT template", f -> ((ObjectNode) obj(f, "stood").get("document")).put("madeBy", "exchanging"),
+                "madeBy is exchanging", "no output node of t36.Changing");
+        refusedXt("identity of a value the other template's bean has not", f -> ((ObjectNode) ((ObjectNode) obj(f, "stood").get("document")).get("identity")).put("backend", "vendor"),
+                "identity.backend is vendor");
+        refusedXt("a value to carry that the other template's bean has not", f -> {
+            obj(f, "record").remove("vendor");
+            obj(f, "carry").set("document", om.createArrayNode().add("vendor"));
+        },
+                "the document's vendor does not exist", "t36.LineChange");
+    }
 }

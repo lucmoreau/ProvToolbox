@@ -76,9 +76,18 @@ public class FlowModel {
         public String addressed;
         public String identityUser;
         public String identityBackend;
-        /** The subtype of the previous record: {@code to}, or the subtype {@code of} names. */
+        /** The subtype of the previous record ({@code to}, or the subtype {@code of} names); null when {@code of} names a template (T41, G2: the general input bean). */
         public SubtypeTemplateCompilerConfig record;
+        /** The template of the previous record: its outputs bean is what the store made of it. */
+        public SimpleTemplateCompilerConfig template;
         public Map<String, Field> fields;
+        /** The outputs of that template. */
+        public Map<String, Field> outputs;
+
+        /** The previous record's subtype, or its template, by name. */
+        public String describe() {
+            return record != null ? record.fullyQualifiedName : template.fullyQualifiedName;
+        }
 
         Stood(String name) {
             this.name = name;
@@ -226,15 +235,7 @@ public class FlowModel {
             else ownValues.add(f.name);
         }
         if (requestValues.isEmpty()) throw refusal("the user subtype " + from.fullyQualifiedName + " has no request value: there is nothing to ask (declare @performative \"request\")");
-        for (String key : descriptorUtils.fieldNames(backendSchema)) {
-            if (!descriptorUtils.isOutput(key, backendSchema)) continue;
-            Descriptor d = backendSchema.getVar().get(key).get(0);
-            boolean node = !descriptorUtils.getAttributeVariable(key, d).isPresent();
-            String type = node ? "node" : descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getType, nd -> null);
-            Field o = new Field(key, type, compilerUtil.getPastTypeForDeclaredType(backendSchema.getVar(), key), false, null, null, null);
-            if (node) o.valueType = nodeType(d);
-            outputs.put(key, o);
-        }
+        outputs = outputsOf(backendSchema, compilerUtil);
 
         readStood(configs, compilerUtil, compilerSubtype, cbindingsBaseDir);
         readAsk();
@@ -267,6 +268,38 @@ public class FlowModel {
         return res;
     }
 
+    /** The outputs of a template: what the store makes of a record of it (the fields of its outputs bean). */
+    static Map<String, Field> outputsOf(TemplateBindingsSchema schema, CompilerUtil compilerUtil) {
+        Map<String, Field> res = new LinkedHashMap<>();
+        for (String key : descriptorUtils.fieldNames(schema)) {
+            if (!descriptorUtils.isOutput(key, schema)) continue;
+            Descriptor d = schema.getVar().get(key).get(0);
+            boolean node = !descriptorUtils.getAttributeVariable(key, d).isPresent();
+            String type = node ? "node" : descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getType, nd -> null);
+            Field o = new Field(key, type, compilerUtil.getPastTypeForDeclaredType(schema.getVar(), key), false, null, null, null);
+            if (node) o.valueType = nodeType(d);
+            res.put(key, o);
+        }
+        return res;
+    }
+
+    /** The fields of the general input bean of a template (T41, G2: a previous record of a template that has no subtype): its inputs, a carrier as the text it is. */
+    static Map<String, Field> fieldsOfTemplate(TemplateBindingsSchema schema, CompilerUtil compilerUtil) {
+        Map<String, Field> res = new LinkedHashMap<>();
+        Map<String, List<Descriptor>> var = schema.getVar();
+        for (String key : descriptorUtils.fieldNames(schema)) {
+            if (!descriptorUtils.isInput(key, schema)) continue;
+            Descriptor d = var.get(key).get(0);
+            boolean node = !descriptorUtils.getAttributeVariable(key, d).isPresent();
+            String type = node ? "node" : descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getType, nd -> null);
+            String doc = descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+            Field f = new Field(key, type, compilerUtil.getPastTypeForDeclaredType(var, key), descriptorUtils.isCompulsoryInput(key, schema), null, null, doc);
+            if (node) f.valueType = nodeType(d);
+            res.put(key, f);
+        }
+        return res;
+    }
+
     // ---- stood ---------------------------------------------------------------------------------------------------------------
 
     private static final Set<String> STOOD_KEYS = Set.of("node", "madeBy", "addressed", "identity", "of");
@@ -291,25 +324,46 @@ public class FlowModel {
                 if (s.identityUser == null || s.identityBackend == null) throw refusal("stood." + name + ".identity needs user and backend");
             }
             String of = string(d.get("of"), "stood." + name + ".of");
+            // T41 (G2, "(b) typed record of its own template"): the previous record may be of any subtype or template of the catalogue, not only of the template `to` refines
             s.record = to;
+            s.template = backendTemplate;
             if (of != null) {
-                s.record = subtype(configs, of, "stood." + name + ".of");
-                if (!Objects.equals(s.record.refines, to.refines)) {
-                    throw refusal("stood." + name + ".of is " + of + ", a subtype of " + s.record.refines + ", not of " + to.refines + " (the outputs bean of the record must be the backend template's)");
+                SubtypeTemplateCompilerConfig sub = null;
+                for (TemplateCompilerConfig c : configs.templates) {
+                    if (c instanceof SubtypeTemplateCompilerConfig && Objects.equals(c.fullyQualifiedName, of)) sub = (SubtypeTemplateCompilerConfig) c;
+                }
+                if (sub != null) {
+                    s.record = sub;
+                    s.template = CompilerSubtype.refined(configs, sub);
+                } else {
+                    s.record = null;
+                    s.template = null;
+                    for (TemplateCompilerConfig c : configs.templates) {
+                        if (c instanceof SimpleTemplateCompilerConfig && Objects.equals(c.fullyQualifiedName, of)) s.template = (SimpleTemplateCompilerConfig) c;
+                    }
+                    if (s.template == null) throw refusal("stood." + name + ".of names " + of + ", which is no subtype or template of the catalogue");
                 }
             }
+            TemplateBindingsSchema stoodSchema = s.template == backendTemplate ? backendSchema : compilerUtil.getBindingsSchema(s.template, cbindingsBaseDir);
+            s.outputs = s.template == backendTemplate ? outputs : outputsOf(stoodSchema, compilerUtil);
             s.fields = s.record == to ? backendFields
-                    : fieldsOf(compilerUtil.getBindingsSchema(CompilerSubtype.refined(configs, s.record), cbindingsBaseDir), s.record, compilerUtil, compilerSubtype);
+                    : s.record != null ? fieldsOf(stoodSchema, s.record, compilerUtil, compilerSubtype) : fieldsOfTemplate(stoodSchema, compilerUtil);
 
-            // node: an input node of the backend's bean; madeBy: an output node of the store
+            // node: an input node of the backend's bean; madeBy: an output node of the store, of the template of the previous record, of the same type
             Field node = backendFields.get(s.node);
             if (node == null || !node.isNode()) throw refusal("stood." + name + ".node is " + s.node + ", which is no node input of the backend subtype's bean");
-            Field made = outputs.get(s.madeBy);
-            if (made == null || !made.isNode()) throw refusal("stood." + name + ".madeBy is " + s.madeBy + ", which is no output node of " + backendTemplate.fullyQualifiedName);
+            Field made = s.outputs.get(s.madeBy);
+            if (made == null || !made.isNode()) throw refusal("stood." + name + ".madeBy is " + s.madeBy + ", which is no output node of " + s.template.fullyQualifiedName);
+            if (!convertible(made, node, null)) {
+                throw refusal("stood." + name + ": the output node " + s.madeBy + " (" + made.valueType + ") cannot become the input node " + s.node + " (" + node.valueType + "): the types differ");
+            }
             if (s.addressed != null) {
                 Field a = userFields.get(s.addressed);
                 if (a == null || !ownValues.contains(s.addressed) || !a.isNode()) {
                     throw refusal("stood." + name + ".addressed is " + s.addressed + ", which is no node among the user bean's own values (" + ownValues + ")");
+                }
+                if (!convertible(made, a, null)) {
+                    throw refusal("stood." + name + ".addressed: the user node " + s.addressed + " (" + a.valueType + ") cannot be the output node " + s.madeBy + " (" + made.valueType + "): the types differ");
                 }
             }
             if (s.identityUser != null) {
@@ -510,7 +564,7 @@ public class FlowModel {
     private Item carriedItem(Stood s, Field target, String name) {
         Field src = s.fields.get(name);
         String place = "the " + s.name + "'s " + name;
-        if (src == null) throw refusal(place + " does not exist: the previous record's bean (" + s.record.fullyQualifiedName + ") has no " + name + " to carry to " + target.name);
+        if (src == null) throw refusal(place + " does not exist: the previous record's bean (" + s.describe() + ") has no " + name + " to carry to " + target.name);
         if (!convertible(src, target, null)) throw refusal(place + " (" + src.declared + ") cannot be carried to " + target.name + " (" + target.declared + "): the types differ");
         Item i = new Item("record", target.name, target, Kind.CARRIED);
         i.thing = s.name;

@@ -1,0 +1,80 @@
+{
+  "var": {
+    "exchanging": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The exchange",
+        "@output": "true"
+      }
+    ],
+    "document1": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The document after the exchange",
+        "@output": "true"
+      }
+    ],
+    "agent": [
+      {
+        "@id": "ex:*",
+        "@documentation": "Who exchanges",
+        "@input": "compulsory"
+      }
+    ],
+    "document0": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The document as it stood",
+        "@input": "compulsory"
+      }
+    ],
+    "atype": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The kind of act",
+        "@input": "compulsory"
+      }
+    ],
+    "time": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "When",
+          "@input": "compulsory"
+        }
+      ]
+    ],
+    "name1": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The document's name",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "attributes": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The act's keys, as JSON",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "vendor": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The vendor the document is sent to",
+          "@input": "optional",
+          "@inJson": "attributes"
+        }
+      ]
+    ]
+  },
+  "context": {
+    "ex": "http://example.org/"
+  },
+  "template": "https://example.org/templates/t36/exchanging.provn"
+}

@@ -108,6 +108,28 @@
           "@performative": "request"
         }
       ]
+    ],
+    "vendor": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The vendor",
+          "@input": "optional",
+          "@inJson": "attributes",
+          "@performative": "request"
+        }
+      ]
+    ],
+    "reference": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The document's reference, as the person knows it",
+          "@input": "optional",
+          "@inJson": "attributes",
+          "@performative": "request"
+        }
+      ]
     ]
   },
   "context": {

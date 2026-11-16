@@ -108,7 +108,17 @@ public class CompilerFlow {
     }
 
     private ClassName outputsBean(Locations l, FlowModel m) {
-        return get(compilerUtil.beanNameClass(m.backendTemplate.name, BeanDirection.OUTPUTS), l.getBeansPackage(m.backendTemplate.fullyQualifiedName, BeanDirection.OUTPUTS));
+        return outputsBean(l, m.backendTemplate);
+    }
+
+    /** The outputs bean of a template: what the store made of a record of it. */
+    private ClassName outputsBean(Locations l, SimpleTemplateCompilerConfig template) {
+        return get(compilerUtil.beanNameClass(template.name, BeanDirection.OUTPUTS), l.getBeansPackage(template.fullyQualifiedName, BeanDirection.OUTPUTS));
+    }
+
+    /** The inputs of a stood thing's previous record: the typed bean of its subtype, or the general input bean of its template (T41, G2). */
+    private ClassName stoodInputs(Locations l, FlowModel m, FlowModel.Stood s) {
+        return s.record != null ? backendBean(l, m, s.record) : compilerSubtype.generalBeanType(l, s.template);
     }
 
     private ClassName flowClass(FlowModel m) {
@@ -143,13 +153,13 @@ public class CompilerFlow {
         res.put(ASKED, userBean(l, m));
         switch (step) {
             case "ask":
-                for (FlowModel.Stood s : m.stood.values()) if (s.addressed != null) res.put(s.name + MADE_SUFFIX, outputsBean(l, m));
+                for (FlowModel.Stood s : m.stood.values()) if (s.addressed != null) res.put(s.name + MADE_SUFFIX, outputsBean(l, s.template));
                 break;
             case "record":
                 res.put(RECORDED, backendBean(l, m, m.to));
                 for (FlowModel.Stood s : m.stood.values()) {
-                    res.put(s.name, backendBean(l, m, s.record));
-                    res.put(s.name + MADE_SUFFIX, outputsBean(l, m));
+                    res.put(s.name, stoodInputs(l, m, s));
+                    res.put(s.name + MADE_SUFFIX, outputsBean(l, s.template));
                 }
                 break;
             case "answer":
@@ -240,7 +250,7 @@ public class CompilerFlow {
                 .COMMENT("1. The request becomes the user bean: what the person asked is copied, the rest is given here.\n")
                 .PARAMETER(request(l, m), REQUEST);
         if (rules) method.PARAMETER(rulesClass(m), RULES);
-        for (FlowModel.Stood s : m.stood.values()) if (s.addressed != null) method.PARAMETER(outputsBean(l, m), s.name + MADE_SUFFIX);
+        for (FlowModel.Stood s : m.stood.values()) if (s.addressed != null) method.PARAMETER(outputsBean(l, s.template), s.name + MADE_SUFFIX);
         method.commentFileLocation();
 
         List<String> asked = new ArrayList<>();
@@ -284,8 +294,8 @@ public class CompilerFlow {
                 .COMMENT("a previous record that does not match the request is refused before anything is built.\n")
                 .PARAMETER(userBean(l, m), ASKED);
         for (FlowModel.Stood s : m.stood.values()) {
-            method.PARAMETER(backendBean(l, m, s.record), s.name);
-            method.PARAMETER(outputsBean(l, m), s.name + MADE_SUFFIX);
+            method.PARAMETER(stoodInputs(l, m, s), s.name);
+            method.PARAMETER(outputsBean(l, s.template), s.name + MADE_SUFFIX);
         }
         if (rules) method.PARAMETER(rulesClass(m), RULES);
         method.commentFileLocation();

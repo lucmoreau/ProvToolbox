@@ -90,6 +90,29 @@ public abstract class T36FlowFixture extends TestCase {
             + "  \"attributesOther\":\"absent\",\"pattributesOther\":\"absent\"},"
             + ANSWERS + "}";
 
+    /** A user subtype for a request that sends a document, and the backend subtype of the template that exchanges it. */
+    static final String ASK_SEND = "{\"@type\":\"subtype\",\"name\":\"ask_send\",\"fullyQualifiedName\":\"t36.AskSend\",\"package\":\"" + PKG + ".actions\","
+            + "\"refines\":\"t36.Inquiry\",\"fixed\":{\"atype\":\"Sending\"},\"carries\":{\"vendor\":\"required\",\"reference\":\"required\"}}";
+
+    static final String SENDING = "{\"@type\":\"subtype\",\"name\":\"sending\",\"fullyQualifiedName\":\"t36.Sending\",\"package\":\"" + PKG + ".backend\","
+            + "\"refines\":\"t36.Exchanging\",\"fixed\":{},\"carries\":{\"vendor\":\"required\"}}";
+
+    /**
+     * XT (T41, design §14.2): the document a request sends was made by another template (the one that changes lines): the stood record is typed by
+     * its own template, {@code of} naming its subtype, and the guards and the carrying read its bean. {@code OF} is replaced by the template's name
+     * for the variant whose previous record is of a template with no subtype.
+     */
+    static final String FLOW_XT = "{\"@type\":\"flow\",\"name\":\"send_flow\",\"fullyQualifiedName\":\"" + PKG + ".flows.SendFlow\",\"package\":\"" + PKG + ".flows\","
+            + "\"from\":\"t36.AskSend\",\"to\":\"t36.Sending\","
+            + "\"stood\":{\"document\":{\"node\":\"document0\",\"madeBy\":\"document1\",\"addressed\":\"subject0\",\"of\":\"OF\","
+            + "              \"identity\":{\"user\":\"reference\",\"backend\":\"name1\"}}},"
+            + "\"ask\":{\"agent\":{\"supplied\":\"caller\"},\"time\":{\"supplied\":\"clock\"}},"
+            + "\"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Sending\"},\"vendor\":\"asked\",\"attributesOther\":\"absent\"},"
+            + "\"carry\":{\"document\":[\"name1\"]},"
+            + "\"reply\":{\"answer\":{\"outcome\":{\"when\":{\"made\":\"document1\"},\"is\":\"accepted\",\"otherwise\":\"failed\"},\"result\":{\"recorded\":\"name1\"},\"code\":\"absent\"},"
+            + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
+            + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
+
     /** The catalogue: the two templates, their subtypes and the given flow entries (before the others when {@code first}). */
     ObjectNode catalogue(String id, List<String> entries) throws Exception {
         String dir = OUT + id + "/";
@@ -97,6 +120,7 @@ public abstract class T36FlowFixture extends TestCase {
         new File(dir).mkdirs();
         Files.copy(Path.of(RES + "changing-bindings.json"), Path.of(dir + "changing.json"));
         Files.copy(Path.of(RES + "inquiry-bindings.json"), Path.of(dir + "inquiry.json"));
+        Files.copy(Path.of(RES + "exchanging-bindings.json"), Path.of(dir + "exchanging.json"));
         ObjectNode c = (ObjectNode) om.readTree("{\n"
                 + "  \"group\": \"org.example\", \"name\": \"t36\", \"destination\": \"" + dir + "libs\",\n"
                 + "  \"description\": \"T36 part E\", \"version\": \"0.1.0\", \"integrator\": true,\n"
@@ -109,6 +133,8 @@ public abstract class T36FlowFixture extends TestCase {
                 + " \"package\": \"" + PKG + ".backend\", \"template\": \"t36.changing\", \"cbindings\": \"" + dir + "changing.json\" }"));
         templates.add(om.readTree("{ \"@type\": \"simple\", \"fullyQualifiedName\": \"t36.Inquiry\", \"name\": \"inquiry\","
                 + " \"package\": \"" + PKG + ".actions\", \"template\": \"t36.inquiry\", \"cbindings\": \"" + dir + "inquiry.json\" }"));
+        templates.add(om.readTree("{ \"@type\": \"simple\", \"fullyQualifiedName\": \"t36.Exchanging\", \"name\": \"exchanging\","
+                + " \"package\": \"" + PKG + ".backend\", \"template\": \"t36.exchanging\", \"cbindings\": \"" + dir + "exchanging.json\" }"));
         for (String e : entries) templates.add(om.readTree(e));
         return c;
     }

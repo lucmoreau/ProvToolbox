@@ -950,3 +950,130 @@ Checked against the code and the real case, what changed:
 - `of` on a stood thing; two flows in one catalogue; a flow whose user subtype has no reply value (no `answer`).
 - The Turtle terms of a flow with a parser other than rdflib; the table in a browser.
 
+## 14. Part F — the flow expresses more requests (T41; proposed 2026-11-16; not built)
+
+Luc, 2026-11-16, relayed by the session that started this one: "Delegate the extension to the T36 session". Ticket: `TODO.md`, T41 (chosen by him: "New ticket T41
+(Recommended)"). The first application tried the flow of §13 on all of its 46 commands: 2 go through a generated flow, 44 cannot be declared. Four reasons, read
+by its session from `FlowModel` and `CompilerFlow`, and checked here against the code:
+
+| code | what the flow lacks | commands |
+|---|---|---|
+| **NS** | `stood` may not be empty (`FlowModel.readStood`: "a flow starts from at least one previous record"): a request that brings a document into being, or in which a counterparty's document arrives, stands on nothing | 12 |
+| **XT** | a stood thing must be a record of the template `to` refines (its outputs bean is `to`'s template's; `of` must refine the same template): a document made by one template and advanced by another cannot say what stood | 18 |
+| **MR** | one flow makes one record (`FlowModel` holds one `to`, one `stood`, one `record`; `CompilerFlow` writes one `record` method): a request that registers a document and then exchanges it has one user bean and several backend records; some make a number of records that depends on the request | 10 |
+| **LD** | statements written through a ledger enactor of the application, not a document template | 4 |
+
+The design of §13 came from one example, which had one previous record of the same template and made one record: that narrowness was the brief's, not the
+compiler's necessity. What follows keeps the six kinds, the rule that every input is accounted for exactly once, and every declaration of §13.2.
+
+### 14.1 NS: a flow with nothing that stood
+
+`stood` becomes optional (the member may be absent or empty). Nothing in the model or the generator needs a stood thing: with none, `ask` has no `…Made` parameter,
+`record` takes only the user bean (and the rules), and there is no guard to make. What was a stood node is then said by the other kinds: the node the request
+addresses, if any, is a user-bean own value (`ask`: `supplied` or `absent`), and a node input of the backend's bean is said in `record`: `supplied` (the
+application names it, as it names the caller's node), `asked`, a constant of its type, or `absent` when it is optional. So **where the nodes the request
+addresses come from, when nothing stood, is the application**, through a rule, and the table in the documentation says so (`supplied`): nothing is hidden.
+
+### 14.2 XT: a stood thing made by another template
+
+Two shapes, weighed.
+
+- **(a) The application names the node.** The node input is `record.<node>: {"supplied": rule}`: the rule returns the node of the version that stood. This needs no new
+  member once NS is allowed. It checks **nothing**: there is no previous bean, so no `identity` guard, no `addressed` guard, and no value can be carried over
+  (`carry`, `carried`, `rest` read a previous bean): everything the record would have carried is asked, a constant or supplied.
+- **(b) A stood record typed by its own template.** The entry of `stood` keeps its form, and `of` may name **any subtype or simple template of the catalogue**, not only one
+  that refines the template `to` refines. The previous record's inputs are the typed bean of that subtype (or the general input bean of that template) and what the
+  store made of it is that template's outputs bean; `madeBy` is an output node of **that** template, `node` an input node of the backend's bean, of the same type.
+  `identity` names a value of that previous bean, `addressed` the user node that must be `madeBy`, `carry` and `carried` read that bean: both guards and the carrying
+  work as in §13. The template's beans must be generated, so the catalogue lists every template a flow names.
+
+Proposed (G2): **(b), with (a) still there** as the fallback it already is. When the application cannot say which template made the thing that stands (an order
+made by an insertion, or, once submitted and returned, by a transformation), it declares **one flow for each case** and calls the one that fits: a list of
+alternatives in one flow would need a method for each and says less than two flows. What (a) lets the generated guards check: nothing; what (b) lets them check:
+that the previous record is of the thing the request names, and that the document addressed is the one that record made.
+
+### 14.3 MR: several records in one flow
+
+A flow has an ordered list of **records**, each with its own backend subtype, what stood and its assignments, and **one reply at the end**:
+
+```json
+{ "@type": "flow", "name": "…", "fullyQualifiedName": "com.example.flows.AddingFlow", "package": "com.example.flows",
+  "from": "com.example.actions.Adding",
+  "stood": { … },                            // as §13.2: used by the records that name them
+  "ask": { … },
+  "records": [
+    { "name": "register", "to": "com.example.backend.LineRegistering",
+      "stood": { "document": { "node": "document0", "madeBy": "document1", "addressed": "subject0", "of": "…" } },
+      "record": { … }, "carry": { … }, "carryOpen": { … } },
+    { "name": "insert", "to": "com.example.backend.LineInserting",
+      "stood": { "line": { "node": "part0", "madeBy": "part1", "record": "register" },
+                 "document": { "node": "document0", "madeBy": "document1", "record": "…" } },
+      "record": { … }, "carry": { "line": "rest" } } ],
+  "reply": { "answer": { "outcome": { "when": { "made": "insert.document1" }, "is": "accepted", "otherwise": "failed" }, "result": { "recorded": "insert.erpId1" } }, … } }
+```
+
+- **Compatibility.** The members of §13.2 at the top (`to`, `stood`, `record`, `carry`, `carryOpen`) are the shorthand of a flow of **one record, named `record`**: it generates
+  the same class as before (the same methods, `record`, `answer`, with the same parameters and names), which is a test. A flow declares either the shorthand or
+  `records`, not both. In a flow of several records, `stood` at the top is for the things `ask` addresses; a thing a record stands on is declared in that record.
+- **A later record chains from an earlier one.** A stood thing of a record names an earlier record of the flow (`"record": "register"`) instead of `of`: its inputs are the
+  bean that record built, its outputs what the store made of it, and `madeBy` an output node of that record's template. There is no guard (nothing the user said can
+  differ), and `carry`, `carried` and `rest` read that bean. A record cannot stand on a later one: the order is the order of `records`.
+- **Generated.** `ask`, one method per record (`recordRegister`, `recordInsert`; `record` when the flow has the shorthand), then `answer`, `refused`, `failed`. The application
+  calls `ask`, then the first record's method, sends the bean to the store, calls the second with the first's bean **and what the store made of it**, and so on, then
+  `answer` with every record's bean and outputs: the store is the application's, between the calls, as it already is between `record` and `answer`. The parameters
+  of a record's method are the user bean, its stood things' inputs and outputs (an earlier record's bean and outputs for a chained one) and the rules; of `answer`, the
+  user bean and each record's bean and outputs (`recorded`, `made` in the shorthand; `<name>Recorded`, `<name>Made` otherwise). A reply form names its record
+  (`insert.erpId1`, `insert.document1`); without a prefix it names the only record of a shorthand flow, and is refused as ambiguous otherwise.
+- **The rule holds for each record.** Every input of each record's backend bean is said exactly once (§13.2), with each record's own `stood`, `record`, `carry` and
+  `carryOpen`; the user bean's own values and the reply's are said once for the flow. A rule's name is unique in the flow; a stood thing's name is unique in the flow.
+  The documentation table and the Turtle name the step (`record register`).
+- **A record repeated once per element of a list the request gives** (one record, plus two for each line the request gives). Three ways, weighed:
+  (A) the list is a `json` value and an element is read by key with the runtime's getters: the request class holds the list as text, which is not what an HTTP body
+  holds, and each element value is read with a call, not a field; (B) the list is a value of a new type, `list of <user subtype>`, whose elements are typed
+  beans of a user subtype: typed, but a new type in the bindings, in the beans, in the JSON text and in the conversions of a carrier (the largest of the three);
+  (C) the compiler repeats nothing: **a list of lines is a list of requests**, each with its own flow, and the application loops, calling the flow of one line for each.
+  Proposed (G4): **(C)** for now: it needs only what this part builds, each line's records are exactly accounted, and nothing about a list has to be typed. What is
+  lost is one user bean for the whole request: the records of "an RFQ with three lines" come from one request for the RFQ and three for its lines, tied together
+  by the application. (B) stays open as a later stage if the application needs one bean.
+
+### 14.4 LD: statements written through a ledger enactor
+
+Not built; what it would take. The closings write statements through an enactor of the application that takes the application's own transactions (legs), and no
+template stands behind them: the compiler generates beans from templates and their subtypes only, so a flow has no backend bean to fill. Either (1) the statements
+are declared as templates (and subtypes) in a catalogue, and each statement is then a record like any other (one flow for a vendor's statement, called for each
+vendor by the application: §14.3 (C)); or (2) a flow whose backend is an **external bean**, a class the application provides: the generator would read its fields
+through the type registry of the PAST checker (built from Java classes by reflection, `ExternalTypeBuilder`), which puts the application's classes on the
+compiler's class path when it runs, and gives a bean no template describes (no documentation, schema or Turtle of its inputs). (1) needs nothing of the compiler;
+(2) is a new kind of backend. Luc decides whether and which.
+
+### 14.5 The refusals, new
+
+At compile time, naming the flow and the record: `records` with the shorthand's members; a record without a name, a name used twice, or a stood thing named twice in the
+flow; `of` naming no subtype or template of the catalogue; `madeBy` not an output node of the template of `of`; a stood `record` naming no earlier record; a chained thing
+with `addressed` or `identity` (nothing to guard); a reply form without a record when the flow has several, or naming one it has not; every refusal of §13.4, for
+each record.
+
+### 14.6 The tests
+
+Each gap has a real case of its own in a fixture with made-up names (`T36FlowFixture` grows): **NS**, a request that makes a document from nothing, its nodes supplied;
+**XT**, a document made by one template and advanced by another, with `identity`, `addressed` and `carry` read from the other template's bean; **MR**, a line registered and
+then inserted, the second chaining from the outputs of the first and carrying its values. Each is compiled and run against stand-in rules, with the guards, the
+kinds beside every assignment in Java, Python and JavaScript, the documentation and the Turtle. **Compatibility**: the declarations of the tests of §13 compile
+to the same class (the generated Java is equal, file for file, to what stage 9 wrote), and a catalogue without a flow is unchanged.
+
+### 14.7 Rulings asked
+
+G1 (NS: `stood` optional, the nodes from the application), G2 (XT: (b) with (a) as the fallback, one flow per case), G3 (MR: `records`, the shorthand kept, chaining
+from an earlier record), G4 (the list: (C), compose flows; (B) later), G5 (LD: not built; (1) or (2)), and the four findings of the first application (§14.8).
+Recorded here in Luc's words, dated, once given.
+
+### 14.8 The compiler findings of the first application
+
+Put to Luc as fixes or tickets: (1) `JsonText.text` of a number writes `1e+21` and `1e-7` where plain digits were expected (it follows the number rule of §5.4, ruled in R5
+and E4; a price never reaches those magnitudes); (2) the generator's type checker logs "cannot assign Object to Map" for `JsonText.newObject()`; (3) compiling an annotated copy
+of a template also writes that template's own beans; (4) a `ClassNotFoundException` for `InteropFramework` is logged during generation. Not fixed here before he says.
+
+### 14.9 Not verified
+
+Nothing of part F is built or run. The real cases are the first application's 44 commands, read from its inventory, not run; the fixture's cases are made up.
+

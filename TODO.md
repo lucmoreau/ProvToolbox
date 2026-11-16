@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T35** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T36) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T36** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T37) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T36 | `@inJson` declares the values a template keeps inside a JSON text variable, and a `subtype` of a template gets a typed bean generated from PAST for each target language; the Turtle says how each subtype relates to its general template. | ⬜ BACKLOG | Template compiler | [T36 section](#-t36-injson-values-and-template-subtypes) |
 | T34 | The jsweet build the compiler generates for a client project transpiles nothing: it predates provenance-templates-library's way of running jsweet (antrun `mvn -f pom-jsweet.xml` with `--add-opens`, the POM at the project's root). | ⬜ BACKLOG | Template compiler / JavaScript | [T34 section](#-t34-the-generated-jsweet-build-transpiles-nothing) |
 | T33 | The Python emitter writes Java's `null` as `0`, so a generated Python client never sees an absent value: it logs `None`, and an absent `@escape` field crashes the placeholder `escapeCsv`. | ⬜ BACKLOG | Template compiler / Python | [T33 section](#-t33-the-python-emitter-writes-null-as-0) |
 | T30 | ttf execution: the `dot` runs left after T29 — one run per layout for the png and svg of a document; `validate-ttf` one `ajv` run per batch; `dot`'s stderr drained. | ⬜ BACKLOG | Template / Build | [T30 section](#-t30-ttf-execution-one-dot-run-per-layout) |
@@ -38,6 +39,52 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+### ⬜ T36: `@inJson` values and template subtypes
+
+**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler.  **Branch**: `t36-injson-subtypes` (off `development2_0`), not yet created.
+**Filed 2026-11-16** (Luc), from the first application's design of user-interaction records
+(`the first application's design note`). **Design**: `docs/T36-INJSON-SUBTYPES-DESIGN.md`, proposed
+and not yet ruled: its rulings R1–R10 are asked of Luc.
+
+**The need.** Applications use one compiled template for many kinds of act (nextgen: 73 templates for 213 act types)
+and put what differs in text variables holding a JSON object (`attributes`, `pattributes`), because a new key there
+changes no table and no bean. Nothing declares those keys, and every caller writes them by hand.
+
+**Asked** (Luc, 2026-11-15 and 2026-11-16):
+- "we could introduce new annotations, @inJson, indicating which pattributes it gets encoded in, under which
+  variable. These annotations would not change the java api to the template or its sql annotation, but it would
+  allows to encode all the values encoded in a template."
+- "can a compiler generate the user beans like we do with the prov-template-compiler, using the roster supplementary
+  definitions. The ttl files should also define the subtypes and their relation to the general template."
+- "The compiler extension would have to generate PAST expressions so that generated beans can be compiled to
+  multiple target languages."
+
+**What it comes to.**
+- **`@inJson`** on a value's descriptor names the text variable (the carrier) the value is encoded in. Such a value is
+  no bean field and no column: the template's beans and SQL are what they were. It is listed in the documentation and
+  the JSON schema.
+- **A third kind of template, `subtype`**, in the project configuration: it names the template it refines, the inputs
+  it fixes (the act type) and the in-JSON values it carries, required or optional. An application writes these entries
+  from its own roster of act types; the roster is not ProvToolbox's.
+- **A typed bean per subtype**, built as a PAST class and emitted for each target language: one typed field per
+  carried value, a conversion to the general template's input bean (which writes the carrier's JSON text) and one
+  back. The JSON text is written through one small runtime class per language, as `@escape` reaches `escapeCsv`.
+- **No server side for a subtype**: no table, no insert function, no builder. Its record is the general template's.
+- **The descriptions**: documentation, JSON schema, and a Turtle file declaring each subtype as a subclass of its
+  general template with what it fixes and carries.
+
+**Touches**: T33 (Python writes `null` as `0`: an absent optional value) and T34 (the generated jsweet build); Rust
+has no mapping for a static runtime call.
+
+**DoD.**
+- A catalogue that uses neither `@inJson` nor `subtype` compiles to exactly what it compiled to before.
+- Adding in-JSON values to a template changes its documentation and schema and no other generated file.
+- For a case table of subtypes: the typed bean compiles in each language emitted, converts to the general bean and
+  back without loss, refuses a missing required value, and the carrier's text is the same from each language.
+- The provenance-templates specification says what `@inJson` and a subtype are.
+
+---
 
 ### ⬜ T34: The generated jsweet build transpiles nothing
 

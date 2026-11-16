@@ -3,6 +3,7 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 `2.6.0-SNAPSHOT`
 * prov-template-compiler: Fixed issue with log2prov (T32)
 * prov-template-compiler: support for @transient and @pseudonym annotations (T31) to avoid persistence of private information in provenance.
+* prov-template: reconstructing time ignore time for some PROV statements
 
 
 `2.5.0`

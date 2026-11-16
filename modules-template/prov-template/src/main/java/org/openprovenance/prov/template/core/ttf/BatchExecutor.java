@@ -80,7 +80,7 @@ public class BatchExecutor {
             c = Class.forName("org.openprovenance.prov.core.jsonld11.serialization.ProvSerialiser");
             cons = c.getConstructor();
             serializerMap.put("jsonld", (ProvSerialiser) cons.newInstance());
-            System.out.println("serializerMap: " + serializerMap.keySet());
+            //System.out.println("serializerMap: " + serializerMap.keySet());
             return Pair.of(serializerMap, deserializerMap);
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             logger.throwing(e);

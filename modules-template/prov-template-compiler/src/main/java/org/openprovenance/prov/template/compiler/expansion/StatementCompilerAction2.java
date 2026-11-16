@@ -104,6 +104,12 @@ public class StatementCompilerAction2 implements StatementAction {
                 .ELSE(newISOTime(varName));
     }
 
+    // --- helper: the time of a usage, generation or invalidation, from its tmpl:time variable, or null ---
+    private Expression timeArg(org.openprovenance.prov.model.Statement s) {
+        final String time = doCollectElementVariable(s, InstantiateUtil.TIME_URI);
+        return (time == null) ? getNull() : ternaryISOTime(time);
+    }
+
     // --- helper: build "if (cond) target.add(pf.newXXX(...))" ---
     private Statement ifThenTargetAdd(Expression condition, Expression pfCallExpr) {
         return IF(condition).THEN(targetAdd(pfCallExpr));
@@ -192,7 +198,7 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(VARIABLE(local(s.getId())));
         args.add(VARIABLE(activity));
         args.add(VARIABLE(entity));
-        args.add(getNull()); // time
+        args.add(timeArg(s)); // time, from tmpl:time
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
         if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
@@ -215,7 +221,7 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(VARIABLE(local(s.getId())));
         args.add(VARIABLE(entity));
         args.add(VARIABLE(local(s.getActivity())));
-        args.add(getNull()); // time
+        args.add(timeArg(s)); // time, from tmpl:time
         if (hasAttrs) args.add(VARIABLE("attrs"));
 
         if (hasAttrs && attributesAllowForStatementsIdentification(s)) {
@@ -239,7 +245,7 @@ public class StatementCompilerAction2 implements StatementAction {
         args.add(VARIABLE(local(s.getId())));
         args.add(VARIABLE(entity));
         args.add(VARIABLE(local(s.getActivity())));
-        args.add(getNull()); // time
+        args.add(timeArg(s)); // time, from tmpl:time
         args.add(attrsArg);
 
         Expression condition;

@@ -55,12 +55,12 @@ public class CompilerLogger {
                 .INTERFACES(org.openprovenance.prov.template.compiler.past.type.ClassName.get(LOGGER_INTERFACE, Constants.CLIENT_PACKAGE));
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             // if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             Field field = generateStaticFieldForTemplate(locations, config);
             pastClass.FIELDS(field);
         }
-        List<String> templates= Arrays.stream(configs.templates).filter(x -> !TemplateConfigurationEnum.isSubtype(x)).map(x->x.name).collect(Collectors.toList());
+        List<String> templates= Arrays.stream(configs.templates).filter(x -> !TemplateConfigurationEnum.isClientSide(x)).map(x->x.name).collect(Collectors.toList());
         ArrayType builderArrayPastType = ArrayType.of(org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE));
         org.openprovenance.prov.template.compiler.past.type.ClassName builderPastType = org.openprovenance.prov.template.compiler.past.type.ClassName.get("Builder", CLIENT_PACKAGE);
         pastClass.FIELDS(
@@ -74,14 +74,14 @@ public class CompilerLogger {
         pastClass.METHOD(generateGetBuilderMethod(builderArrayPastType));
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (config instanceof SimpleTemplateCompilerConfig) {
                 pastClass.METHOD(generateStaticLogMethod((SimpleTemplateCompilerConfig) config, locations));
             }
         }
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (config instanceof SimpleTemplateCompilerConfig) {
                 pastClass.METHOD(generateStaticBeanMethod((SimpleTemplateCompilerConfig) config, locations));
             }
@@ -155,7 +155,7 @@ public class CompilerLogger {
         builder.BODY(DEFINITION(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T,List.of())));
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
             builder.BODY(METHOD_CALL(
                     VARIABLE(A_TABLE_VAR),
@@ -186,7 +186,7 @@ public class CompilerLogger {
         method.BODY(DEFINITION(MAP_STRING_T, VARIABLE(A_TABLE_VAR), CONSTRUCTOR_CALL(HASH_MAP_STRING_T, List.of())));
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (!(config instanceof SimpleTemplateCompilerConfig)) {
                 String thisBuilderName = Constants.GENERATED_VAR_PREFIX + config.name;
                 method.BODY(METHOD_CALL(

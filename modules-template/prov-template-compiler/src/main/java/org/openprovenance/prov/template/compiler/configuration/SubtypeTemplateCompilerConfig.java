@@ -11,7 +11,7 @@ import java.util.Map;
  * In the catalogue: {@code {"@type": "subtype", "name": …, "fullyQualifiedName": …, "package": …, "refines": …,
  * "fixed": {"atype": "ex:Repricing"}, "carries": {"unitPrice": "required", "note": "optional"}}}.
  */
-public class SubtypeTemplateCompilerConfig extends TemplateCompilerConfig {
+public class SubtypeTemplateCompilerConfig extends ClientSideTemplateCompilerConfig {
 
     public static final String REQUIRED = "required";
     public static final String OPTIONAL = "optional";

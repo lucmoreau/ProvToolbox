@@ -677,7 +677,7 @@ Checked against the code on 2026-11-16 while building:
    request definition; the Turtle, read by rdflib; Python and JavaScript run against a stand-in typed bean (`check_request_reply.py`, `.js`); Rust.
    What T33 spoils is printed (`BLOCKED T33`), and T34 stops the JavaScript from being built into a client.
 
-## 13. Part E — the flow (proposed 2026-11-16; rulings E1 to E6, F1 and F2 given the same day; F1 and F2 built as stage 8, the flow as stage 9)
+## 13. Part E — the flow (proposed 2026-11-16; rulings E1 to E6, F1 and F2 given the same day; F1 and F2 built as stage 8, the flow as stage 9: §13.11)
 
 Luc, 2026-11-16, in the parent session: "a 'Java Pattern' connecting all the beans together according to flow.svg",
 "If it works, we might even extend T36 to generated this", and, once it had worked by hand in the first application:
@@ -913,4 +913,43 @@ Asked of Luc in the session that builds it, each with the proposal and the view.
 - Nothing of part E is built or run. The real case was read, not run.
 - That the six kinds cover every the first application request: one case was studied.
 - Whether the interface of rules can be written for Rust, and whether a Python or JavaScript application wants it.
+
+### 13.11 Built (stage 9) and what the code changed in this section
+
+Built on 2026-11-16: `FlowTemplateCompilerConfig` (a `ClientSideTemplateCompilerConfig`, as is the subtype: E1), `FlowModel` (reads and checks, one list of
+`Item`s that the generator, the documentation and the Turtle share), `CompilerFlow` (PAST: the class and the interface of rules), `JsonText.text` in the three
+runtime ports with 13 vectors, the flow table in the documentation, the flow terms in the Turtle, the project schema, `T36FlowTest` (12) with its own fixture
+(`T36FlowFixture`, templates `changing` and `inquiry` under `src/test/resources/t36/flow/`). The check of the flows is made with the subtypes' (`checkSubtypes`),
+before anything is generated, and the model it reads is the one generation uses.
+
+Checked against the code and the real case, what changed:
+
+1. **Nodes have a type.** nextgen's nodes are `xsd:int` (`@id: doc:*`, `@type: xsd:int`), the first application's `atype` a text. The model gives a node the type of the value it
+   holds (`@type`, else a text): a constant of a node is a local part (text, no prefix) or a number, and the output nodes of the store have the same types as the
+   input nodes, so that `subject0 = made.document1` compares like with like. F1 was widened the same way (a fixed `xsd:int` node is a number).
+2. **`ask` also has `absent`**: the user template's `tenant` is an own value the request does not give and the application does not supply (the hand pattern left
+   it unset). `absent` is refused for a compulsory value, as in `record`.
+3. **What a rule receives**: `ask`, the user bean so far and the outputs of the stood things it addresses; `record`, the user bean, the backend's bean so far, then each
+   stood thing's inputs and outputs; `answer`, the user bean, the recorded bean and what the store made; `refused` and `failed`, the user bean. The supplied values of
+   `record` are assigned last, so that the bean so far holds what the other kinds gave.
+4. **`rest` and a forgotten value.** `rest` carries every input not said otherwise, from that stood thing, when its bean has a value of that name: so an input the
+   declaration forgets, which that bean has, is carried and not refused (the test shows it). That is what E2 chose; the documentation table lists it as carried
+   over, and the specification says it.
+5. **Reply blocks.** Each block declared accounts for every reply value (`absent` for a value it does not give, refused for a compulsory one); `refused` and `failed`
+   may not use `made`, `recorded` or `when`, since nothing was recorded or made; `answer` is required when the user subtype has a reply value, and the interface of
+   rules exists only when the flow has a supplied value.
+6. **`of`** (the subtype of a stood thing's record) is read and checked (it must refine the same template as `to`) and used for the beans of that thing; it is not
+   tested.
+7. **The real case.** The flow of the hand pattern was written in this declaration, against a copy of the first application's catalogue made in a scratch directory (nothing of the first application was
+   changed or copied in): the compiler wrote `RepricingRfqLineFlow` with the 31 assignments into the backend's bean the hand pattern has (5 asked, 2 chained, 19 carried
+   over, 3 constant, 2 supplied) and the same guards, and it compiles against the beans the compiler wrote for that catalogue. What differs: the agent and the clock are
+   rules (E3), not parameters of `ask`, and the estimate's rule is given beans.
+
+### 13.12 Not verified (stage 9)
+
+- The emitted Python and JavaScript flows are parsed (`py_compile`, `node --check`) and their comments checked, not run: they need the typed beans and the runtime in each
+  language, and T33 would spoil the guards in Python (`!= 0` for an absent value); T34 stops the JavaScript from being built into a client.
+- The flow of the real case was compiled, not run against a store; the service that would call it, and its rules, are the application's.
+- `of` on a stood thing; two flows in one catalogue; a flow whose user subtype has no reply value (no `answer`).
+- The Turtle terms of a flow with a parser other than rdflib; the table in a browser.
 

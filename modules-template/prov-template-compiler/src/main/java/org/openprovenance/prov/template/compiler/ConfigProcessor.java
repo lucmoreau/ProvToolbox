@@ -69,6 +69,7 @@ public class ConfigProcessor implements Constants {
     private final CompilerTableConfiguratorForTypes compilerTableConfiguratorForTypes;
     private final CompilerBeanProcessor compilerBeanProcessor;
     private final CompilerSubtype compilerSubtype;
+    private final CompilerFlow compilerFlow;
     private final CompilerInputOutputProcessor compilerInputOutputProcessor;
     private final CompilerTemplateInvoker compilerTemplateInvoker;
     private final CompilerBeanCompleter compilerBeanCompleter;
@@ -148,6 +149,7 @@ public class ConfigProcessor implements Constants {
         this.compilerBeanCompleter2Composite  = new CompilerBeanCompleter2Composite(pFactory);
         this.compilerBeanProcessor  = new CompilerBeanProcessor(pFactory);
         this.compilerSubtype        = new CompilerSubtype(pFactory);
+        this.compilerFlow           = new CompilerFlow(pFactory, compilerSubtype);
         this.compilerCompositeConfigurations = new CompilerCompositeConfigurations(pFactory);
         this.compilerConfigurations = new CompilerConfigurations(pFactory);
         this.compilerDelegator =  new CompilerDelegator(pFactory);
@@ -242,7 +244,7 @@ public class ConfigProcessor implements Constants {
 
 
             for (TemplateCompilerConfig aconfig: configs.templates) {
-                if (TemplateConfigurationEnum.isSubtype(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
+                if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
                 if (TemplateConfigurationEnum.isSimple(aconfig)) {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
                     //config.template=addBaseDirIfRelative(config.template, inputBaseDir); it's no longer a file but a name an index
@@ -263,7 +265,7 @@ public class ConfigProcessor implements Constants {
                     boolean found=false;
                     //System.out.println("==> Found " + config);
                     for (TemplateCompilerConfig aconfig2: configs.templates) {
-                        if (TemplateConfigurationEnum.isSubtype(aconfig2)) continue; // T36 (R11): a subtype adds nothing to the server side
+                        if (TemplateConfigurationEnum.isClientSide(aconfig2)) continue; // T36 (R11): a subtype adds nothing to the server side
                         if (Objects.equals(aconfig2.fullyQualifiedName, composedTemplate)) {
                             found=true;
 
@@ -348,7 +350,7 @@ public class ConfigProcessor implements Constants {
         for (TemplateCompilerConfig aconfig: configs.templates) {
             // T36 (Luc, 2026-11-16: "Honour the declared package"): the typed bean, the request and the reply of a subtype are in the subtype's own package
             if (aconfig instanceof SubtypeTemplateCompilerConfig && aconfig.package_ != null) packages.put(aconfig.fullyQualifiedName, aconfig.package_);
-            if (TemplateConfigurationEnum.isSubtype(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             shortNames.put(aconfig.fullyQualifiedName, aconfig.name);
 
             if (TemplateConfigurationEnum.isSimple(aconfig)) {
@@ -366,7 +368,7 @@ public class ConfigProcessor implements Constants {
                 boolean found=false;
 
                 for (TemplateCompilerConfig aconfig2: configs.templates) {
-                    if (TemplateConfigurationEnum.isSubtype(aconfig2)) continue; // T36 (R11): a subtype adds nothing to the server side
+                    if (TemplateConfigurationEnum.isClientSide(aconfig2)) continue; // T36 (R11): a subtype adds nothing to the server side
                     if (Objects.equals(aconfig2.fullyQualifiedName, composedTemplate)) {
                         found=true;
                         SimpleTemplateCompilerConfig sc = (SimpleTemplateCompilerConfig) aconfig2;
@@ -410,6 +412,11 @@ public class ConfigProcessor implements Constants {
     /** T36 stage 2: refuses an ill-declared {@code subtype} entry of the catalogue; nothing for a catalogue with none. */
     public void checkSubtypes(TemplatesProjectConfiguration configs, String cbindingsBaseDir) {
         new SubtypeChecker(compilerUtil, cbindingsBaseDir).check(configs);
+        compilerFlow.check(configs, cbindingsBaseDir);   // T36 part E: the flows, read and checked once, before anything is generated
+    }
+
+    public CompilerFlow getCompilerFlow() {
+        return compilerFlow;
     }
 
     public PrivacyPolicy setupPrivacy(TemplatesProjectConfiguration configs, String inputBaseDir, String cbindingsBaseDir) {
@@ -419,7 +426,7 @@ public class ConfigProcessor implements Constants {
         PrivacyPolicy.setCurrent(policy);
         List<String> templates = new ArrayList<>();
         for (TemplateCompilerConfig aconfig : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (TemplateConfigurationEnum.isSimple(aconfig)) {
                 SimpleTemplateCompilerConfig config = (SimpleTemplateCompilerConfig) aconfig;
                 // composites resolve a component's bindings against inputBaseDir, simple entries against cbindingsBaseDir
@@ -429,14 +436,14 @@ public class ConfigProcessor implements Constants {
             }
         }
         for (TemplateCompilerConfig aconfig : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (TemplateConfigurationEnum.isSimple(aconfig)) {
                 compilerUtil.getBindingsSchema(addBaseDirIfRelative(((SimpleTemplateCompilerConfig) aconfig).cbindings, cbindingsBaseDir));
             }
         }
         policy.checkScopes(templates);
         for (TemplateCompilerConfig aconfig : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (!TemplateConfigurationEnum.isSimple(aconfig)) {
                 CompositeTemplateCompilerConfig composite = (CompositeTemplateCompilerConfig) aconfig;
                 policy.checkComposite(composite.fullyQualifiedName, composite.consistsOf, composite.sharing);
@@ -491,7 +498,7 @@ public class ConfigProcessor implements Constants {
 
     /** T36 (stage 5): the Turtle file of the catalogue, when it names one. */
     public void generateTurtleEnd(TemplatesProjectConfiguration configs, String cli_src_dir) {
-        if (configs.turtle!=null) new CompilerTurtle(compilerUtil).generateTurtle(configs, cli_src_dir +"/../resources");
+        if (configs.turtle!=null) new CompilerTurtle(compilerUtil).generateTurtle(configs, cli_src_dir +"/../resources", compilerFlow.getModels());
     }
 
     public void generateSQLEnd(TemplatesProjectConfiguration configs, String cli_src_dir) {
@@ -515,7 +522,7 @@ public class ConfigProcessor implements Constants {
     }
 
     public void generateDocumentationEnd(TemplatesProjectConfiguration configs, String cli_webjar_dir) {
-        if (configs.documentation!=null) compilerDocumentation.generateDocumentationEnd(configs,cli_webjar_dir);
+        if (configs.documentation!=null) compilerDocumentation.generateDocumentationEnd(configs,cli_webjar_dir, compilerFlow.getModels());
     }
 
     public void doGenerateProject(TemplatesProjectConfiguration configs, Locations locations, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir, String cli_webjar_dir) {
@@ -556,6 +563,8 @@ public class ConfigProcessor implements Constants {
         for (SpecificationFile message : compilerSubtype.generateRequestReplyClasses(configs, locations)) message.save();
         SpecificationFile subtypes = compilerSubtype.generateDispatcher(configs, locations, SUBTYPES);
         if (subtypes != null) subtypes.save();
+        // T36 part E: the flows (checked with the subtypes)
+        for (SpecificationFile flow : compilerFlow.generateFlows(configs, locations)) flow.save();
 
         compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true,
                 compilerCommon.getFoundEscape() || compilerCommon.getFoundPrivacy() || compilerSubtype.foundSubtype()); // T31 (R16): Pseudonyms is in prov-model; T36: so is JsonText

@@ -49,6 +49,18 @@ public final class JsonText {
         return sb.toString();
     }
 
+    /**
+     * The text of a value, for the conversion "as text" of a flow (T36 part E): a number or a boolean as the carrier writes it
+     * ({@code 5.0} is {@code 5}, {@code 2.50} is {@code 2.5}: a double has no trailing zeros), a string as itself, and {@code null} as
+     * {@code null} (not the text {@code null}, which {@link #toText} writes). Anything else has no text.
+     */
+    public static String text(Object value) {
+        if (value == null) return null;
+        if (value instanceof String) return (String) value;
+        if (value instanceof Number || value instanceof Boolean) return toText(value);
+        throw new IllegalArgumentException("T36: a value of that kind has no text");
+    }
+
     private static void writeValue(StringBuilder sb, Object v) {
         if (v == null) {
             sb.append("null");

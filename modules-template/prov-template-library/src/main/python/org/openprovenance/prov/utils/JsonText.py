@@ -74,6 +74,17 @@ class JsonText:
         return "".join(out)
 
     @staticmethod
+    def text(value):
+        """The text of a number or a boolean as the carrier writes it, a string as itself, None as None (T36 part E: the conversion "as text" of a flow)."""
+        if value is None:
+            return None
+        if isinstance(value, str):
+            return value
+        if isinstance(value, (bool, int, float)):
+            return JsonText.toText(value)
+        raise _refused("a value of that kind has no text")
+
+    @staticmethod
     def _write_value(out, v):
         if v is None:
             out.append("null")

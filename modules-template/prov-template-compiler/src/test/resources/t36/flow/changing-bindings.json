@@ -1,0 +1,236 @@
+{
+  "var": {
+    "changing": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The change",
+        "@output": "true"
+      }
+    ],
+    "document1": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The document after the change",
+        "@output": "true"
+      }
+    ],
+    "part1": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The line after the change",
+        "@output": "true"
+      }
+    ],
+    "agent": [
+      {
+        "@id": "ex:*",
+        "@documentation": "Who changes",
+        "@input": "compulsory"
+      }
+    ],
+    "document0": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The document as it stood",
+        "@input": "compulsory"
+      }
+    ],
+    "part0": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The line as it stood",
+        "@input": "compulsory"
+      }
+    ],
+    "atype": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The kind of act",
+        "@input": "compulsory"
+      }
+    ],
+    "time": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "When",
+          "@input": "compulsory"
+        }
+      ]
+    ],
+    "name1": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The document's name",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "state1": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The document's stage",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "ptype": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The line's kind",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "erpId1": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The new version's name",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "attributes": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The act's keys, as JSON",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "pattributes": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The line's keys, as JSON",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "priceUnit": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The unit price after the act, as text",
+          "@input": "optional",
+          "@inJson": "attributes"
+        }
+      ]
+    ],
+    "priceBefore": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The unit price before the act, as text",
+          "@input": "optional",
+          "@inJson": "attributes"
+        }
+      ]
+    ],
+    "overwrite": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "true when the act replaces a line",
+          "@input": "optional",
+          "@inJson": "attributes"
+        }
+      ]
+    ],
+    "items": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "How many lines the document holds",
+          "@input": "optional",
+          "@inJson": "attributes"
+        }
+      ]
+    ],
+    "estimate": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The document's estimate after the act",
+          "@input": "optional",
+          "@inJson": "attributes"
+        }
+      ]
+    ],
+    "partLine": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The line's number",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "line"
+        }
+      ]
+    ],
+    "partPriceUnit": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The line's price after the act, as text",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "priceUnit"
+        }
+      ]
+    ],
+    "partPriceBefore": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The line's price before the act, as text",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "priceBefore"
+        }
+      ]
+    ],
+    "partProduct": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The product",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "product"
+        }
+      ]
+    ],
+    "partQuantity": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The quantity, as text",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "quantity"
+        }
+      ]
+    ],
+    "partPriceSource": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "Where the price comes from",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "priceSource"
+        }
+      ]
+    ]
+  },
+  "context": {
+    "ex": "http://example.org/"
+  },
+  "template": "https://example.org/templates/t36/changing.provn"
+}

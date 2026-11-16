@@ -244,6 +244,23 @@ public class CompilerDocumentation {
 
     }
 
+    /** One flow: the table of each value of the beans it fills, its kind and where it comes from (design §13.5). It reads the list the generated code is written from. */
+    private void flowTable(FlowModel flow) {
+        os.println("<div class='csv_flow' id='flow_" + html(flow.flow.fullyQualifiedName.replace('.', '_')) + "'>");
+        os.println("<div class='csv_flow_title'>" + makeSpan("Flow " + html(flow.flow.fullyQualifiedName), "csv_flow_name")
+                + makeSpan("from " + html(flow.from.fullyQualifiedName) + " to " + html(flow.to.fullyQualifiedName), "csv_doc") + "</div>");
+        os.println("<div class='csv_doc'>Every input of the backend's bean and of the user bean has one origin, said here and in a comment beside the assignment in the generated code.</div>");
+        os.println("<table class='csv_flow_table'>");
+        os.println("<tr><th>step</th><th>value</th><th>kind</th><th>comes from</th></tr>");
+        for (Map.Entry<String, List<FlowModel.Item>> step : flow.steps.entrySet()) {
+            for (FlowModel.Item i : step.getValue()) {
+                os.println("<tr><td>" + html(i.step) + "</td><td>" + html(i.target) + "</td><td class='csv_kind'>" + html(i.kind.word) + "</td><td>" + html(i.describe()) + "</td></tr>");
+            }
+        }
+        os.println("</table>");
+        os.println("</div>");
+    }
+
     private static String html(String text) {
         return org.apache.commons.text.StringEscapeUtils.escapeHtml4(text);
     }
@@ -288,7 +305,13 @@ public class CompilerDocumentation {
 
 
     public void generateDocumentationEnd(TemplatesProjectConfiguration configs, String cli_webjar_dir) {
+        generateDocumentationEnd(configs, cli_webjar_dir, List.of());
+    }
+
+    /** @param flows T36 part E: the flows of the catalogue, each as a table of where its values come from, after the templates; nothing written without a flow. */
+    public void generateDocumentationEnd(TemplatesProjectConfiguration configs, String cli_webjar_dir, List<FlowModel> flows) {
         if (os!=null) { // insure this had been initialised
+            for (FlowModel flow : flows) flowTable(flow);
             os.println("</body>");
             os.println("</html>");
 

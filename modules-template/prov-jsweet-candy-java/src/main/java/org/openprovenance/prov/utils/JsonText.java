@@ -36,6 +36,14 @@ public class JsonText {
         return sb.toString();
     }
 
+    /** The text of a number or a boolean as the carrier writes it, a string as itself, null as null (T36 part E: the conversion "as text" of a flow). */
+    public static String text(Object value) {
+        if (value == null) return null;
+        if (value instanceof String) return (String) value;
+        if (value instanceof Number || value instanceof Boolean) return toText(value);
+        throw new IllegalArgumentException("T36: a value of that kind has no text");
+    }
+
     @SuppressWarnings("unchecked")
     private static void writeValue(StringBuilder sb, Object v) {
         if (v == null) {

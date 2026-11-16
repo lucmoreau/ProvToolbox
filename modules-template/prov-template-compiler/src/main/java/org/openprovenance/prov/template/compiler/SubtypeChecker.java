@@ -85,10 +85,11 @@ public class SubtypeChecker {
                 String type = du.getFromDescriptor(var.get(v).get(0), AttributeDescriptor::getType, nd -> null);
                 if (!du.getAttributeVariable(v, var.get(v).get(0)).isPresent()) {
                     // Luc, 2026-11-16: "Yes, fix a node's local part": the bean's field holds the node's local part as text
-                    if (!(constant instanceof String) || ((String) constant).isEmpty() || ((String) constant).contains(":")) {
+                    type = du.getFromDescriptor(var.get(v).get(0), ad -> null, NameDescriptor::getType);
+                    if (type == null) type = "xsd:string";
+                    if ("xsd:string".equals(type) && (!(constant instanceof String) || ((String) constant).isEmpty() || ((String) constant).contains(":"))) {
                         throw refusal(st, "fixed variable " + v + " is a node: its constant is the node's local part, a text without prefix (not " + constant + ")");
                     }
-                    type = "xsd:string";
                 }
                 String why = misfit(type, constant);
                 if (why != null) throw refusal(st, "fixed variable " + v + " (" + type + "): the constant " + constant + " " + why);

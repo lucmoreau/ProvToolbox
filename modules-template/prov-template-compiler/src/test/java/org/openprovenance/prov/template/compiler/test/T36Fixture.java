@@ -175,13 +175,18 @@ public abstract class T36Fixture extends TestCase {
 
     /** Compiles the given generated sources (paths below the client project's java directory) with what they refer to; null when JsonText is not on the class path. */
     ClassLoader compileSources(String id, List<String> relativePaths) throws Exception {
+        return compileIn(OUT, id, relativePaths, getClass().getClassLoader());
+    }
+
+    /** As {@link #compileSources}, for the generated tree of a catalogue below {@code outRoot}. */
+    static ClassLoader compileIn(String outRoot, String id, List<String> relativePaths, ClassLoader parent) throws Exception {
         Class<?> jt = T36JsonTextTest.runtime();
         if (jt == null) {
             System.out.println("[T36] JsonText is not in the prov-model on the classpath: the generated classes are not compiled (build with -am)");
             return null;
         }
-        Path src = Path.of(OUT + id + "/libs/t36/t36_cli/src/main/java");
-        Path out = Path.of(OUT + id + "/classes");
+        Path src = Path.of(outRoot + id + "/libs/t36/t36_cli/src/main/java");
+        Path out = Path.of(outRoot + id + "/classes");
         Files.createDirectories(out);
         List<String> cp = new ArrayList<>();
         for (String prop : List.of("java.class.path", "jdk.module.path")) {
@@ -197,7 +202,7 @@ public abstract class T36Fixture extends TestCase {
                 messages.write(b);
             }
         }, args.toArray(new String[0]));
-        assertEquals("the generated classes compile: " + messages, 0, rc);
-        return new URLClassLoader(new URL[]{out.toUri().toURL()}, getClass().getClassLoader());
+        junit.framework.Assert.assertEquals("the generated classes compile: " + messages, 0, rc);
+        return new URLClassLoader(new URL[]{out.toUri().toURL()}, parent);
     }
 }

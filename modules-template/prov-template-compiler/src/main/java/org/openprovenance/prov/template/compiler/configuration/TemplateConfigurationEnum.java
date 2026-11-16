@@ -49,6 +49,17 @@ public enum TemplateConfigurationEnum {
         return config instanceof SubtypeTemplateCompilerConfig;
     }
 
+    /** T36 (R11, E1): a subtype or a flow entry adds nothing to the server side; every loop over the catalogue's templates skips it. */
+    @JsonIgnore
+    static public boolean isClientSide (TemplateCompilerConfig config) {
+        return config instanceof ClientSideTemplateCompilerConfig;
+    }
+
+    @JsonIgnore
+    static public boolean isFlow (TemplateCompilerConfig config) {
+        return config instanceof FlowTemplateCompilerConfig;
+    }
+
     @JsonIgnore
     static public boolean isSimple (TemplateCompilerConfig config) {
         return config instanceof SimpleTemplateCompilerConfig;

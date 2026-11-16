@@ -1,5 +1,7 @@
 package org.openprovenance.prov.template.compiler.test;
 
+import org.openprovenance.prov.template.compiler.ConfigProcessor;
+import org.openprovenance.prov.template.compiler.SubtypeException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -12,6 +14,15 @@ public class T36NodeAndPackageTest extends T36Fixture {
 
     static final String GENERAL = "org.example.t36.approval.client.integrator.";
     static final String ACTIONS = "org.example.actions.client.integrator.";
+
+    boolean intNode = false;
+
+    @Override
+    tools.jackson.databind.node.ObjectNode bindings() throws Exception {
+        tools.jackson.databind.node.ObjectNode b = super.bindings();
+        if (intNode) ((tools.jackson.databind.node.ObjectNode) b.get("var").get("approver").get(0)).put("@type", "xsd:int");
+        return b;
+    }
 
     /** A subtype in a package of its own. */
     String inActions(String subtype) {
@@ -89,5 +100,24 @@ public class T36NodeAndPackageTest extends T36Fixture {
         assertTrue(ttl, ttl.contains("tpl:fixes [ tpl:variable \"approver\" ; tpl:value \"alice\" ]"));
         String doc = Files.readString(Path.of(OUT + "nodedoc/libs/" + DOC));
         assertTrue(doc, doc.contains("approver = alice"));
+    }
+
+    /** A node declared with a type holds a value of that type: fixed, it is a constant of that type (nextgen's nodes are xsd:int, the first application's actions xsd:string). */
+    public void testAFixedNodeOfTypeIntIsANumber() throws Exception {
+        intNode = true;
+        generate("intnode", false, List.of(), List.of(inActions(subtype("seven_line", "{\"approver\":7}", "{\"priceBefore\":\"required\"}"))));
+        ClassLoader l = compileSources("intnode", List.of("org/example/actions/client/integrator/Seven_lineInputs.java"));
+        if (l == null) return;
+        Class<?> seven = l.loadClass(ACTIONS + "Seven_lineInputs");
+        Object a = T36SubtypeTest.newInstance(l, seven.getName());
+        T36SubtypeTest.set(a, "priceBefore", 1.5);
+        assertEquals("the node's value is the constant, an int", 7, T36SubtypeTest.get(T36SubtypeTest.invoke(a, seven, "toGeneral"), "approver"));
+        // a text is no int
+        try {
+            new ConfigProcessor(pf).checkSubtypes(parse(catalogue("intnode2", false, List.of(), List.of(inActions(subtype("bad", "{\"approver\":\"seven\"}", "{}"))))), ".");
+            fail("a text for an int node");
+        } catch (SubtypeException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("fixed variable approver (xsd:int)"));
+        }
     }
 }

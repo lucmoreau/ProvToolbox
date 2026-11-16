@@ -32,6 +32,20 @@ var org;
                         JsonText.writeValue(sb, value);
                         return /* toString */ sb.str;
                     }
+                    /**
+                     * The text of a number or a boolean as the carrier writes it, a string as itself, null as null (T36 part E: the conversion "as text" of a flow).
+                     * @param {*} value
+                     * @return {string}
+                     */
+                    static text(value) {
+                        if (value == null)
+                            return null;
+                        if (typeof value === 'string')
+                            return value;
+                        if ((typeof value === 'number') || (typeof value === 'boolean'))
+                            return JsonText.toText(value);
+                        throw Object.defineProperty(new Error("T36: a value of that kind has no text"), '__classes', { configurable: true, value: ['java.lang.Throwable', 'java.lang.Object', 'java.lang.RuntimeException', 'java.lang.IllegalArgumentException', 'java.lang.Exception'] });
+                    }
                     static writeValue(sb, v) {
                         if (v == null) {
                             /* append */ (sb => { sb.str += "null"; return sb; })(sb);

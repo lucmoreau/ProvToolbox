@@ -68,7 +68,7 @@ public class CompilerBeanCompleter2Composite {
 
         // For each composite template create a process method
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (config instanceof SimpleTemplateCompilerConfig) continue;
             CompositeTemplateCompilerConfig config1 = (CompositeTemplateCompilerConfig) config;
             String consistsOf = config1.consistsOf;

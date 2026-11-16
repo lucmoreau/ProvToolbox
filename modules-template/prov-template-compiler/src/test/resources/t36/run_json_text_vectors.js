@@ -33,5 +33,17 @@ for (const e of vectors.getters) {
   const ok = (e.result === null) ? (got === null || got === undefined) : got === e.result;
   if (!ok) fail(e.title, 'got ' + JSON.stringify(got) + ', expected ' + JSON.stringify(e.result));
 }
+for (const e of vectors.text) {
+  run++;
+  const value = JsonText.parse(e.input);
+  if (e.refused) {
+    if (!refused(() => JsonText.text(value))) fail(e.title, 'accepted');
+    continue;
+  }
+  let got;
+  try { got = JsonText.text(value); } catch (x) { fail(e.title, 'raised ' + x); continue; }
+  const ok = (e.result === null) ? (got === null || got === undefined) : got === e.result;
+  if (!ok) fail(e.title, 'got ' + JSON.stringify(got) + ', expected ' + JSON.stringify(e.result));
+}
 console.log('vectors: ' + run + ' run, ' + failed + ' failed');
 process.exit(failed ? 1 : 0);

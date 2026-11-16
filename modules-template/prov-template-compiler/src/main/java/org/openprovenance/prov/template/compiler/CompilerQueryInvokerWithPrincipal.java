@@ -119,7 +119,7 @@ public class CompilerQueryInvokerWithPrincipal {
         Set<String> foundSpecialTypes=new HashSet<>();
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             final ClassName inputClassName = get(inputsNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.INPUTS));
 
@@ -263,7 +263,7 @@ public class CompilerQueryInvokerWithPrincipal {
 
         SimpleTemplateCompilerConfig composee = null;
         for (TemplateCompilerConfig c: configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(c)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(c)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (compositeConfig.consistsOf.equals(c.fullyQualifiedName)) {
                 composee=(SimpleTemplateCompilerConfig) c;
             }

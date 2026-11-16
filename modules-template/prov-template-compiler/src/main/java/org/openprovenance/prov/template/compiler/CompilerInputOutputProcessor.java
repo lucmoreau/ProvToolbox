@@ -55,7 +55,7 @@ public class CompilerInputOutputProcessor {
                 ;
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             final String outputsNameClass = compilerUtil.outputsNameClass(config.name);
 

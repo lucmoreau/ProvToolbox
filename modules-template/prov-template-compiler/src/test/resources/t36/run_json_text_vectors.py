@@ -60,5 +60,19 @@ for e in vectors["getters"]:
     if not ok:
         fail(e["title"], "got " + repr(got) + ", expected " + repr(want))
 
+for e in vectors["text"]:
+    run += 1
+    value = JsonText.parse(e["input"])
+    if e.get("refused"):
+        try:
+            JsonText.text(value)
+            fail(e["title"], "accepted")
+        except IllegalArgumentException:
+            pass
+        continue
+    got = JsonText.text(value)
+    if got != e["result"]:
+        fail(e["title"], "got " + repr(got) + ", expected " + repr(e["result"]))
+
 print("vectors: %d run, %d failed" % (run, failed))
 sys.exit(1 if failed else 0)

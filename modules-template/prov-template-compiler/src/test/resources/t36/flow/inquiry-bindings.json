@@ -1,0 +1,117 @@
+{
+  "var": {
+    "asking": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The request",
+        "@output": "true"
+      }
+    ],
+    "agent": [
+      {
+        "@id": "ex:*",
+        "@documentation": "Who asks",
+        "@input": "compulsory"
+      }
+    ],
+    "subject0": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The document the request addresses, as it stood",
+        "@input": "compulsory"
+      }
+    ],
+    "atype": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The kind of request",
+        "@input": "compulsory"
+      }
+    ],
+    "time": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "When",
+          "@input": "compulsory"
+        }
+      ]
+    ],
+    "attributes": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "What the person asked, as JSON",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "outcome": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "accepted, refused or failed",
+          "@input": "compulsory",
+          "@performative": "reply"
+        }
+      ]
+    ],
+    "code": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The refusal's code",
+          "@input": "optional",
+          "@performative": "reply"
+        }
+      ]
+    ],
+    "result": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The version made",
+          "@input": "optional",
+          "@performative": "reply"
+        }
+      ]
+    ],
+    "line": [
+      [
+        {
+          "@type": "xsd:int",
+          "@documentation": "The line the person addresses",
+          "@input": "optional",
+          "@inJson": "attributes",
+          "@performative": "request"
+        }
+      ]
+    ],
+    "unitPrice": [
+      [
+        {
+          "@type": "xsd:double",
+          "@documentation": "The unit price asked",
+          "@input": "optional",
+          "@inJson": "attributes",
+          "@performative": "request"
+        }
+      ]
+    ],
+    "reason": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "Why",
+          "@input": "optional",
+          "@inJson": "attributes",
+          "@performative": "request"
+        }
+      ]
+    ]
+  },
+  "context": {
+    "ex": "http://example.org/"
+  },
+  "template": "https://example.org/templates/t36/inquiry.provn"
+}

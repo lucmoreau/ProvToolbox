@@ -84,7 +84,7 @@ public class CompilerBeanChecker {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
 
             String packageForBeans2=locations.getBeansPackage(config.fullyQualifiedName, direction);
             pastClass.METHOD(generateCheckerMethod(config.name, null, config, direction, packageForBeans2, null, locations));

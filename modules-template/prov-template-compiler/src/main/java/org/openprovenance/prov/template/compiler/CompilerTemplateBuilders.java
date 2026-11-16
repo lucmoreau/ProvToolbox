@@ -42,7 +42,7 @@ public class CompilerTemplateBuilders {
         ClassName loggerClass = ClassName.get(LOGGER, packageName);
 
         for (TemplateCompilerConfig config : configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
 
             final String templateNameClass = compilerUtil.templateNameClass(config.name);

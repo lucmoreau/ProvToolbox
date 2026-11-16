@@ -15,6 +15,12 @@ declare namespace org.openprovenance.prov.utils {
         static newObject(): any;
         static write(map: any): string;
         static toText(value: any): string;
+        /**
+         * The text of a number or a boolean as the carrier writes it, a string as itself, null as null (T36 part E: the conversion "as text" of a flow).
+         * @param {*} value
+         * @return {string}
+         */
+        static text(value: any): string;
         static writeValue(sb: {
             str: string;
             toString: Function;

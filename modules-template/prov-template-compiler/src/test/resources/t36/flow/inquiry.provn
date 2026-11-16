@@ -1,0 +1,16 @@
+document
+ prefix tmpl <http://openprovenance.org/ns/tmpl#>
+ prefix var <http://openprovenance.org/var#>
+ prefix vargen <http://openprovenance.org/vargen#>
+ prefix ex <http://example.org/>
+
+ bundle vargen:b
+  activity(var:asking, [ex:when='var:time', ex:attrs='var:attributes', ex:outcome='var:outcome', ex:code='var:code', ex:result='var:result'])
+  agent(var:agent)
+  entity(var:subject0)
+  entity(var:atype)
+  used(var:asking, var:subject0, -)
+  wasInfluencedBy(var:asking, var:atype)
+  wasAssociatedWith(var:asking, var:agent, -)
+ endBundle
+endDocument

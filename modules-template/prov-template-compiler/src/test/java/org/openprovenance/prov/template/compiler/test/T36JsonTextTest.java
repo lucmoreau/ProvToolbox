@@ -101,6 +101,27 @@ public class T36JsonTextTest extends TestCase {
         }
     }
 
+    public void testTextVectors() throws Exception {
+        Class<?> c = runtime();
+        if (c == null) return;
+        for (JsonNode e : om.readTree(new File(VECTORS)).get("text")) {
+            String title = e.get("title").asText();
+            Object value = call(c, "parse", e.get("input").asText());
+            if (e.has("refused")) {
+                try {
+                    call(c, "text", value);
+                    fail(title + ": accepted");
+                } catch (IllegalArgumentException x) {
+                    // refused
+                }
+                continue;
+            }
+            Object got = call(c, "text", value);
+            if (e.get("result").isNull()) assertNull(title, got);
+            else assertEquals(title, e.get("result").asText(), got);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public void testMergeOthersAndSame() throws Exception {
         Class<?> c = runtime();

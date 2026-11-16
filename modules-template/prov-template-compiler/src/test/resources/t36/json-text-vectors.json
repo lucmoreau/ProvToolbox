@@ -1,5 +1,5 @@
 {
-  "description": "T36: conformance vectors of the JSON text runtime (Java: org.openprovenance.prov.utils.JsonText). Every port (Java, the jsweet candy, Python) reads each 'input' as JSON, with read(), and writes it back with write(): the answer must be exactly 'output'. A 'refused' input must be refused by read(). The members of an object are written in the order they were read; numbers follow RFC 8785; no integer beyond 2^53 is used, since JavaScript cannot tell it from its neighbours.",
+  "description": "T36: conformance vectors of the JSON text runtime (Java: org.openprovenance.prov.utils.JsonText). Every port (Java, the jsweet candy, Python) reads each 'input' as JSON, with read(), and writes it back with write(): the answer must be exactly 'output'. A 'refused' input must be refused by read(). The members of an object are written in the order they were read; numbers follow RFC 8785; no integer beyond 2^53 is used, since JavaScript cannot tell it from its neighbours. A 'text' vector: 'input' is read as one JSON value with parse(), and text() of it must be 'result' (null stays null), or be refused.",
   "canonical": [
     {"title": "empty object", "input": "{}", "output": "{}"},
     {"title": "blank text is the empty object", "input": "", "output": "{}"},
@@ -63,5 +63,20 @@
     {"title": "a string", "input": "{\"k\":\"x\"}", "key": "k", "method": "getString", "result": "x"},
     {"title": "a number is no string", "input": "{\"k\":1}", "key": "k", "method": "getString", "refused": true},
     {"title": "a nested value as its text", "input": "{\"k\":{ \"a\" : [1, 2.0] }}", "key": "k", "method": "getJson", "result": "{\"a\":[1,2]}"}
+  ],
+  "text": [
+    {"title": "an integer", "input": "3", "result": "3"},
+    {"title": "a negative integer", "input": "-12", "result": "-12"},
+    {"title": "a double with no fraction has no point", "input": "5.0", "result": "5"},
+    {"title": "a double keeps its digits", "input": "2.5", "result": "2.5"},
+    {"title": "a double has no trailing zero (2.50 is 2.5: the limit of a price as a double, until a decimal type)", "input": "2.50", "result": "2.5"},
+    {"title": "a negative double", "input": "-1.25", "result": "-1.25"},
+    {"title": "true", "input": "true", "result": "true"},
+    {"title": "false", "input": "false", "result": "false"},
+    {"title": "a string is itself", "input": "\"abc\"", "result": "abc"},
+    {"title": "a string is not quoted again", "input": "\"a\\\"b\"", "result": "a\"b"},
+    {"title": "null stays null, not the text null", "input": "null", "result": null},
+    {"title": "an object has no text", "input": "{}", "refused": true},
+    {"title": "a list has no text", "input": "[1]", "refused": true}
   ]
 }

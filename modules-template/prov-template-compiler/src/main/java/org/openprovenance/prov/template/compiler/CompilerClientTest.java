@@ -60,7 +60,7 @@ public class CompilerClientTest {
         String resvar="res";
 
         for (TemplateCompilerConfig config: configs.templates) {
-            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             String bn=compilerUtil.templateNameClass(config.name);
             ClassName beanClass = ClassName.get(bn, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
 

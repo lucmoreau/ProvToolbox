@@ -317,8 +317,8 @@ public class CompilerSubtype {
 
     /** A fixed constant, of the PAST type of the variable's declared type. */
     Expression constant(TemplateBindingsSchema schema, String variable, Object value) {
-        String type = descriptorUtils.getFromDescriptor(schema.getVar().get(variable).get(0), AttributeDescriptor::getType, nd -> null);
-        if (type == null) return CONSTANT((String) value);   // a node: its local part, as text
+        String type = descriptorUtils.getFromDescriptor(schema.getVar().get(variable).get(0), AttributeDescriptor::getType, NameDescriptor::getType);
+        if (type == null) type = "xsd:string";   // a node with no type holds its local part, as text
         switch (type) {
             case "xsd:int": return CONSTANT(((Number) value).intValue());
             case "xsd:long": return CONSTANT(((Number) value).longValue());

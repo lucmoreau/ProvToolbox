@@ -41,15 +41,24 @@ public class CompilerTurtle {
     }
 
     public void generateTurtle(TemplatesProjectConfiguration configs, String root_dir) {
+        generateTurtle(configs, root_dir, List.of());
+    }
+
+    public void generateTurtle(TemplatesProjectConfiguration configs, String root_dir, List<FlowModel> flows) {
         new File(root_dir).mkdirs();
         try {
-            Files.write(new File(root_dir + "/" + configs.turtle).toPath(), render(configs).getBytes(StandardCharsets.UTF_8));
+            Files.write(new File(root_dir + "/" + configs.turtle).toPath(), render(configs, flows).getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public String render(TemplatesProjectConfiguration configs) {
+        return render(configs, List.of());
+    }
+
+    /** @param flows T36 part E: each flow is a node with its two subtypes and, for each value it fills, where it comes from. */
+    public String render(TemplatesProjectConfiguration configs, List<FlowModel> flows) {
         if (configs.turtleNamespace == null || configs.turtleNamespace.trim().isEmpty()) {
             throw new IllegalArgumentException("T36: the catalogue names a Turtle file (" + configs.turtle + ") but no turtleNamespace for its terms");
         }
@@ -70,7 +79,7 @@ public class CompilerTurtle {
                 if (c instanceof SimpleTemplateCompilerConfig && !performatives(compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) c)).isEmpty()) performative = true;
             }
         }
-        vocabulary(sb, performative);
+        vocabulary(sb, performative, !flows.isEmpty());
 
         if (configs.templates != null) {
             for (TemplateCompilerConfig c : configs.templates) {
@@ -82,7 +91,26 @@ public class CompilerTurtle {
                 template(sb, simple, schema, mine);
             }
         }
+        for (FlowModel flow : flows) flow(sb, flow);
         return sb.toString();
+    }
+
+    /** Part E (E5, ruled): a flow, with its two subtypes and the origin of each value it fills. */
+    private void flow(StringBuilder sb, FlowModel flow) {
+        sb.append("# The flow ").append(flow.flow.fullyQualifiedName).append("\n");
+        sb.append(":").append(local(flow.flow.name)).append(" a tpl:Flow ;\n")
+                .append("    rdfs:label ").append(literal(flow.flow.name)).append(" ;\n")
+                .append("    tpl:fullyQualifiedName ").append(literal(flow.flow.fullyQualifiedName)).append(" ;\n")
+                .append("    tpl:from :").append(local(flow.from.name)).append(" ;\n")
+                .append("    tpl:to :").append(local(flow.to.name)).append(" ;\n");
+        List<String> origins = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<String, List<FlowModel.Item>> step : flow.steps.entrySet()) {
+            for (FlowModel.Item i : step.getValue()) {
+                origins.add("    tpl:origin [ tpl:step " + literal(i.step) + " ; tpl:target " + literal(i.target) + " ; tpl:kind " + literal(i.kind.word)
+                        + " ; tpl:source " + literal(i.describe()) + " ]");
+            }
+        }
+        sb.append(String.join(" ;\n", origins)).append(" .\n\n");
     }
 
     /** Part D (R15, ruled): the ordinary values of the template that have a performative, by name. They get a term, as in-JSON values do. */
@@ -99,7 +127,7 @@ public class CompilerTurtle {
         return res;
     }
 
-    private void vocabulary(StringBuilder sb, boolean performative) {
+    private void vocabulary(StringBuilder sb, boolean performative, boolean flows) {
         sb.append("# The vocabulary\n");
         property(sb, "fullyQualifiedName", "owl:DatatypeProperty", "fully qualified name", "The catalogue's fully qualified name of the template or subtype a class stands for.");
         property(sb, "inJson", "owl:DatatypeProperty", "in JSON", "The text variable (the carrier) of the template that holds this value, as a key of its JSON object.");
@@ -109,6 +137,16 @@ public class CompilerTurtle {
         property(sb, "value", "owl:DatatypeProperty", "value", "The constant a subtype fixes a variable to.");
         property(sb, "requires", "owl:ObjectProperty", "requires", "An in-JSON value every record of the subtype must give.");
         property(sb, "mayCarry", "owl:ObjectProperty", "may carry", "An in-JSON value a record of the subtype may give. A carrier is open: other keys are allowed.");
+        if (flows) {
+            property(sb, "Flow", "owl:Class", "flow", "A flow connects the beans of a request (the subtype it is from) to the beans of the backend's record (the subtype it is to): every value has one origin.");
+            property(sb, "from", "owl:ObjectProperty", "from", "The user subtype a flow starts from.");
+            property(sb, "to", "owl:ObjectProperty", "to", "The backend subtype a flow ends in.");
+            property(sb, "origin", "owl:ObjectProperty", "origin", "Where a value a flow fills comes from: a node with tpl:step, tpl:target, tpl:kind and tpl:source.");
+            property(sb, "step", "owl:DatatypeProperty", "step", "The step of a flow: ask, record, answer, refused or failed.");
+            property(sb, "target", "owl:DatatypeProperty", "target", "The value of a bean an origin fills.");
+            property(sb, "kind", "owl:DatatypeProperty", "kind", "asked, chained, carried over, constant, supplied, as made, or absent.");
+            property(sb, "source", "owl:DatatypeProperty", "source", "Where the value comes from, in words.");
+        }
         if (performative) {
             property(sb, "performative", "owl:DatatypeProperty", "performative", "\"request\" or \"reply\": whose content the value is, the caller's or the service's. A value without it is the service's own.");
         }
@@ -200,8 +238,8 @@ public class CompilerTurtle {
 
     private String constant(TemplateBindingsSchema schema, String variable, Object value) {
         String type = ConfigProcessor.descriptorUtils.getFromDescriptor(schema.getVar().get(variable).get(0),
-                org.openprovenance.prov.template.descriptors.AttributeDescriptor::getType, nd -> null);
-        if (type == null) return literal(String.valueOf(value));   // a node: its local part
+                org.openprovenance.prov.template.descriptors.AttributeDescriptor::getType, org.openprovenance.prov.template.descriptors.NameDescriptor::getType);
+        if (type == null) return literal(String.valueOf(value));   // a node with no type: its local part
         switch (type) {
             case "xsd:boolean": return String.valueOf(value);
             case "xsd:string": return literal(String.valueOf(value));

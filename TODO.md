@@ -175,7 +175,7 @@ has no mapping for a static runtime call.
     form waits for the Turtle (stage 5).
   - The bindings schema of `prov-template` accepts the two members (see T37 for what else it lacks).
   - Tests: `T36InJsonTest`, 7 cases. The whole module: 175 tests, 0 failures (168 before).
-- **Stage 2, the `subtype` kind, 2026-11-16 (R11: a third class that every loop skips; not committed, at Luc's word)**:
+- **Stage 2, the `subtype` kind, 2026-11-16 (R11: a third class that every loop skips, committed `f60c1c077`)**:
   - `SubtypeTemplateCompilerConfig` (`refines`, `fixed`, `carries`), `@type: subtype` in `TemplateCompilerConfig` and
     `TemplatesProjectConfiguration`, `TemplateConfigurationEnum.isSubtype`, and `SubtypeTemplateCompilerConfig` in the project
     schema `template-project-schema.json`.
@@ -187,7 +187,7 @@ has no mapping for a static runtime call.
     a carrier, an in-JSON value, or whose constant does not fit its type (or is null); carries a name that is no in-JSON value,
     or a mode other than `required`/`optional`; two subtypes of one template fixing the same values; a reused name; a missing member.
   - Tests: `T36SubtypeTest`, 5 cases (parsing, 19 refusals, and generation through the whole pipeline). The whole module: 180 tests, 0 failures.
-- **Stage 3, the typed bean in Java, 2026-11-16 (not committed, at Luc's word)**:
+- **Stage 3, the typed bean in Java, 2026-11-16 (committed `f60c1c077`)**:
   - Runtime `org.openprovenance.prov.utils.JsonText` in prov-model (R5: RFC 8785 numbers; objects written in the order of the map, declared keys first):
     `write`, `read`, `parse`, `toText`, `newObject`, `merge`, `others`, `getString/Integer/Long/Double/Float/Boolean/Json`, `same`. Its own parser, no dependency.
     The conformance vectors (29 canonical, 14 refused, 15 getters) are `src/test/resources/t36/json-text-vectors.json`, to be run by every port.
@@ -200,7 +200,7 @@ has no mapping for a static runtime call.
   - Tests: `T36JsonTextTest` (4), `T36SubtypeTest` (now 9: the generated beans are compiled with `javax.tools` against the generated tree and run by reflection: conversions, round trip with an undeclared key,
     required values, clash, fixed-value mismatch, a `json` value nested, the dispatcher). The module: 188 tests, 0 failures, prov-model's tests too.
 - **Verified, stage 3**: catalogues without a subtype are unchanged (T31's 25 cases, 2410 files, and `CompilerTest`'s 93 source files equal the base commit's, as above, run with `CompilerTest` passing).
-- **Stage 4, Python and JavaScript, 2026-11-16 (not committed, at Luc's word)**:
+- **Stage 4, Python and JavaScript, 2026-11-16 (committed `f60c1c077`)**:
   - Python: the port `org/openprovenance/prov/utils/JsonText.py` in `prov-template-library/src/main/python` (with `JsonObject`, an ordered `dict` with the `put`/`containsKey` the emitted code calls). It gives the 58 vectors
     their answers (`run_json_text_vectors.py`).
   - JavaScript: the candy `JsonText.java` in `prov-jsweet-candy-java` (JavaScript's own number text is RFC 8785's: `"" + d`), transpiled by the module's own build into `dist/` (533 lines added, nothing else changed). It gives the
@@ -214,7 +214,7 @@ has no mapping for a static runtime call.
   - The jsweet route, checked by hand (not a test): the generated Java of the typed beans and the dispatcher, with the candy and a stand-in general bean, transpiled by jsweet 3.1.0 in a scratch project (the candy's own `pom-jsweet.xml`, with
     the same `MAVEN_OPTS`), and run in node: conversions, round trip, other keys, nested `json`, required, clash, fixed-value mismatch, wrong type, dispatcher (22 checks, 0 failed). **T34** blocks doing this through the generated client project.
   - Tests: `T36SubtypeTest` is 13 cases (the four ports' tests skip with a message when python3 or node is absent). The module: 192 tests, 0 failures.
-- **Stage 5, the descriptions, 2026-11-16 (not committed, at Luc's word)**:
+- **Stage 5, the descriptions, 2026-11-16 (committed `f60c1c077`)**:
   - Documentation: under each template that has subtypes, a list of them: the fully qualified name, the typed bean, what each fixes (`name = value`) and carries (key, carrier, type, `required`/`optional`, documentation), HTML-escaped. Nothing for a template without.
   - JSON schema: for each subtype a definition `<subtype fqn>` for its typed bean (`CompilerJsonSchema.generateSubtypeJSonSchema`): `isA` of its own, the inputs kept as fields of their own (not the fixed ones, not the carriers),
     each carried value as a typed property (a `json` value as a string, said to be JSON text; its key and carrier said in the description), each carrier's other keys as an object with free members, `required` = `isA`, compulsory inputs and
@@ -228,7 +228,7 @@ has no mapping for a static runtime call.
   - The project schema accepts `turtle` and `turtleNamespace`.
 - **Verified, stage 5**: catalogues without subtypes, `turtle` or `turtleNamespace` are unchanged (T31's 25 cases, 2410 files, and `CompilerTest`'s 93 files, against the base commit, as above).
 - **Not verified, stage 5**: the Turtle with another parser than rdflib; the documentation page in a browser; `ajv` on the project schema; the JSON schema of a subtype in jsonform (the schema is used by a form generator).
-- **Committed on 2026-11-16 at Luc's word, `9f19ddcf9` (my branch)**: only the loop-skip lines (`if (TemplateConfigurationEnum.isSubtype(...)) continue;`, with the two lines that count and list templates in `CompilerBuilderInit` and `CompilerLogger`), `SubtypeTemplateCompilerConfig` and `TemplateConfigurationEnum.isSubtype`: 32 files, compiled alone in a clean worktree. Everything else of stages 2 to 5 is still uncommitted.
+- **Committed on 2026-11-16 at Luc's word, on my branch only (never pushed)**: `9f19ddcf9` the loop-skip lines, the config class and `isSubtype` (32 files, compiled alone in a clean worktree); `f60c1c077` the rest of stages 2 to 5 (30 files); the next commit, this file and the design. Stage 6 is in the specification's repository, uncommitted.
 - **Stage 6, the specification, 2026-11-16 (not committed, at Luc's word; in the specification's own repository, `provenance-templates`, branch `main`, working tree only)**:
   - `provenance-templates-specification/prov-template/index.html`: two rows in the table of annotations (`@inJson`, `@inJson.key`); a section **In-JSON values** (`#in-json`: what an in-JSON value and a carrier are, the refusals as MUST NOT, a carrier is open, the text of a value by RFC 8785's number rule with
     declared keys first); a section **Subtypes** in the template compiler's description (`#template-subtypes`: the catalogue entry and its rules, the typed beans and their two conversions, the `Subtypes` class, the JSON text class, the documentation, the JSON schema, the Turtle and its `tpl:` vocabulary);

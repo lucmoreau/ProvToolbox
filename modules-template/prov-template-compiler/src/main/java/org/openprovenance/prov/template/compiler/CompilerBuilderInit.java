@@ -84,7 +84,7 @@ public class CompilerBuilderInit {
 
         pastClass.METHOD(main);
 
-        int size=configs.templates.length;
+        int size=(int) java.util.Arrays.stream(configs.templates).filter(c -> !TemplateConfigurationEnum.isSubtype(c)).count(); // T36 (R11)
         List<Statement> staticBlockStatements=
                 new java.util.ArrayList<>(List.of(
                         ASSIGNMENT( VARIABLE(BUILDERS), ARRAY_ALLOCATOR(STRING, CONSTANT(size))),
@@ -94,6 +94,7 @@ public class CompilerBuilderInit {
 
         int count=0;
         for (TemplateCompilerConfig config: configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (!(config instanceof SimpleTemplateCompilerConfig)) continue;
             staticBlockStatements.add(
                     ASSIGNMENT(

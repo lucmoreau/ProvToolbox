@@ -75,6 +75,7 @@ public class CompilerCompositeConfigurations {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
 
             if (!(config instanceof SimpleTemplateCompilerConfig )) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
@@ -158,6 +159,7 @@ public class CompilerCompositeConfigurations {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
 
             if (!(config instanceof SimpleTemplateCompilerConfig )) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);
@@ -208,6 +210,7 @@ public class CompilerCompositeConfigurations {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
 
             if (!(config instanceof SimpleTemplateCompilerConfig )) {
                 final String templateNameClass = compilerUtil.templateNameClass(config.name);

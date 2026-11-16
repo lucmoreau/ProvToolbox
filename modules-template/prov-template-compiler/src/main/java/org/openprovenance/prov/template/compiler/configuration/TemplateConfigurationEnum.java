@@ -43,6 +43,12 @@ public enum TemplateConfigurationEnum {
         return inputTypeValue==COMPOSITE;
     }
 */
+    /** T36 (R11): a subtype entry is no template of the server side; every loop over the catalogue's templates skips it. */
+    @JsonIgnore
+    static public boolean isSubtype (TemplateCompilerConfig config) {
+        return config instanceof SubtypeTemplateCompilerConfig;
+    }
+
     @JsonIgnore
     static public boolean isSimple (TemplateCompilerConfig config) {
         return config instanceof SimpleTemplateCompilerConfig;

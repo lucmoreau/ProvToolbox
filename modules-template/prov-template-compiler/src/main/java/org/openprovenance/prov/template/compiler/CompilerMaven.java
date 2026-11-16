@@ -7,6 +7,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.configuration.TemplateConfigurationEnum;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
@@ -567,6 +568,7 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
                         METHOD_CALL(INTEROP_FRAMEWORK, "getDefaultFactory", List.of())));
 
         for (TemplateCompilerConfig template: configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(template)) continue; // T36 (R11): a subtype adds nothing to the server side
             String bn=compilerUtil.templateNameClass(template.name);
             ClassName templateClass = ClassName.get(bn, template.package_);
 

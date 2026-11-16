@@ -126,6 +126,7 @@ public class CompilerBeanCompleter2 {
         pastClass.CONSTRUCTOR(constructor2);
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (config instanceof SimpleTemplateCompilerConfig) {
 
                 TemplateBindingsSchema bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config);

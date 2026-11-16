@@ -4,6 +4,7 @@ package org.openprovenance.prov.template.compiler;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.TemplateConfigurationEnum;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
@@ -54,6 +55,7 @@ public class CompilerInputOutputProcessor {
                 ;
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
             final String outputsNameClass = compilerUtil.outputsNameClass(config.name);
 

@@ -91,6 +91,7 @@ public class CompilerQueryInvoker {
 
         // For each template generate process method
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final String inputsNameClass = compilerUtil.inputsNameClass(config.name);
 
@@ -381,6 +382,7 @@ public class CompilerQueryInvoker {
         // find composee template
         SimpleTemplateCompilerConfig composee = null;
         for (TemplateCompilerConfig c: configs.templates) {
+            if (TemplateConfigurationEnum.isSubtype(c)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (compositeConfig.consistsOf.equals(c.fullyQualifiedName)) {
                 composee=(SimpleTemplateCompilerConfig) c;
             }

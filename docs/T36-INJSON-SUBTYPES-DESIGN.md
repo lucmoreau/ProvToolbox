@@ -1,6 +1,6 @@
 # T36 — `@inJson` values and template subtypes: design
 
-Status: **proposed, nothing built** (2026-11-16); checked against the code the same day (§11). Ticket: `TODO.md`, T36.
+Status: **rulings R1–R11 given 2026-11-16 (§8); nothing built yet**; checked against the code the same day (§11). Ticket: `TODO.md`, T36.
 Grounded in `development2_0` at 0a8d9f4b1. The rulings asked of Luc are numbered R1–R11 in §8 (R11 added by the check); each says what is proposed and, where there is a real
 alternative, what it is. Nothing after stage 1 should be built before the rulings it depends on.
 
@@ -173,10 +173,14 @@ Refused at compile time: `refines` naming no simple template; a fixed variable t
 template (a node, an output, a carrier, an in-JSON value), or whose constant does not fit its type; a carried name
 that is not an in-JSON value of that template; two subtypes of one template with the same fixed values.
 
-`template-project-schema.json` gains the kind. Where its entry lives is R11: proposed, the entry is written in the
-catalogue's `templates` array, as `simple` and `composite` are, but is taken out of `configs.templates` as soon as the
-configuration is read, into `configs.subtypes`. The 47 loops then never see a subtype, which is the same device as R1:
-split once at the point of loading, so existing code is untouched. Only the subtype generators read `configs.subtypes`.
+`template-project-schema.json` gains the kind. **R11, ruled by Luc, 2026-11-16: "Third class, all loops skip it"**: the
+entry is written in the catalogue's `templates` array, as `simple` and `composite` are, and is a third class,
+`SubtypeTemplateCompilerConfig`, in `configs.templates`. Every one of the 47 loops over that array in 31 files is
+taught to skip it (or, where it means to find a template by name, to find only simple ones), and the 13 casts and 23
+"not simple" tests are made to name the kind they mean. This is the largest part of stage 2. It is guarded by one test:
+a catalogue with a subtype entry compiles to the same tree, but for the subtype's own files, as the same catalogue
+without it. Only the subtype generators read the third class. (The design had proposed moving the entry out of the
+array at loading, which would have left those 47 loops alone; Luc chose the other.)
 
 A subtype adds nothing to the server side: no table, no insert function, no builder, no entry in the catalogue's
 dispatch, no log2prov reader. A store that loads the library sees the general template only.
@@ -241,6 +245,15 @@ client project only when the catalogue has a subtype.
 - **Rust**: has no mapping for the static runtime call (§3). Proposed (R4): mark the two conversions `NotInRust`, so
   that the Rust bean has the typed fields and no conversions, and file the mapping as its own ticket.
 
+### 5.7 The dispatcher (R9)
+
+One PAST class per catalogue that has subtypes, in the catalogue's common package: from a general template's input bean
+it returns the typed bean of the subtype whose fixed values the bean holds, as PAST (a chain of tests of the fixed
+variables, each calling that subtype's `fromGeneral`), and a refusal when none matches. When one general template has
+subtypes that fix different variables, the tests are made in the order of the number of fixed values, most first. A
+catalogue with no subtype has none. It reads the third class of §5.1 and emits through the same emitters; Rust has it
+marked `NotInRust`, like the conversions it calls.
+
 ### 5.6 The test of part B
 
 For a case table of subtypes (in the manner of `T31CasesTest`): the typed bean compiles in each language emitted;
@@ -289,8 +302,8 @@ Each stage ends with the module's tests green and can be judged before the next.
 
 1. **`@inJson`** (part A): the descriptor member, the split at loading, the compile-time refusals, the listing in the
    documentation and the schema; the test of §4.3. This stage needs no ruling beyond R1 and R2.
-2. **The `subtype` kind**: the configuration class, the enum, the project schema, the loop, the compile-time refusals.
-3. **The typed bean in Java**: the PAST class and its two conversions, the Java runtime class, the test of §5.6 in
+2. **The `subtype` kind** (R11): the third configuration class, the project schema, every loop over `configs.templates` taught to skip it, the compile-time refusals, and the test that an added subtype entry changes only its own files.
+3. **The typed bean in Java**: the PAST class and its two conversions, the dispatcher (R9), the Java runtime class, the test of §5.6 in
    Java.
 4. **Python and JavaScript**: the ports of the runtime class, the shared table of values; what T33 and T34 block is
    said in the tests, not hidden.
@@ -298,7 +311,25 @@ Each stage ends with the module's tests green and can be judged before the next.
 6. **The specification.** T31 changed the provenance-templates specification for its annotations; `@inJson` and the
    subtype kind need the same.
 
-## 8. Rulings asked
+## 8. Rulings
+
+**Given by Luc, 2026-11-16** (answers to the questions put to him; where he picked a listed option its name is quoted):
+
+| | ruling |
+|---|---|
+| R1 | "Separate list at loading": split at the one place the schema is loaded. |
+| R2 | "Allow @inJson.key". |
+| R3 | His message ("@InJson does not declarate all variables … extensibility, for attributes that had not been anticipated"), then the three details "as stated": other keys kept per carrier; a clash with a declared key refused; JSON values; same content, declared keys first. |
+| R4 | "Fields only, conversions not in Rust"; the Rust registry's static call is a ticket of its own. |
+| R5 | "Accept, with RFC 8785 numbers": integers as JSON integers, booleans, strings, dates and date-times as strings, a `json` value nested as JSON, doubles by RFC 8785's number rule (5.0 is written 5). |
+| R6 | "Own ticket after T36". |
+| R7 | "Compiler writes it; name from subtype's name": `rdfs:subClassOf`, a `tpl:` vocabulary, the namespace in the catalogue, the term named from the subtype's `name`. |
+| R8 | "Refuse the combination". |
+| R9 | **"Generate it per catalogue now"**: the dispatcher is in T36 (§5.7). My proposal was to leave it out. |
+| R10 | "Accept as proposed": `subtype`, `refines`, `fixed`, `carries`, `toGeneral`, `fromGeneral`, `<carrier>Other`, `org.openprovenance.prov.utils.JsonText` in prov-model with a jsweet candy and a Python port. |
+| R11 | **"Third class, all loops skip it"** (§5.1). My proposal was to move subtypes out at loading. |
+
+The text of each ruling below is what was asked; where it differs from the table, the table is what Luc ruled.
 
 - **R1. Where an in-JSON value is kept after loading.** Proposed: split at the one place the schema is loaded, so
   existing generators are untouched (§4.2). Alternative: keep them in `var` and filter in each generator.

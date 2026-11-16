@@ -42,13 +42,13 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 ### ⬜ T36: `@inJson` values and template subtypes
 
-**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler.  **Branch**: `claude/t36-injson-subtypes-d38753` (off `development2_0`; the app named it).
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler.  **Branch**: `claude/t36-injson-subtypes-d38753` (off `development2_0`; the app named it).
 **Filed 2026-11-16** (Luc), from the first application's design of user-interaction records
 (`the first application's design note`). **Design**: `docs/T36-INJSON-SUBTYPES-DESIGN.md`, proposed
-and not yet ruled: its rulings R1–R11 are asked of Luc.
+and ruled 2026-11-16 (R1–R11, below and design §8).
 **Checked against the code 2026-11-16** (design §11): one real correction. The `subtype` entry cannot live in
-`configs.templates`: 47 loops in 31 files take a non-simple entry for a composite and 13 cast it. So it is split out at
-loading (R11).
+`configs.templates`: 47 loops in 31 files take a non-simple entry for a composite and 13 cast it. Luc ruled (R11) that it is a third
+class that every loop skips, not split out.
 
 **The need.** Applications use one compiled template for many kinds of act (nextgen: 73 templates for 213 act types)
 and put what differs in text variables holding a JSON object (`attributes`, `pattributes`), because a new key there
@@ -92,7 +92,12 @@ has no mapping for a static runtime call.
   @InJson does not declarate all variables. Additionally, we have to allow for extensibility, for attributes that had
   not been anticipated as design type." So a carrier is open: the typed bean keeps the other keys in a map per carrier
   and writes them back (design §4.1, §5.2, §5.3). Three details are put back to him (the design's R3).
-- R1, R2, R4–R11: not yet given.
+- **R1, R2, R4–R11, given 2026-11-16** (answers to the questions put to him, quoted as the option he picked):
+  R1 "Separate list at loading"; R2 "Allow @inJson.key"; R3's three details "All three as stated"; R4 "Fields only,
+  conversions not in Rust"; R5 "Accept, with RFC 8785 numbers"; R6 "Own ticket after T36"; R7 "Compiler writes it; name
+  from subtype's name"; R8 "Refuse the combination"; R9 "Generate it per catalogue now" (a dispatcher is in T36);
+  R10 "Accept as proposed"; R11 "Third class, all loops skip it" (47 loops in 31 files taught to skip it). R9 and R11
+  are the two where he did not take the proposal. Table in the design, §8.
 
 **Built**: nothing yet.
 

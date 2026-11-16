@@ -123,6 +123,11 @@ Refused at compile time, with the template and the variable named:
 
 An in-JSON value is not a variable of the PROV template document: nothing in the template's graph refers to it.
 
+**A carrier is open** (Luc, 2026-11-16: "It should be our expectation that @InJson does not declare all variables.
+Additionally, we have to allow for extensibility, for attributes that had not been anticipated as design type."). `@inJson`
+declares some of a carrier's keys, never all of them, and nothing here closes a carrier: what the compiler generates must
+accept, keep and return keys nobody declared. This is a permanent property, not a stage of migration (R3).
+
 ### 4.2 Effect on what is generated
 
 | generated | effect |
@@ -185,7 +190,10 @@ One PAST class per subtype, in the package the general template's input bean is 
 - a field for each input of the general template, except the fixed ones and except each carrier this subtype carries
   values in;
 - a field for each carried value, of the type `getPastClassForType` gives its `@type`;
-- a carrier the subtype carries nothing in stays an ordinary field, passed through as it is.
+- for each carrier the subtype carries values in, one more field, a `Map<String,Object>` of **the other keys** of that
+  carrier (named `<carrier>Other`; R10), whose values are JSON values: string, integer, double, boolean, null, or a map
+  or list of these. It is empty when there are none; it is what makes an unanticipated attribute reach the record;
+- a carrier the subtype carries nothing in stays an ordinary field, passed through as it is (it is open by being text).
 
 There is no typed bean for the outputs: a subtype's record returns what the general template's returns.
 
@@ -198,15 +206,17 @@ Both are methods of the typed bean, built from PAST statements and expressions, 
 1. copies each ordinary field;
 2. assigns each fixed constant;
 3. for each required carried value that is absent, throws `IllegalArgumentException` naming the subtype and the value;
-4. for each carrier with carried values, makes a `HashMap`, puts each carried value that is present under its key, in
-   the order the general template declares them, and assigns the carrier the text the runtime call of §5.4 returns.
+4. for each carrier with carried values, makes a map, puts each carried value that is present under its key, in
+   the order the general template declares them, then the entries of the carrier's other-keys field, and assigns the
+   carrier the text the runtime call of §5.4 returns. An other-keys entry whose key is one the template declares for
+   that carrier is refused (`IllegalArgumentException`), so that a declared value cannot be shadowed unseen.
 
 `fromGeneral(general)`, static, returns the typed bean:
 
 1. throws when a fixed variable of `general` does not hold the subtype's constant;
 2. copies each ordinary field;
-3. for each carrier with carried values, reads it with the runtime call and assigns each carried field from its key,
-   converted to the field's type;
+3. for each carrier with carried values, reads it with the runtime call, assigns each carried field from its key,
+   converted to the field's type, and puts every other key in the carrier's other-keys field;
 4. applies the same check of required values.
 
 ### 5.4 The runtime class
@@ -234,7 +244,8 @@ client project only when the catalogue has a subtype.
 ### 5.6 The test of part B
 
 For a case table of subtypes (in the manner of `T31CasesTest`): the typed bean compiles in each language emitted;
-`fromGeneral(x.toGeneral())` gives back `x`; a missing required value is refused; a general bean of another subtype is
+`fromGeneral(x.toGeneral())` gives back `x`, other keys included (a case with an undeclared key, nested value
+included); `toGeneral(fromGeneral(g))` gives back `g` as a JSON object; a missing required value is refused; a general bean of another subtype is
 refused; the carrier's text is the expected one and the same from each language.
 
 ## 6. Part C — the descriptions
@@ -242,7 +253,9 @@ refused; the carrier's text is the expected one and the same from each language.
 - **Documentation.** Under each general template, its carriers with their in-JSON values, and its subtypes, each with
   what it fixes and carries.
 - **JSON schema.** For each subtype, the schema of its typed bean: the fixed values absent, the carried values as
-  typed properties, the required ones required.
+  typed properties, the required ones required, and each carrier's other keys as an object with free properties
+  (the carrier is open, §4.1). The general template's own schema stays closed on its variables, since the carrier is
+  one string there.
 - **Turtle** (new; the configuration gains a member naming the file, as `jsonschema` and `documentation` do). For a
   catalogue:
 
@@ -291,10 +304,14 @@ Each stage ends with the module's tests green and can be judged before the next.
   existing generators are untouched (§4.2). Alternative: keep them in `var` and filter in each generator.
 - **R2. `@inJson.key`.** Proposed: allowed, for a key that differs from the variable's name. Alternative: the key is
   always the name, and a library renames one of two clashing keys in its data.
-- **R3. A carrier with keys nobody declared.** A library moving to `@inJson` step by step has carriers holding both
-  declared and undeclared keys. Proposed: the typed bean writes only what is declared, and `fromGeneral` ignores other
-  keys; a carrier a subtype must also fill freely stays out of that subtype's `carries`. Alternative: an `open`
-  subtype keeps a map of the other keys beside the typed fields.
+- **R3. A carrier with keys nobody declared. Ruled by Luc, 2026-11-16, in effect** (his message while R1–R3 and R11
+  were being asked): "It should be our expectation that @InJson does not declarate all variables. Additionally, we
+  have to allow for extensibility, for attributes that had not been anticipated as design type." So the alternative
+  the design listed is the rule, for every subtype and not as an opt-in: the typed bean keeps a map of the other keys
+  (§5.2), `fromGeneral` fills it, `toGeneral` writes it back. What is still open in it, for him to confirm: the other
+  keys are kept for every carrier the subtype carries values in; a clash between an other key and a declared key is
+  refused (§5.3); `fromGeneral` then `toGeneral` gives the same JSON object but not always the same text, since
+  declared keys are written first (§5.6 compares JSON values, not strings).
 - **R4. Rust.** Proposed: typed fields in Rust, the conversions marked `NotInRust`, the mapping of a static runtime
   call filed as its own ticket. Alternative: T36 extends the Rust registry first.
 - **R5. The text of a value.** Proposed: an `xsd:int` or `xsd:long` as a JSON integer; an `xsd:double` or `xsd:float`
@@ -364,4 +381,11 @@ Nothing was built for this check. What changed in the design, and why:
    repository other than the compiler reads the descriptor classes (§3). A tool that parses a `cbindings` file itself
    was looked for in the services and the Maven plugin and not found; applications' own tools are not in this repository.
 
-What the check left as written: §4 (the annotation, the refusals, the test), §5.2–5.6, §6, and R1–R10.
+6. **§4.1, §5.2, §5.3, §5.6, §6, R3 — Luc's answer to the rulings, 2026-11-16.** While R1–R3 and R11 were asked, Luc
+   wrote: "It should be our expectation that @InJson does not declarate all variables. Additionally, we have to allow
+   for extensibility, for attributes that had not been anticipated as design type." The design had treated undeclared
+   keys as a transition and proposed ignoring them. They are permanent, so the typed bean now keeps them in a map per
+   carrier, `toGeneral` writes them back, and the tests round-trip an undeclared key. R3 is recorded as ruled in
+   effect, with three details put back to him.
+
+What the check left as written: §4's refusals and test, §5.4–5.5, §7, and R1, R2, R4–R11 as proposed.

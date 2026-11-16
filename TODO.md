@@ -87,7 +87,12 @@ has no mapping for a static runtime call.
   back without loss, refuses a missing required value, and the carrier's text is the same from each language.
 - The provenance-templates specification says what `@inJson` and a subtype are.
 
-**Rulings** (Luc, in his words, dated, as given): none yet.
+**Rulings** (Luc, in his words, dated, as given):
+- **R3, in effect (2026-11-16)**, written while R1–R3 and R11 were being asked: "It should be our expectation that
+  @InJson does not declarate all variables. Additionally, we have to allow for extensibility, for attributes that had
+  not been anticipated as design type." So a carrier is open: the typed bean keeps the other keys in a map per carrier
+  and writes them back (design §4.1, §5.2, §5.3). Three details are put back to him (the design's R3).
+- R1, R2, R4–R11: not yet given.
 
 **Built**: nothing yet.
 

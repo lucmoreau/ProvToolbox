@@ -1,7 +1,7 @@
 FILE=./target/classes/provtoolbox.version
 PROVTOOLBOX_VERSION=$(shell cat $(FILE))
 
-TPL_VERSION=0.1.0-SNAPSHOT
+TPL_VERSION=0.3.0-SNAPSHOT
 
 DEPLOY_DIR=target
 

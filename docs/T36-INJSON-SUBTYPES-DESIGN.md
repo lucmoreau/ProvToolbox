@@ -1,6 +1,6 @@
 # T36 — `@inJson` values and template subtypes: design
 
-Status: **rulings R1–R11 given 2026-11-16 (§8); nothing built yet**; checked against the code the same day (§11). Ticket: `TODO.md`, T36.
+Status: **rulings R1–R11 given 2026-11-16 (§8); stages 1–6 built (see `TODO.md`, T36, for what is committed and what is not)**; checked against the code the same day (§11). Ticket: `TODO.md`, T36.
 Grounded in `development2_0` at 0a8d9f4b1. The rulings asked of Luc are numbered R1–R11 in §8 (R11 added by the check); each says what is proposed and, where there is a real
 alternative, what it is. Nothing after stage 1 should be built before the rulings it depends on.
 
@@ -242,6 +242,10 @@ client project only when the catalogue has a subtype.
 - **Python**: emitted with Java. An absent optional value is right only once T33 is fixed, since the conversions
   test for `null`.
 - **JavaScript**: emitted with Java. It cannot be built into a client until T34 is fixed.
+- **Built (stage 4)**: the Python port is `prov-template-library/src/main/python/org/openprovenance/prov/utils/JsonText.py`; the JavaScript one is a jsweet
+  candy, `prov-jsweet-candy-java`'s `JsonText.java`, with the number text JavaScript gives (RFC 8785's). Both run the shared vectors
+  `src/test/resources/t36/json-text-vectors.json`. The Python and JavaScript emitters were given one rule, that a class does not import itself.
+  Python is right for present values; an absent one waits for T33.
 - **Rust**: has no mapping for the static runtime call (§3). Proposed (R4): mark the two conversions `NotInRust`, so
   that the Rust bean has the typed fields and no conversions, and file the mapping as its own ticket.
 
@@ -296,6 +300,10 @@ subtype is a record of the general template. `tpl:` is a small vocabulary this t
 application's act types (their labels, their comments) stay the application's to declare; the compiler writes what it
 knows and has checked.
 
+**Built (stage 5)**: the three descriptions are as written above, with these choices of names: the catalogue members `turtle` (the file) and
+`turtleNamespace` (the IRI of the terms); the term of an in-JSON value is `<template name>-<value name>` and not the value's name alone (a
+property with two domains belongs to both). A template is described in the Turtle when it keeps in-JSON values or has subtypes. See `TODO.md`, T36.
+
 ## 7. Stages
 
 Each stage ends with the module's tests green and can be judged before the next.
@@ -310,6 +318,9 @@ Each stage ends with the module's tests green and can be judged before the next.
 5. **The descriptions** (part C).
 6. **The specification.** T31 changed the provenance-templates specification for its annotations; `@inJson` and the
    subtype kind need the same.
+   **Built (stage 6)**: in the specification repository (`provenance-templates-specification/prov-template/index.html` and
+   `schemas/bindings-schema.json`): a section on in-JSON values, a section on subtypes in the compiler's description, the two
+   annotations in the table and the schema, a line in the changes, and editor's notes where the page and the compiler disagree.
 
 ## 8. Rulings
 
@@ -386,7 +397,7 @@ The text of each ruling below is what was asked; where it differs from the table
 - The Rust registry (`rust-registry.json`) and the claim that it maps no static call are T31's finding, not read again.
 - The items marked (T31) in §3 are T31's findings as written in `DONE.md`.
 - The figures of §1 are nextgen's roster as read on 2026-11-16.
-- The specification repository (`provenance-templates-specification`), which holds the bindings schema, was not read.
+- The specification repository (`provenance-templates-specification`) was read for stage 6 (§7); its page was not rendered.
 
 ## 11. Check against the code (2026-11-16)
 

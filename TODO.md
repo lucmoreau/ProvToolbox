@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T37** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T38) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T40** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T41) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,9 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T40 | The catalogue's root JSON schema constrains `isA` to the pattern of the last template written, so a record of any other template (and of a subtype) fails the root schema. | ⬜ BACKLOG | Template compiler / JSON schema | [T40 section](#-t40-the-root-json-schema-keeps-the-isa-pattern-of-the-last-template) |
+| T39 | `CompilerTest` fails when another test of the module generates before it: it does not reset the compiler's static coordinators (`SpecificationFile`), so it depends on running first in a fresh JVM. | ⬜ BACKLOG | Template compiler / Tests | [T39 section](#-t39-compilertest-depends-on-running-first) |
+| T38 | For an `integrator` catalogue, the Python emitter asserts (`mc.methodName!=null`, `Python.java`, SUPER_METHOD_CALL) on `CompilerIdentifierRegistry`'s `super(...)` call, which has a null method name; seen with assertions on, as in the tests, on a catalogue with no subtype. | ⬜ BACKLOG | Template compiler / Python | [T38 section](#-t38-python-emitter-asserts-on-a-super-constructor-call) |
 | T37 | The bindings JSON schema in `prov-template` (`jsonschema/bindings-schema.json`, used by the plugin's `validate-bindings`) lacks most members the compiler reads: `@escape`, `@unique`, `@sql.foreign`, `@role`, `@sql.new.inputs`, `@sql.also.outputs`, `@semantic.type`, `@transient`, `@pseudonym`. | ⬜ BACKLOG | Template compiler / Tools | [T37 section](#-t37-the-bindings-json-schema-lacks-members-the-compiler-reads) |
 | T36 | `@inJson` declares the values a template keeps inside a JSON text variable, and a `subtype` of a template gets a typed bean generated from PAST for each target language; the Turtle says how each subtype relates to its general template. | ⬜ BACKLOG | Template compiler | [T36 section](#-t36-injson-values-and-template-subtypes) |
 | T34 | The jsweet build the compiler generates for a client project transpiles nothing: it predates provenance-templates-library's way of running jsweet (antrun `mvn -f pom-jsweet.xml` with `--add-opens`, the POM at the project's root). | ⬜ BACKLOG | Template compiler / JavaScript | [T34 section](#-t34-the-generated-jsweet-build-transpiles-nothing) |
@@ -40,6 +43,43 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+### ⬜ T40: The root JSON schema keeps the isA pattern of the last template
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / JSON schema.  **Found 2026-11-16**, while testing T36's schema for subtypes.
+
+`CompilerJsonSchema.generateJSonSchema` ends with `jsonSchemaAsAMap.put("properties", Map.of("isA", Map.of("type", "string", "pattern", "^" + templateFullyQualifiedName + "$")))`
+("Luc Allow more templates"), which each template overwrites: the root schema of a catalogue constrains `isA` to the pattern of the template written last. A record of any
+other template, and of a subtype (T36), fails the root schema although it satisfies its own definition (`if isA = <name> then $ref`). Seen on T36's fixture: a record of the subtype
+`t31.approval_big` against the root schema: "/isA: does not match the regex pattern ^t31.Approval$". Not compared with the base commit. T36's test checks a record against its definition for that reason.
+**Proposed**: no `pattern` at the root (the `if`/`then` blocks already select the definition), or an alternation of all the templates' names; either changes every catalogue's `schema.json`, so it is its own ticket.
+
+---
+
+### ⬜ T39: CompilerTest depends on running first
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Tests.  **Found 2026-11-16**, while adding T36's tests.
+
+`CompilerTest.testCompiler1` calls the generators directly and does not reset the compiler's static state
+(`SpecificationFile.resetTypeCheckCoordinator()` and `resetCodeGenCoordinator()`, which `processTemplateGenerationConfig` and
+T31's tests call). When a test that generates ran before it in the same JVM (surefire's order follows the file system, so it
+changes when test classes are added), it fails with `NullPointerException: … "type" is null` in the Python emitter. T36's tests reset
+the coordinators in `tearDown`, which leaves the state as a fresh JVM has it; the cause is left as it is. **Proposed**: reset in
+`CompilerTest`'s `setUp`.
+
+---
+
+### ⬜ T38: Python emitter asserts on a super constructor call
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Python.  **Found 2026-11-16**, while adding T36's tests.
+
+With assertions on (as in the tests), generating an `integrator` catalogue with `python_dir` set fails: `CompilerIdentifierRegistry`
+(around line 311) builds `SUPER_METHOD_CALL(null, …)`, and `Python.convertMethodCall` asserts `mc.methodName!=null` for that kind.
+Seen on T31's approval fixture with `"integrator": true` and no subtype. Not compared with the base commit. With assertions off the
+emitter would write `super().None(`; not tried. T36's integrator catalogues therefore leave `python_dir` out. **Proposed**: emit
+`super().__init__(…)` for a null method name.
+
+---
 
 ### ⬜ T37: The bindings JSON schema lacks members the compiler reads
 
@@ -106,7 +146,7 @@ has no mapping for a static runtime call.
 - Adding in-JSON values to a template changes its documentation and schema and no other generated file.
 - For a case table of subtypes: the typed bean compiles in each language emitted, converts to the general bean and
   back without loss, refuses a missing required value, and the carrier's text is the same from each language.
-- The provenance-templates specification says what `@inJson` and a subtype are.
+- The provenance-templates specification says what `@inJson` and a subtype are (stage 6: written, uncommitted, in the specification's repository).
 
 **Rulings** (Luc, in his words, dated, as given):
 - **R3, in effect (2026-11-16)**, written while R1–R3 and R11 were being asked: "It should be our expectation that
@@ -135,7 +175,80 @@ has no mapping for a static runtime call.
     form waits for the Turtle (stage 5).
   - The bindings schema of `prov-template` accepts the two members (see T37 for what else it lacks).
   - Tests: `T36InJsonTest`, 7 cases. The whole module: 175 tests, 0 failures (168 before).
-- **Verified, 2026-11-16**: with in-JSON values added to a carrier of T31's approval template, the generated tree differs from
+- **Stage 2, the `subtype` kind, 2026-11-16 (R11: a third class that every loop skips; not committed, at Luc's word)**:
+  - `SubtypeTemplateCompilerConfig` (`refines`, `fixed`, `carries`), `@type: subtype` in `TemplateCompilerConfig` and
+    `TemplatesProjectConfiguration`, `TemplateConfigurationEnum.isSubtype`, and `SubtypeTemplateCompilerConfig` in the project
+    schema `template-project-schema.json`.
+  - All 47 loops over `configs.templates` (31 files) start with a skip of a subtype entry; the two other uses (the number of
+    builders in `CompilerBuilderInit`, the template names in `CompilerLogger`) filter it. Lookups by name are safe because the
+    checker refuses a subtype whose name or fully qualified name is already used.
+  - `SubtypeChecker`, called by `ConfigProcessor.processTemplateGenerationConfig` after `setupPrivacy` (`SubtypeException`,
+    "T36: subtype …"): refines nothing or a non-simple template; a fixed variable that is unknown, a node, an output, not an input,
+    a carrier, an in-JSON value, or whose constant does not fit its type (or is null); carries a name that is no in-JSON value,
+    or a mode other than `required`/`optional`; two subtypes of one template fixing the same values; a reused name; a missing member.
+  - Tests: `T36SubtypeTest`, 5 cases (parsing, 19 refusals, and generation through the whole pipeline). The whole module: 180 tests, 0 failures.
+- **Stage 3, the typed bean in Java, 2026-11-16 (not committed, at Luc's word)**:
+  - Runtime `org.openprovenance.prov.utils.JsonText` in prov-model (R5: RFC 8785 numbers; objects written in the order of the map, declared keys first):
+    `write`, `read`, `parse`, `toText`, `newObject`, `merge`, `others`, `getString/Integer/Long/Double/Float/Boolean/Json`, `same`. Its own parser, no dependency.
+    The conformance vectors (29 canonical, 14 refused, 15 getters) are `src/test/resources/t36/json-text-vectors.json`, to be run by every port.
+  - `CompilerSubtype`, all PAST: per subtype a class in the package of the refined template's input bean (`Approval_bigInputs`), with `isA`, the constant
+    `refines`, a field per ordinary input (not the fixed ones, not a carrier it carries in), a field per carried value, a `<carrier>Other` map per such carrier, `toGeneral()`
+    and static `fromGeneral(general)`; and the per-catalogue dispatcher `Subtypes` (R9) with `which<Template>` and `fromGeneral<Template>` (the subtype with most fixed
+    values first). Generated before the client POM, which then depends on prov-model (only when there is a subtype).
+  - Rust (R4): the typed fields and `isA`, no conversion, no constant, no other-keys map, no dispatcher; the file was checked with `cargo check` alone with serde (not in the generated project, which has no `Cargo.toml`).
+  - The checker also refuses a subtype for a catalogue with `"integrator": false` (the input beans exist only for an integrator catalogue) and one carrying values in a carrier that is not an input.
+  - Tests: `T36JsonTextTest` (4), `T36SubtypeTest` (now 9: the generated beans are compiled with `javax.tools` against the generated tree and run by reflection: conversions, round trip with an undeclared key,
+    required values, clash, fixed-value mismatch, a `json` value nested, the dispatcher). The module: 188 tests, 0 failures, prov-model's tests too.
+- **Verified, stage 3**: catalogues without a subtype are unchanged (T31's 25 cases, 2410 files, and `CompilerTest`'s 93 source files equal the base commit's, as above, run with `CompilerTest` passing).
+- **Stage 4, Python and JavaScript, 2026-11-16 (not committed, at Luc's word)**:
+  - Python: the port `org/openprovenance/prov/utils/JsonText.py` in `prov-template-library/src/main/python` (with `JsonObject`, an ordered `dict` with the `put`/`containsKey` the emitted code calls). It gives the 58 vectors
+    their answers (`run_json_text_vectors.py`).
+  - JavaScript: the candy `JsonText.java` in `prov-jsweet-candy-java` (JavaScript's own number text is RFC 8785's: `"" + d`), transpiled by the module's own build into `dist/` (533 lines added, nothing else changed). It gives the
+    58 vectors their answers in node (`run_json_text_vectors.js`). Limit: JSweet keeps a string-keyed map as a JavaScript object, so a key that reads as an array index (`"1"`) is written before the others.
+  - Emitters (PAST, for every emitter that needed it): the Python and JavaScript emitters no longer import the class being emitted (a typed bean that makes one, or whose static method calls its own class,
+    imported itself: a circular import in Python, a redeclared `const` in JavaScript). Nothing else changes: see the comparison below.
+  - The emitted Python of the two typed beans and the dispatcher, run with python3 against the port (`check_typed_beans.py`): conversions, round trip with an undeclared key, nested `json`, clash, fixed-value mismatch, wrong type, dispatcher.
+    **Blocked by T33**, said by the test (`[T36] BLOCKED T33 …`, not a failure): an absent required value is not detected (`x == 0`), an absent optional value is written as `null`, and the dispatcher's "none" is `0`.
+    **Blocked by T38**: the whole pipeline cannot write Python for a subtype catalogue with assertions on (an integrator catalogue is needed for subtypes), so the test emits the generated PAST classes with the Python emitter directly.
+  - The emitted JavaScript of the typed bean parses (`node --check`). Its `require` of `org/openprovenance/prov/utils/JsonText.js` is provided by nothing, as for any static call of the PAST JavaScript route (`escapeCsv` is no different).
+  - The jsweet route, checked by hand (not a test): the generated Java of the typed beans and the dispatcher, with the candy and a stand-in general bean, transpiled by jsweet 3.1.0 in a scratch project (the candy's own `pom-jsweet.xml`, with
+    the same `MAVEN_OPTS`), and run in node: conversions, round trip, other keys, nested `json`, required, clash, fixed-value mismatch, wrong type, dispatcher (22 checks, 0 failed). **T34** blocks doing this through the generated client project.
+  - Tests: `T36SubtypeTest` is 13 cases (the four ports' tests skip with a message when python3 or node is absent). The module: 192 tests, 0 failures.
+- **Stage 5, the descriptions, 2026-11-16 (not committed, at Luc's word)**:
+  - Documentation: under each template that has subtypes, a list of them: the fully qualified name, the typed bean, what each fixes (`name = value`) and carries (key, carrier, type, `required`/`optional`, documentation), HTML-escaped. Nothing for a template without.
+  - JSON schema: for each subtype a definition `<subtype fqn>` for its typed bean (`CompilerJsonSchema.generateSubtypeJSonSchema`): `isA` of its own, the inputs kept as fields of their own (not the fixed ones, not the carriers),
+    each carried value as a typed property (a `json` value as a string, said to be JSON text; its key and carrier said in the description), each carrier's other keys as an object with free members, `required` = `isA`, compulsory inputs and
+    required values, `additionalProperties: false`, and the `if isA then $ref` block. The general template's schema is as it was.
+  - Turtle (R7, ruled): two new catalogue members, `turtle` (the file, written beside the JSON schema) and `turtleNamespace` (the IRI of the terms; refused when absent; names mine: R10 gave none for these). `CompilerTurtle` writes the `tpl:` vocabulary
+    (`http://openprovenance.org/ns/tpl#`: `fullyQualifiedName`, `inJson`, `key`, `fixes`, `variable`, `value`, `requires`, `mayCarry`), then for each simple template with in-JSON values or subtypes an `owl:Class` named from its `name`, each in-JSON value as a datatype
+    property `<template>-<value>` (domain, range, `tpl:inJson`, `tpl:key` when it differs), and each subtype as an `owl:Class` named from its `name`, `rdfs:subClassOf` its template, with `tpl:fixes [ tpl:variable ; tpl:value ]`, `tpl:requires` and `tpl:mayCarry`.
+    A property named after the template and the value, not the value alone, so that two templates may use one name (a property with two domains would belong to both).
+  - Tests: `T36DescriptionsTest` (6): the documentation (taking the subtypes out gives the page without), the schema (its properties, types, required, and records valid and invalid against the subtype's definition with networknt), the Turtle (text, and read by rdflib when installed, 28 checks).
+    The module: 198 tests, 0 failures. The test fixture moved to `T36Fixture`.
+  - The project schema accepts `turtle` and `turtleNamespace`.
+- **Verified, stage 5**: catalogues without subtypes, `turtle` or `turtleNamespace` are unchanged (T31's 25 cases, 2410 files, and `CompilerTest`'s 93 files, against the base commit, as above).
+- **Not verified, stage 5**: the Turtle with another parser than rdflib; the documentation page in a browser; `ajv` on the project schema; the JSON schema of a subtype in jsonform (the schema is used by a form generator).
+- **Committed on 2026-11-16 at Luc's word, `9f19ddcf9` (my branch)**: only the loop-skip lines (`if (TemplateConfigurationEnum.isSubtype(...)) continue;`, with the two lines that count and list templates in `CompilerBuilderInit` and `CompilerLogger`), `SubtypeTemplateCompilerConfig` and `TemplateConfigurationEnum.isSubtype`: 32 files, compiled alone in a clean worktree. Everything else of stages 2 to 5 is still uncommitted.
+- **Stage 6, the specification, 2026-11-16 (not committed, at Luc's word; in the specification's own repository, `provenance-templates`, branch `main`, working tree only)**:
+  - `provenance-templates-specification/prov-template/index.html`: two rows in the table of annotations (`@inJson`, `@inJson.key`); a section **In-JSON values** (`#in-json`: what an in-JSON value and a carrier are, the refusals as MUST NOT, a carrier is open, the text of a value by RFC 8785's number rule with
+    declared keys first); a section **Subtypes** in the template compiler's description (`#template-subtypes`: the catalogue entry and its rules, the typed beans and their two conversions, the `Subtypes` class, the JSON text class, the documentation, the JSON schema, the Turtle and its `tpl:` vocabulary);
+    a sentence in the compiler's introduction; a line in "Changes since PROV-TEMPLATE 2014-06-07".
+  - `prov-template/schemas/bindings-schema.json` (the specification's copy): `@inJson` and `@inJson.key` on the value descriptor.
+  - Editor's notes on the page, as T31 did, say what disagrees: the schema's `@type` list (five types) is narrower than the compiler's (it rejects `xsd:double`, `xsd:long`, `xsd:date`, `json`); in Rust the typed bean has fields and no conversions; Python writes an absent optional value as 0; the generated JavaScript build transpiles nothing.
+- **Verified, stage 6**: the page's sections, tables and lists are balanced, its ids are unique and every `#` link on it resolves; the schema parses; `ajv` accepts a bindings file with `@inJson` and `@inJson.key` against the new schema, rejects it against the schema before (additional property), and rejects `"@inJson": 3`.
+- **Not verified, stage 6**: the page rendered by ReSpec (it loads ReSpec from w3.org; not opened); the bibliography entry `[[RFC8785]]` resolving; `ajv` on T36's own fixture files (they use `xsd:double`, which the schema's type list rejects, as above, and `@escape`-style members the specification's note already lists); the text of the specification read by anyone but me.
+- **Verified, stage 4**: catalogues without a subtype are unchanged, Python files included (T31's 25 cases, 2410 files, and `CompilerTest`'s 93 source and Python files, against the base commit, as above).
+- **Not verified, stage 4**: the generated jsweet client project built as a whole (T34); numbers beyond 2^53 (the vectors avoid them: Java and Python read them exactly, JavaScript cannot); a JavaScript or Python `float` for `xsd:float` (they have one number type; Java's `Float`
+  writes its own shortest digits).
+- **Not verified, stage 3** (now partly checked, see stage 4): the Python and JavaScript output of the typed bean (stage 4: it shows `.put(` on a map, `== 0` for null (T33), and an import of its own class, which are emitter matters), the generated project built by Maven
+  with the new prov-model (not installed to `~/.m2`: the tests run in one reactor with prov-model), Rust beyond the single file.
+- **Verified, stage 2**: a catalogue with two subtype entries (before and after the simple template, and with a composite beside
+  them) generates the same tree as without them, file for file. Taking the skip out of one loop makes that test fail. And a
+  catalogue using none of T36 compiles as before: T31's 25 generated cases (2410 files) and `CompilerTest`'s catalogue (93 source
+  files) equal the base commit's after the earlier normalisations and the generators' own "at line N" comments, which my inserted
+  lines shift.
+- **Not verified, stage 2**: the project schema was only checked as JSON, not run through `ajv` (the plugin's `validate-catalogue`).
+- **Verified, 2026-11-16** (stage 1): with in-JSON values added to a carrier of T31's approval template, the generated tree differs from
   the tree without them in exactly `doc.html` and `schema.json` (apart from the verbatim copy of the bindings file), and no
   other generated file mentions an in-JSON value's name. And a catalogue using none of T36 compiles as before: T31's 25
   generated cases (2410 files) and `CompilerTest`'s catalogue (93 source files) are identical to the base commit's, run

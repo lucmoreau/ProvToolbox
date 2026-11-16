@@ -97,6 +97,8 @@ public class JavaScript implements Emitter<StringBuilder> {
             StringBuilder importSection = new StringBuilder();
             for (String imprt : imports) {
                 if (!imprt.contains(".")) continue;
+                // T36: a class never requires itself: `const { C } = require(...)` before `class C` redeclares C
+                if (isOwnClass(imprt, clazz)) continue;
                 String localName = getLocalName(imprt);
                 if (LOGGER.equals(localName)) continue;
                 if (imprt.startsWith("past.util")) {
@@ -1292,6 +1294,12 @@ public class JavaScript implements Emitter<StringBuilder> {
             default:
                 return false;
         }
+    }
+
+    /** Whether an import names the class being emitted: its simple name, in its package (when the package is known). */
+    private boolean isOwnClass(String imprt, Class clazz) {
+        if (!imprt.endsWith("." + clazz.name)) return false;
+        return currentPackageName == null || imprt.equals(currentPackageName + "." + clazz.name);
     }
 
     private String getLocalName(String imprt) {

@@ -47,6 +47,7 @@ public class CompilerTemplateInvoker {
                 .INTERFACES(processorInterface);
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String inputsClass = compilerUtil.inputsNameClass(config.name);
             final String outputsClass = compilerUtil.outputsNameClass(config.name);
 

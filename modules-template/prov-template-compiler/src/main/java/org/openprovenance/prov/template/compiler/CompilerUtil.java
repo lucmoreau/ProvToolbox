@@ -323,6 +323,10 @@ public class CompilerUtil {
             } else {
                 try {
                     bindingsSchema = objectMapper.readValue(new File(bindings), TemplateBindingsSchema.class);
+                    // T36 (R1): the @inJson values are split out here, before the privacy policy, so no generator sees them as variables
+                    org.openprovenance.prov.template.descriptors.InJsonSplitter.split(bindingsSchema, bindings);
+                    // T36 part D (R12): the refusals of @performative, which are read on the ordinary values and the in-JSON values just split
+                    org.openprovenance.prov.template.descriptors.PerformativeChecker.check(bindingsSchema, bindings);
                     // T31: the application's privacy policy applies wherever a bindings schema is read
                     org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy privacy =
                             org.openprovenance.prov.template.compiler.privacy.PrivacyPolicy.current();
@@ -412,7 +416,8 @@ public class CompilerUtil {
         throw new UnsupportedOperationException("This exception is never reached");
     }
 
-    private ClassName getPastClassForType(String keyType) {
+    /** The PAST type of a declared {@code @type} such as {@code xsd:double} (public since T36: typed beans use it for in-JSON values). */
+    public ClassName getPastClassForType(String keyType) {
         return switch (keyType) {
             case "xsd:int" -> INTEGER;
             case "xsd:long" -> ClassName.LONG;

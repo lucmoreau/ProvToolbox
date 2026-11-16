@@ -84,6 +84,7 @@ public class CompilerBeanLocalEnactor2 {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
             final ClassName outputClassName = get(outputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));
@@ -212,6 +213,7 @@ public class CompilerBeanLocalEnactor2 {
 
                 TemplateBindingsSchema bindingsSchema=null;
                 for (TemplateCompilerConfig config2: configs.templates) {
+                    if (TemplateConfigurationEnum.isClientSide(config2)) continue; // T36 (R11): a subtype adds nothing to the server side
                     if (config2.fullyQualifiedName.equals(config1.consistsOf)) {
                         bindingsSchema = compilerUtil.getBindingsSchema((SimpleTemplateCompilerConfig) config2);
                     }

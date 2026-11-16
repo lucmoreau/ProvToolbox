@@ -1,6 +1,7 @@
 
 package org.openprovenance.prov.template.descriptors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -9,6 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,29 @@ public class TemplateBindingsSchema {
     private String documentation;
     @JsonProperty("@return")
     private String returnValue;
+
+    /** T36: the values kept inside a text variable, split out of {@code var} when the file is read; see {@link InJsonSplitter}. */
+    @JsonIgnore
+    private Map<String, InJsonValue> inJson = new LinkedHashMap<>();
+
+    /** T36: the {@code @inJson} values, by name, in the order of the file. Empty for a template that declares none. */
+    @JsonIgnore
+    public Map<String, InJsonValue> getInJson() {
+        return inJson;
+    }
+
+    @JsonIgnore
+    public void setInJson(Map<String, InJsonValue> inJson) {
+        this.inJson = inJson;
+    }
+
+    /** T36: the in-JSON values of a carrier, in the order of the file. */
+    @JsonIgnore
+    public List<InJsonValue> getInJsonOf(String carrier) {
+        List<InJsonValue> res = new java.util.ArrayList<>();
+        for (InJsonValue v : inJson.values()) if (v.getCarrier().equals(carrier)) res.add(v);
+        return res;
+    }
 
     @JsonProperty("var")
     public Map<String, List<Descriptor>> getVar() {

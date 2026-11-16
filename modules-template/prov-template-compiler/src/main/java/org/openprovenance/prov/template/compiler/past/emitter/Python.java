@@ -188,6 +188,9 @@ public class Python implements Emitter<StringBuilder> {
         for (String imprt : imports) {
             // get suffix after last dot in imprt
             if (!imprt.contains(".")) continue;
+            // T36: a class never imports itself (a method that makes one, or calls a static method of its own class, names it):
+            // in Python that import is circular, and fails when the module is loaded
+            if (isOwnClass(imprt, clazz)) continue;
 
             String suffix = getLocalName(imprt);
             // ignore LOGGER
@@ -219,6 +222,12 @@ public class Python implements Emitter<StringBuilder> {
     private void lateEmitMethod(Method method) {
         this.lateMethods.add(method);
     }
+    /** Whether an import names the class being emitted: its simple name, in its package (when the package is known). */
+    private boolean isOwnClass(String imprt, Class clazz) {
+        if (!imprt.endsWith("." + clazz.name)) return false;
+        return currentPackageName == null || imprt.equals(currentPackageName + "." + clazz.name);
+    }
+
     private String getLocalName(String imprt) {
         return switch (imprt) {
             case "past.lang.String" -> "str";

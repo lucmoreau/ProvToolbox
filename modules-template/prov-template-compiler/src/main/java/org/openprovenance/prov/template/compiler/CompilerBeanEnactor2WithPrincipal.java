@@ -78,6 +78,7 @@ public class CompilerBeanEnactor2WithPrincipal {
         pastClass.CONSTRUCTOR(ctor);
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String outputNameClass = compilerUtil.outputsNameClass(config.name);
             final String inputNameClass = compilerUtil.inputsNameClass(config.name);
             final ClassName outputClassName = get(outputNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.OUTPUTS));

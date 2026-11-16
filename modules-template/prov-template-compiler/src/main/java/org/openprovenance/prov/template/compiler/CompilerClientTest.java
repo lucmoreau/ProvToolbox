@@ -2,6 +2,7 @@ package org.openprovenance.prov.template.compiler;
 
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
+import org.openprovenance.prov.template.compiler.configuration.TemplateConfigurationEnum;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
@@ -59,6 +60,7 @@ public class CompilerClientTest {
         String resvar="res";
 
         for (TemplateCompilerConfig config: configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             String bn=compilerUtil.templateNameClass(config.name);
             ClassName beanClass = ClassName.get(bn, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
 

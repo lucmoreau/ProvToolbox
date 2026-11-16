@@ -1,0 +1,480 @@
+package org.openprovenance.prov.template.compiler.test;
+
+import org.openprovenance.prov.template.compiler.ConfigProcessor;
+import org.openprovenance.prov.template.compiler.FlowException;
+import org.openprovenance.prov.template.compiler.configuration.TemplatesProjectConfiguration;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
+
+import java.io.File;
+import java.lang.reflect.Proxy;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+/**
+ * T36 part E (stage 9, design §13): the flow. The generated class is compiled and run against stand-ins of the application's rules and of
+ * the previous records; each guard, each kind of origin, the reply, the descriptions and each refusal are tested, and a catalogue without
+ * the entry generates what it generated.
+ */
+public class T36FlowTest extends T36FlowFixture {
+
+    static final String FLOWS = "org/example/t36flow/flows/";
+    static final String FLOWS_PKG = "org.example.t36flow.flows.";
+    static final String ACTIONS_PKG = "org.example.t36flow.actions.client.integrator.";
+    static final String BACKEND_PKG = "org.example.t36flow.backend.client.integrator.";
+    static final List<String> SOURCES = List.of(FLOWS + "RepriceFlow.java", FLOWS + "RepriceFlowRules.java",
+            "org/example/t36flow/backend/client/integrator/Line_changeInputs.java", "org/example/t36flow/backend/client/integrator/ChangingOutputs.java",
+            "org/example/t36flow/actions/client/integrator/RepriceInputs.java", "org/example/t36flow/actions/client/integrator/RepriceRequest.java",
+            "org/example/t36flow/actions/client/integrator/RepriceReply.java");
+
+    // ---- the generated Java, compiled and run ---------------------------------------------------------------------------------
+
+    static Object make(ClassLoader l, String name, Object... fieldsAndValues) throws Exception {
+        Object o = T36SubtypeTest.newInstance(l, name);
+        for (int i = 0; i < fieldsAndValues.length; i += 2) T36SubtypeTest.set(o, (String) fieldsAndValues[i], fieldsAndValues[i + 1]);
+        return o;
+    }
+
+    /** The application's rules, as a stand-in: what it was called with is kept. */
+    static final class Calls {
+        final List<String> names = new ArrayList<>();
+        final Map<String, Object[]> arguments = new LinkedHashMap<>();
+    }
+
+    static Object rules(ClassLoader l, Calls calls) throws Exception {
+        Class<?> rules = l.loadClass(FLOWS_PKG + "RepriceFlowRules");
+        return Proxy.newProxyInstance(l, new Class<?>[]{rules}, (proxy, method, args) -> {
+            calls.names.add(method.getName());
+            calls.arguments.put(method.getName(), args);
+            switch (method.getName()) {
+                case "caller": return "agent-7";
+                case "clock": return "2026-11-16T10:00:00Z";
+                case "estimate": return "estimate-after";
+                case "version": return "v2";
+                default: throw new IllegalStateException(method.getName());
+            }
+        });
+    }
+
+    /** What stood: the record that made the document, and the one that made the line (two records), each with what the store made of it. */
+    static final class Stood {
+        Object line, lineMade, document, documentMade;
+    }
+
+    static Stood stood(ClassLoader l, String lineNumber, String documentMade) throws Exception {
+        Stood s = new Stood();
+        s.line = make(l, BACKEND_PKG + "Line_changeInputs", "partLine", lineNumber, "partPriceUnit", "10", "partProduct", "bolt", "partQuantity", "100", "ptype", "part");
+        Map<String, Object> open = new LinkedHashMap<>();
+        open.put("colour", "red");
+        T36SubtypeTest.set(s.line, "pattributesOther", open);
+        s.lineMade = make(l, BACKEND_PKG + "ChangingOutputs", "part1", "P1");
+        s.document = make(l, BACKEND_PKG + "Line_changeInputs", "items", "5", "name1", "RFQ-1", "state1", "open", "attributesOther", new LinkedHashMap<String, Object>(Map.of("act", "removal")));
+        s.documentMade = make(l, BACKEND_PKG + "ChangingOutputs", "document1", documentMade);
+        return s;
+    }
+
+    Object request(ClassLoader l, int line, double price) throws Exception {
+        return make(l, ACTIONS_PKG + "RepriceRequest", "line", line, "unitPrice", price, "reason", "cheaper");
+    }
+
+    Object runAsk(ClassLoader l, Class<?> flow, Object request, Object rules, Stood s) throws Exception {
+        return T36SubtypeTest.invoke(null, flow, "ask", request, rules, s.documentMade);
+    }
+
+    Object runRecord(ClassLoader l, Class<?> flow, Object asked, Object rules, Stood s) throws Exception {
+        return T36SubtypeTest.invoke(null, flow, "record", asked, s.document, s.documentMade, s.line, s.lineMade, rules);
+    }
+
+    static Map<String, Object> fieldsOf(Object o) throws Exception {
+        Map<String, Object> res = new TreeMap<>();
+        for (java.lang.reflect.Field f : o.getClass().getFields()) {
+            if (java.lang.reflect.Modifier.isStatic(f.getModifiers()) || f.getName().equals("isA")) continue;
+            res.put(f.getName(), f.get(o));
+        }
+        return res;
+    }
+
+    public void testTheGeneratedFlowRunsAndFillsEveryValueFromItsOrigin() throws Exception {
+        generate("run", List.of(LINE_CHANGE, REPRICE, FLOW));
+        ClassLoader l = compile("run", SOURCES);
+        if (l == null) return;
+        Class<?> flow = l.loadClass(FLOWS_PKG + "RepriceFlow");
+        Calls calls = new Calls();
+        Object rules = rules(l, calls);
+        Stood s = stood(l, "3", "D1");
+
+        // 1. ask: the request becomes the user bean; the rest of it is given
+        Object asked = runAsk(l, flow, request(l, 3, 12.5), rules, s);
+        assertEquals(3, T36SubtypeTest.get(asked, "line"));
+        assertEquals(12.5, T36SubtypeTest.get(asked, "unitPrice"));
+        assertEquals("cheaper", T36SubtypeTest.get(asked, "reason"));
+        assertEquals("CHAINED: the node of the document the request addresses is the one the previous record made", "D1", T36SubtypeTest.get(asked, "subject0"));
+        assertEquals("SUPPLIED", "agent-7", T36SubtypeTest.get(asked, "agent"));
+        assertEquals("2026-11-16T10:00:00Z", T36SubtypeTest.get(asked, "time"));
+        assertNull("the reply's values are not given yet", T36SubtypeTest.get(asked, "outcome"));
+        assertSame("a rule is given the beans in scope, not strings picked out of them", asked, calls.arguments.get("caller")[0]);
+        assertSame(s.documentMade, calls.arguments.get("caller")[1]);
+
+        // 2. record: every value of the backend's bean has its origin
+        Object recorded = runRecord(l, flow, asked, rules, s);
+        Map<String, Object> expected = new TreeMap<>();
+        expected.put("agent", "agent-7");                // AS ASKED
+        expected.put("time", "2026-11-16T10:00:00Z");    // AS ASKED
+        expected.put("priceUnit", "12.5");               // AS ASKED, as text
+        expected.put("partLine", "3");                   // AS ASKED, as text
+        expected.put("partPriceUnit", "12.5");           // AS ASKED, as text
+        expected.put("document0", "D1");                 // CHAINED
+        expected.put("part0", "P1");                     // CHAINED
+        expected.put("name1", "RFQ-1");                  // CARRIED OVER, from the document's record
+        expected.put("state1", "open");
+        expected.put("items", "5");
+        expected.put("ptype", "part");                   // CARRIED OVER, from the line's record ("rest")
+        expected.put("partProduct", "bolt");
+        expected.put("partQuantity", "100");
+        expected.put("priceBefore", "10");               // CARRIED OVER, under another name
+        expected.put("partPriceBefore", "10");
+        expected.put("atype", "Repricing");              // CONSTANT
+        expected.put("overwrite", "true");
+        expected.put("partPriceSource", "repriced");
+        expected.put("estimate", "estimate-after");      // SUPPLIED
+        expected.put("erpId1", "v2");
+        Map<String, Object> got = fieldsOf(recorded);
+        Map<String, Object> pattributesOther = (Map<String, Object>) got.remove("pattributesOther");
+        Map<String, Object> attributesOther = (Map<String, Object>) got.remove("attributesOther");
+        for (Map.Entry<String, Object> e : got.entrySet()) {
+            assertEquals("the value " + e.getKey() + " has the origin the flow says (null when it has none)", expected.get(e.getKey()), e.getValue());
+        }
+        assertEquals("nothing else is filled, nothing is missing", expected.keySet(), got.entrySet().stream().filter(e -> e.getValue() != null).map(Map.Entry::getKey).collect(Collectors.toSet()));
+        assertEquals("the line's other keys are carried over", Map.of("colour", "red"), pattributesOther);
+        assertNotSame("as a copy", T36SubtypeTest.get(s.line, "pattributesOther"), pattributesOther);
+        assertEquals("the act's other keys are not carried: a removal's reason would leak into the next reprice", Map.of(), attributesOther);
+        Object[] estimateArgs = calls.arguments.get("estimate");
+        assertSame(asked, estimateArgs[0]);
+        assertSame("the rule sees the bean so far, and every stood thing's inputs and outputs", recorded, estimateArgs[1]);
+        assertSame(s.document, estimateArgs[2]);
+        assertSame(s.documentMade, estimateArgs[3]);
+        assertSame(s.line, estimateArgs[4]);
+        assertSame(s.lineMade, estimateArgs[5]);
+        assertEquals("the supplied values are asked of the rules, once each: " + calls.names, List.of("caller", "clock", "version", "estimate"), calls.names);
+
+        // 3. answer: what the store made becomes the reply
+        Object made = make(l, BACKEND_PKG + "ChangingOutputs", "document1", "D2");
+        Object reply = T36SubtypeTest.invoke(null, flow, "answer", asked, recorded, made);
+        assertEquals("accepted", T36SubtypeTest.get(reply, "outcome"));
+        assertEquals("AS MADE: the backend's own value, given back", "v2", T36SubtypeTest.get(reply, "result"));
+        assertNull(T36SubtypeTest.get(reply, "code"));
+        Object nothing = make(l, BACKEND_PKG + "ChangingOutputs");
+        assertEquals("nothing made", "failed", T36SubtypeTest.get(T36SubtypeTest.invoke(null, flow, "answer", asked, recorded, nothing), "outcome"));
+        Object refused = T36SubtypeTest.invoke(null, flow, "refused", make(l, ACTIONS_PKG + "RepriceInputs"), "NO_CHANGE");
+        assertEquals("refused", T36SubtypeTest.get(refused, "outcome"));
+        assertEquals("NO_CHANGE", T36SubtypeTest.get(refused, "code"));
+        assertNull(T36SubtypeTest.get(refused, "result"));
+        Object failed = T36SubtypeTest.invoke(null, flow, "failed", make(l, ACTIONS_PKG + "RepriceInputs"));
+        assertEquals("failed", T36SubtypeTest.get(failed, "outcome"));
+        assertNull(T36SubtypeTest.get(failed, "code"));
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testAChangedRequestValueChangesExactlyTheValuesThatCameFromIt() throws Exception {
+        generate("run", List.of(LINE_CHANGE, REPRICE, FLOW));
+        ClassLoader l = compile("run", SOURCES);
+        if (l == null) return;
+        Class<?> flow = l.loadClass(FLOWS_PKG + "RepriceFlow");
+        Object rules = rules(l, new Calls());
+        Stood s = stood(l, "3", "D1");
+        Map<String, Object> at12 = fieldsOf(runRecord(l, flow, runAsk(l, flow, request(l, 3, 12.5), rules, s), rules, s));
+        Map<String, Object> at13 = fieldsOf(runRecord(l, flow, runAsk(l, flow, request(l, 3, 13.5), rules, s), rules, s));
+        Set<String> differ = new TreeSet<>();
+        for (String k : at12.keySet()) if (!Objects.equals(at12.get(k), at13.get(k))) differ.add(k);
+        assertEquals("the price is the only thing that came from the price: the record answers a request for 12.5 and no other", Set.of("priceUnit", "partPriceUnit"), differ);
+
+        // the known limit of a double: 2.50 is the double 2.5, and is recorded as 2.5 (until a decimal type, R6); 5.0 is 5
+        assertEquals("2.5", fieldsOf(runRecord(l, flow, runAsk(l, flow, request(l, 3, 2.50), rules, s), rules, s)).get("priceUnit"));
+        assertEquals("5", fieldsOf(runRecord(l, flow, runAsk(l, flow, request(l, 3, 5.0), rules, s), rules, s)).get("priceUnit"));
+    }
+
+    public void testEachGuardRefusesAMismatchBeforeAnythingIsBuilt() throws Exception {
+        generate("run", List.of(LINE_CHANGE, REPRICE, FLOW));
+        ClassLoader l = compile("run", SOURCES);
+        if (l == null) return;
+        Class<?> flow = l.loadClass(FLOWS_PKG + "RepriceFlow");
+        Object rules = rules(l, new Calls());
+
+        // the previous record is of line 4, the request of line 3
+        Stood wrongLine = stood(l, "4", "D1");
+        Object asked = runAsk(l, flow, request(l, 3, 12.5), rules, wrongLine);
+        try {
+            runRecord(l, flow, asked, rules, wrongLine);
+            fail("a previous record of another line");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("the previous record of the line is of another partLine than the request's line"));
+        }
+        // the request addresses document D1, the previous record made D2
+        Stood s = stood(l, "3", "D1");
+        Object addressesD1 = runAsk(l, flow, request(l, 3, 12.5), rules, s);
+        Stood madeD2 = stood(l, "3", "D2");
+        try {
+            runRecord(l, flow, addressesD1, rules, madeD2);
+            fail("a previous record that made another document");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("addresses another document than the one the previous record made"));
+        }
+        // the document has no record that made it: nothing to address
+        Stood none = stood(l, "3", null);
+        Object addressesNothing = runAsk(l, flow, request(l, 3, 12.5), rules, none);
+        assertNull(T36SubtypeTest.get(addressesNothing, "subject0"));
+        try {
+            runRecord(l, flow, addressesNothing, rules, none);
+            fail("a request that addresses no document");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("addresses no document"));
+        }
+    }
+
+    // ---- the kind written beside each assignment, in every language -----------------------------------------------------------
+
+    static final Map<String, String> KINDS = new LinkedHashMap<>();
+
+    static {
+        for (String v : List.of("agent", "time", "priceUnit", "partLine", "partPriceUnit")) KINDS.put(v, "AS ASKED");
+        for (String v : List.of("document0", "part0")) KINDS.put(v, "CHAINED");
+        for (String v : List.of("name1", "state1", "items", "ptype", "partProduct", "partQuantity", "priceBefore", "partPriceBefore", "pattributesOther")) KINDS.put(v, "CARRIED OVER");
+        for (String v : List.of("atype", "overwrite", "partPriceSource")) KINDS.put(v, "CONSTANT");
+        for (String v : List.of("estimate", "erpId1")) KINDS.put(v, "SUPPLIED");
+        KINDS.put("attributesOther", "ABSENT");
+    }
+
+    String emitted(String language, String name) {
+        for (org.openprovenance.prov.template.compiler.past.Class c : lastProcessor.getCompilerFlow().getGeneratedClasses()) {
+            if (c.name.equals(name)) {
+                return language.equals("python")
+                        ? new org.openprovenance.prov.template.compiler.past.emitter.Python(null).emit(c).toString()
+                        : new org.openprovenance.prov.template.compiler.past.emitter.JavaScript().emit(c).toString();
+            }
+        }
+        throw new IllegalStateException("no generated class " + name);
+    }
+
+    /** Each assignment into the recorded bean is preceded by a comment that names its kind and the value. */
+    void kindsBesideAssignments(String language, String text, String commentMark, String assignMarker) {
+        List<String> lines = Arrays.stream(text.split("\n")).map(String::trim).collect(Collectors.toList());
+        for (Map.Entry<String, String> e : KINDS.entrySet()) {
+            String variable = e.getKey();
+            int comment = -1;
+            for (int i = 0; i < lines.size(); i++) {
+                if (lines.get(i).startsWith(commentMark) && lines.get(i).contains(e.getValue()) && lines.get(i).contains(" " + variable + ":")) comment = i;
+            }
+            assertTrue(language + ": a comment " + e.getValue() + " for " + variable, comment >= 0);
+            if (e.getValue().equals("ABSENT")) continue;   // nothing is assigned
+            // the assignment follows, past the null test a copied map has
+            boolean found = false;
+            for (int i = comment + 1; i < Math.min(lines.size(), comment + 4); i++) {
+                if (lines.get(i).replace(" ", "").startsWith(assignMarker + variable + "=")) found = true;
+            }
+            assertTrue(language + ": the assignment of " + variable + " follows its comment", found);
+        }
+    }
+
+    public void testTheKindOfEachAssignmentIsWrittenBesideItInEveryLanguage() throws Exception {
+        generate("kinds", List.of(LINE_CHANGE, REPRICE, FLOW));
+        String java = read("kinds", "java/" + FLOWS + "RepriceFlow.java");
+        kindsBesideAssignments("java", java, "//", "recorded.");
+        String py = emitted("python", "RepriceFlow");
+        kindsBesideAssignments("python", py, "#", "recorded.");
+        String js = emitted("javascript", "RepriceFlow");
+        kindsBesideAssignments("javascript", js, "//", "recorded.");
+        for (String text : List.of(java, py, js)) {
+            assertTrue("the conversion goes through the runtime class: " + text, text.contains("JsonText.text("));
+            assertTrue("and so does the copy of the open keys", text.contains("JsonText.others("));
+        }
+        // the six kinds, each once at least, in the ask and answer steps too
+        for (String kind : List.of("AS ASKED", "CHAINED", "CARRIED OVER", "CONSTANT", "SUPPLIED", "AS MADE")) {
+            assertTrue(kind, java.contains(kind));
+        }
+        // the emitted Python and JavaScript are well formed
+        Path dir = Path.of(OUT + "kinds/emit");
+        Files.createDirectories(dir);
+        Files.writeString(dir.resolve("RepriceFlow.py"), py);
+        Files.writeString(dir.resolve("RepriceFlowRules.py"), emitted("python", "RepriceFlowRules"));
+        Files.writeString(dir.resolve("RepriceFlow.js"), js);
+        Files.writeString(dir.resolve("RepriceFlowRules.js"), emitted("javascript", "RepriceFlowRules"));
+        String[] p = T36SubtypeTest.run(List.of("python3", "-I", "-m", "py_compile", dir.resolve("RepriceFlow.py").toString(), dir.resolve("RepriceFlowRules.py").toString()), null);
+        if (p == null) System.out.println("[T36] python3 is not installed: the emitted Python is not compiled");
+        else assertEquals("py_compile: " + p[1], "0", p[0]);
+        for (String f : List.of("RepriceFlow.js", "RepriceFlowRules.js")) {
+            String[] n = T36SubtypeTest.run(List.of("node", "--check", dir.resolve(f).toString()), null);
+            if (n == null) System.out.println("[T36] node is not installed: the emitted JavaScript is not parsed");
+            else assertEquals("node --check " + f + ": " + n[1], "0", n[0]);
+        }
+        assertTrue("the rules are an interface with a method per supplied value", emitted("python", "RepriceFlowRules").contains("def estimate("));
+    }
+
+    // ---- a catalogue without the entry --------------------------------------------------------------------------------------
+
+    public void testACatalogueWithoutAFlowIsAsItWas() throws Exception {
+        generate("noflow", List.of(LINE_CHANGE, REPRICE));
+        generate("withflow", List.of(LINE_CHANGE, REPRICE, FLOW));
+        Map<String, String> without = tree("noflow"), with = tree("withflow");
+        Set<String> added = new TreeSet<>(with.keySet());
+        added.removeAll(without.keySet());
+        assertEquals(Set.of("t36/t36_cli/src/main/java/" + FLOWS + "RepriceFlow.java", "t36/t36_cli/src/main/java/" + FLOWS + "RepriceFlowRules.java"), added);
+        assertEquals("nothing removed", Set.of(), without.keySet().stream().filter(k -> !with.containsKey(k)).collect(Collectors.toSet()));
+        Set<String> changed = new TreeSet<>();
+        for (String k : without.keySet()) if (!with.get(k).equals(without.get(k))) changed.add(k);
+        assertEquals("only the documentation says anything of the flow", Set.of("t36/t36_cli/src/main/resources/META-INF/resources/webjars/t36_cli/0.1.0/html/doc.html"), changed);
+        assertFalse(without.get(changed.iterator().next()).contains("csv_flow"));
+        // a flow that uses no rule has no interface of rules
+        assertTrue(Files.exists(Path.of(OUT + "withflow/libs/t36/t36_cli/src/main/java/" + FLOWS + "RepriceFlowRules.java")));
+    }
+
+    // ---- the descriptions ---------------------------------------------------------------------------------------------------
+
+    static final String DOC = "t36/t36_cli/src/main/resources/META-INF/resources/webjars/t36_cli/0.1.0/html/doc.html";
+
+    public void testTheDocumentationIsATableOfWhereEachValueComesFrom() throws Exception {
+        generate("doc", List.of(LINE_CHANGE, REPRICE, FLOW));
+        String doc = Files.readString(Path.of(OUT + "doc/libs/" + DOC));
+        assertTrue(doc, doc.contains("class='csv_flow'") && doc.contains("Flow org.example.t36flow.flows.RepriceFlow"));
+        assertTrue(doc, doc.contains("from t36.Reprice to t36.LineChange"));
+        for (String row : List.of(
+                "<tr><td>record</td><td>priceUnit</td><td class='csv_kind'>asked</td><td>the user bean's unitPrice, as text</td></tr>",
+                "<tr><td>record</td><td>document0</td><td class='csv_kind'>chained</td><td>the document as it stood: document1 of the record that made it</td></tr>",
+                "<tr><td>record</td><td>priceBefore</td><td class='csv_kind'>carried over</td><td>the line's partPriceUnit, unchanged</td></tr>",
+                "<tr><td>record</td><td>atype</td><td class='csv_kind'>constant</td><td>the constant Repricing</td></tr>",
+                "<tr><td>record</td><td>estimate</td><td class='csv_kind'>supplied</td><td>the application's rule estimate</td></tr>",
+                "<tr><td>record</td><td>attributesOther</td><td class='csv_kind'>absent</td><td>left unset</td></tr>",
+                "<tr><td>ask</td><td>line</td><td class='csv_kind'>asked</td><td>the request's line</td></tr>",
+                "<tr><td>ask</td><td>subject0</td><td class='csv_kind'>chained</td><td>the document as it stood: document1 of the record that made it</td></tr>",
+                "<tr><td>answer</td><td>outcome</td><td class='csv_kind'>as made</td><td>accepted when the store made document1, otherwise failed</td></tr>",
+                "<tr><td>answer</td><td>result</td><td class='csv_kind'>as made</td><td>the backend's erpId1 as recorded</td></tr>",
+                "<tr><td>refused</td><td>code</td><td class='csv_kind'>supplied</td><td>an argument of the method</td></tr>")) {
+            assertTrue(row + " in the page", doc.contains(row));
+        }
+        // one row for each assignment the code makes
+        int rows = doc.split("<tr><td>", -1).length - 1;
+        int items = lastProcessor.getCompilerFlow().getModels().get(0).steps.values().stream().mapToInt(List::size).sum();
+        assertEquals(items, rows);
+    }
+
+    static final String NS = "http://example.org/t36#";
+
+    public void testTheTurtleSaysWhereEachValueComesFrom() throws Exception {
+        generate("ttl", List.of(LINE_CHANGE, REPRICE, FLOW), c -> {
+            c.put("turtle", "catalogue.ttl");
+            c.put("turtleNamespace", NS);
+        });
+        String ttl = read("ttl", "resources/catalogue.ttl");
+        assertTrue(ttl, ttl.contains(":reprice_flow a tpl:Flow ;") && ttl.contains("tpl:from :reprice ;") && ttl.contains("tpl:to :line_change ;"));
+        assertTrue(ttl, ttl.contains("tpl:origin [ tpl:step \"record\" ; tpl:target \"priceUnit\" ; tpl:kind \"asked\" ; tpl:source \"the user bean's unitPrice, as text\" ]"));
+        assertTrue(ttl, ttl.contains("tpl:Flow a owl:Class") && ttl.contains("tpl:origin a owl:ObjectProperty"));
+        int items = lastProcessor.getCompilerFlow().getModels().get(0).steps.values().stream().mapToInt(List::size).sum();
+        String[] r = T36SubtypeTest.run(List.of("python3", "-I", "-c",
+                "import sys\nfrom rdflib import Graph, Namespace, RDF\ng=Graph(); g.parse(sys.argv[1], format='turtle')\nT=Namespace('http://openprovenance.org/ns/tpl#'); N=Namespace(sys.argv[2])\n"
+                        + "f=N.reprice_flow\nok=(f,RDF.type,T.Flow) in g and (f,T['from'],N.reprice) in g and (f,T.to,N.line_change) in g\n"
+                        + "origins=list(g.objects(f,T.origin))\nkinds={str(g.value(o,T.target))+'@'+str(g.value(o,T.step)):str(g.value(o,T.kind)) for o in origins}\n"
+                        + "print('FAIL' if not ok or len(origins)!=int(sys.argv[3]) or kinds['priceUnit@record']!='asked' or kinds['document0@record']!='chained' or kinds['code@refused']!='supplied' else 'ok')\n",
+                OUT + "ttl/libs/t36/t36_cli/src/main/resources/catalogue.ttl", NS, String.valueOf(items)), new File("."));
+        if (r == null || r[1].contains("No module named")) {
+            System.out.println("[T36] python3 or rdflib is not installed: the Turtle file is not parsed");
+        } else {
+            assertEquals(r[1], "0", r[0]);
+            assertFalse("a wrong answer: " + r[1], r[1].contains("FAIL"));
+        }
+        // without a flow the vocabulary has none of its terms
+        generate("ttl0", List.of(LINE_CHANGE, REPRICE), c -> {
+            c.put("turtle", "catalogue.ttl");
+            c.put("turtleNamespace", NS);
+        });
+        String without = read("ttl0", "resources/catalogue.ttl");
+        assertFalse(without.contains("Flow") || without.contains("tpl:origin"));
+    }
+
+    // ---- the refusals (design §13.4) ----------------------------------------------------------------------------------------
+
+    void refused(String title, Consumer<ObjectNode> edit, String... contains) throws Exception {
+        ObjectNode flow = (ObjectNode) om.readTree(FLOW);
+        edit.accept(flow);
+        ObjectNode c = catalogue("refusal", List.of(LINE_CHANGE, REPRICE, om.writeValueAsString(flow)));
+        TemplatesProjectConfiguration configs = ConfigProcessor.objectMapper.readValue(om.writeValueAsString(c), TemplatesProjectConfiguration.class);
+        try {
+            new ConfigProcessor(pf).checkSubtypes(configs, ".");
+            fail(title + ": accepted");
+        } catch (FlowException e) {
+            assertTrue(title + ": " + e.getMessage(), e.getMessage().startsWith("T36: flow org.example.t36flow.flows.RepriceFlow: "));
+            for (String m : contains) assertTrue(title + ": " + m + " in " + e.getMessage(), e.getMessage().contains(m));
+        }
+    }
+
+    static ObjectNode obj(ObjectNode flow, String member) {
+        return (ObjectNode) flow.get(member);
+    }
+
+    public void testTheFlowThatIsDeclaredIsAccepted() throws Exception {
+        ObjectNode c = catalogue("accepted", List.of(LINE_CHANGE, REPRICE, FLOW));
+        new ConfigProcessor(pf).checkSubtypes(ConfigProcessor.objectMapper.readValue(om.writeValueAsString(c), TemplatesProjectConfiguration.class), ".");
+    }
+
+    public void testAnInputLeftOutOrNamedTwiceIsRefused() throws Exception {
+        // without "rest", an input left out is refused; with it, the input is carried over from the thing that has it (what "rest" says)
+        refused("an input left out", f -> {
+            obj(f, "carry").set("line", om.createArrayNode().add("ptype").add("partProduct").add("partQuantity"));
+            obj(f, "record").remove("estimate");
+        }, "inputs [estimate] are not accounted for");
+        refused("an input left out, but not carried by rest", f -> {
+            obj(f, "carry").set("line", om.createArrayNode().add("ptype").add("partProduct").add("partQuantity"));
+            obj(f, "record").remove("erpId1");
+        }, "inputs [erpId1] are not accounted for");
+        refused("a value named twice", f -> obj(f, "record").put("items", "absent"), "items is accounted for twice", "record.items", "carry.document");
+        refused("a node named twice", f -> obj(f, "record").set("document0", om.createObjectNode().put("constant", "x")), "document0 is accounted for twice", "stood.document.node");
+        refused("the same value from two places", f -> {
+            ((ArrayNode) obj(f, "carry").get("document")).add("ptype");
+            obj(f, "record").put("ptype", "absent");
+        }, "ptype is accounted for twice");
+        refused("an input that is no input", f -> obj(f, "record").put("nosuch", "absent"), "record.nosuch is no input of the backend subtype");
+        refused("the open keys of a carrier left out", f -> obj(f, "carryOpen").removeAll(), "pattributesOther", "not accounted for");
+        refused("the open keys of a carrier that is no carrier", f -> obj(f, "carryOpen").put("nocarrier", "line"), "nocarrier");
+        refused("rest for two things", f -> obj(f, "carry").put("document", "rest"), "\"rest\" is used for two stood things");
+        refused("a carry from nothing", f -> obj(f, "carry").set("nothing", om.createArrayNode().add("items")), "carry.nothing names no stood thing");
+        refused("an own value of the user bean left out", f -> obj(f, "ask").remove("time"), "own values [time] are not accounted for");
+        refused("a request value in ask", f -> obj(f, "ask").set("line", om.createObjectNode().put("constant", 1)), "ask.line is no own value");
+        refused("a reply value left out", f -> obj((ObjectNode) obj(f, "reply"), "answer").remove("code"), "reply.answer does not account for the reply values [code]");
+    }
+
+    public void testWhatIsGivenWrongIsRefused() throws Exception {
+        refused("absent for a compulsory value", f -> obj(f, "record").put("agent", "absent"), "agent is compulsory");
+        refused("a conversion the compiler does not have", f -> ((ObjectNode) obj(f, "record").get("partLine")).put("as", "int"), "cannot be given");
+        refused("a number given as text without saying so", f -> obj(f, "record").set("priceUnit", om.createObjectNode().put("asked", "unitPrice")), "say \"as\": \"text\"");
+        refused("asked of a value the user bean has not", f -> obj(f, "record").set("priceUnit", om.createObjectNode().put("asked", "nothing")), "no request value or own value");
+        refused("asked of a reply value", f -> obj(f, "record").set("priceUnit", om.createObjectNode().put("asked", "outcome")), "no request value or own value");
+        refused("a rule used for two values", f -> obj(f, "record").set("erpId1", om.createObjectNode().put("supplied", "estimate")), "the rule estimate is already the rule");
+        refused("a constant of the wrong type", f -> obj(f, "record").set("overwrite", om.createObjectNode().put("constant", 3)), "the constant 3");
+        refused("a node's constant with a prefix", f -> obj(f, "record").set("atype", om.createObjectNode().put("constant", "ex:Repricing")), "local part", "without prefix");
+        refused("carried from a value the record has not", f -> obj(f, "record").set("priceBefore", om.createObjectNode().put("carried", "line.nosuch")), "does not exist");
+        refused("carried from a thing that did not stand", f -> obj(f, "record").set("priceBefore", om.createObjectNode().put("carried", "nothing.partPriceUnit")), "no stood thing");
+        refused("a malformed form", f -> obj(f, "record").set("priceBefore", om.createObjectNode().put("carried", "x").put("constant", "y")), "record.priceBefore is");
+    }
+
+    public void testWhatStoodIsRefusedWhenItIsNoNodeOrNoOutput() throws Exception {
+        refused("madeBy is no output", f -> ((ObjectNode) obj(f, "stood").get("document")).put("madeBy", "name1"), "madeBy is name1", "no output node");
+        refused("node is no node", f -> ((ObjectNode) obj(f, "stood").get("line")).put("node", "time"), "no node input");
+        refused("addressed is no own node", f -> ((ObjectNode) obj(f, "stood").get("document")).put("addressed", "unitPrice"), "no node among the user bean's own values");
+        refused("identity of no request value", f -> ((ObjectNode) ((ObjectNode) obj(f, "stood").get("line")).get("identity")).put("user", "agent"), "no request value");
+        refused("a member that is not one", f -> ((ObjectNode) obj(f, "stood").get("line")).put("whatever", "x"), "unknown member whatever");
+        refused("from is no subtype", f -> f.put("from", "t36.Nope"), "from names t36.Nope", "no subtype");
+        refused("to is a template, not a subtype", f -> f.put("to", "t36.Changing"), "to names t36.Changing");
+        refused("nothing stood", f -> obj(f, "stood").removeAll(), "stood is empty");
+    }
+
+    public void testTheReplyIsGivenOnlyFromWhatWasMade() throws Exception {
+        refused("a refused reply that says what the store made", f -> obj((ObjectNode) obj(f, "reply"), "refused").set("result",
+                        om.readTree("{\"when\":{\"made\":\"document1\"},\"is\":\"a\",\"otherwise\":\"b\"}")),
+                "nothing was recorded or made in a refused reply");
+        refused("a reply value that is none", f -> obj((ObjectNode) obj(f, "reply"), "answer").set("line", om.createObjectNode().put("constant", "x")), "is no reply value");
+        refused("an output that is none", f -> obj((ObjectNode) obj(f, "reply"), "answer").set("result", om.createObjectNode().put("made", "nothing")), "no output of");
+        refused("an outcome left out of a failed reply", f -> obj((ObjectNode) obj(f, "reply"), "failed").put("outcome", "absent"), "outcome is compulsory");
+        refused("a reply block that is none", f -> obj(f, "reply").set("accepted", om.createObjectNode()), "is not one of");
+    }
+}

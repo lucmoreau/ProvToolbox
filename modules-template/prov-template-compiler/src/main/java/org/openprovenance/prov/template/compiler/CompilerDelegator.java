@@ -59,6 +59,7 @@ public class CompilerDelegator {
         pastClass.CONSTRUCTOR(ctor);
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             ClassName beanType = get(beanNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));
 

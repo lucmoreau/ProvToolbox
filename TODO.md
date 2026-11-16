@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T40** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T41) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T41** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T42) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T41 | The `flow` entry of T36 expresses one request that makes one record on a previous record of the same template. Extend it: a flow with nothing that stood, a stood record made by another template, and several records in one flow; and the compiler findings of the first application. | ⬜ BACKLOG | Template compiler / Flow | [T41 section](#-t41-the-flow-entry-expresses-more-requests) |
 | T40 | The catalogue's root JSON schema constrains `isA` to the pattern of the last template written, so a record of any other template (and of a subtype) fails the root schema. | ⬜ BACKLOG | Template compiler / JSON schema | [T40 section](#-t40-the-root-json-schema-keeps-the-isa-pattern-of-the-last-template) |
 | T39 | `CompilerTest` fails when another test of the module generates before it: it does not reset the compiler's static coordinators (`SpecificationFile`), so it depends on running first in a fresh JVM. | ⬜ BACKLOG | Template compiler / Tests | [T39 section](#-t39-compilertest-depends-on-running-first) |
 | T38 | For an `integrator` catalogue, the Python emitter asserts (`mc.methodName!=null`, `Python.java`, SUPER_METHOD_CALL) on `CompilerIdentifierRegistry`'s `super(...)` call, which has a null method name; seen with assertions on, as in the tests, on a catalogue with no subtype. | ⬜ BACKLOG | Template compiler / Python | [T38 section](#-t38-python-emitter-asserts-on-a-super-constructor-call) |
@@ -43,6 +44,23 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+### ⬜ T41: The flow entry expresses more requests
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Flow.  **Opened 2026-11-16**, at Luc's word relayed by the session that started this one ("Delegate the extension to the T36 session"; ticket chosen by him: "New ticket T41 (Recommended)"). Branch `claude/t41-flow-extension`, from `origin/development2_0` at `78e095819`.
+
+T36's `flow` entry (design §13) came from one example: one request, one previous record of the same template as the one made, one record made. The first application tried it on all of its 46 commands: 2 are expressible; 44 are not, for four reasons: **NS** (12 commands: nothing stood: `stood` may not be empty), **XT** (18: the record that stood was made by another template), **MR** (10: one request makes several records, some of them a number that depends on the request), **LD** (4: statements written through a ledger enactor, not a document template).
+
+**Design**: `docs/T36-INJSON-SUBTYPES-DESIGN.md`, part F (§14). Rulings: asked of Luc, recorded in §14.
+
+**DoD.**
+- A flow with nothing that stood (NS), a stood record of another template (XT) and a flow of several records in order (MR) can be declared, each with a real case in the test fixture (made-up names).
+- Every input of every record is still accounted for exactly once, the six kinds stay, each assignment marked with its kind in every language.
+- Compatibility: the stage 9 declarations compile to the same classes (or to classes shown equivalent); a catalogue without a flow is unchanged.
+- LD: what it would take is reported to Luc; it is not built unless he says so.
+- The compiler findings of the first application are put to Luc as tickets or fixes (not fixed silently).
+
+---
 
 ### ⬜ T40: The root JSON schema keeps the isA pattern of the last template
 

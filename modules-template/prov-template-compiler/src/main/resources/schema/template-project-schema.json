@@ -143,7 +143,7 @@
                 "carryOpen": { "description": "Per carrier of the backend's bean, the stood thing whose other keys are carried.", "type": "object", "additionalProperties": { "type": "string" } },
                 "reply": { "description": "For answer, refused and failed: how each value of the reply is given.", "type": "object" }
             },
-            "required": [ "@type", "fullyQualifiedName", "name", "package", "from", "to", "stood" ],
+            "required": [ "@type", "fullyQualifiedName", "name", "package", "from", "to" ],
             "additionalProperties": false
         },
         "TemplateDescriptor": {

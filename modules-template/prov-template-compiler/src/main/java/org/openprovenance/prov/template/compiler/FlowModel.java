@@ -272,7 +272,8 @@ public class FlowModel {
     private static final Set<String> STOOD_KEYS = Set.of("node", "madeBy", "addressed", "identity", "of");
 
     private void readStood(TemplatesProjectConfiguration configs, CompilerUtil compilerUtil, CompilerSubtype compilerSubtype, String cbindingsBaseDir) {
-        if (flow.stood.isEmpty()) throw refusal("stood is empty: a flow starts from at least one previous record");
+        // T41 (G1, "stood optional, nodes from the application"): a flow may stand on nothing. The nodes are then said by the other kinds:
+        // supplied by the application, asked, a constant, or absent.
         for (Map.Entry<String, Map<String, Object>> e : flow.stood.entrySet()) {
             String name = e.getKey();
             Map<String, Object> d = e.getValue();

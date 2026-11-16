@@ -465,7 +465,7 @@ public class T36FlowTest extends T36FlowFixture {
         refused("a member that is not one", f -> ((ObjectNode) obj(f, "stood").get("line")).put("whatever", "x"), "unknown member whatever");
         refused("from is no subtype", f -> f.put("from", "t36.Nope"), "from names t36.Nope", "no subtype");
         refused("to is a template, not a subtype", f -> f.put("to", "t36.Changing"), "to names t36.Changing");
-        refused("nothing stood", f -> obj(f, "stood").removeAll(), "stood is empty");
+        refused("a stood thing with no node", f -> obj(f, "stood").set("x", om.createObjectNode()), "stood.x: node and madeBy are required");
     }
 
     public void testTheReplyIsGivenOnlyFromWhatWasMade() throws Exception {
@@ -476,5 +476,101 @@ public class T36FlowTest extends T36FlowFixture {
         refused("an output that is none", f -> obj((ObjectNode) obj(f, "reply"), "answer").set("result", om.createObjectNode().put("made", "nothing")), "no output of");
         refused("an outcome left out of a failed reply", f -> obj((ObjectNode) obj(f, "reply"), "failed").put("outcome", "absent"), "outcome is compulsory");
         refused("a reply block that is none", f -> obj(f, "reply").set("accepted", om.createObjectNode()), "is not one of");
+    }
+
+    // ---- NS: nothing stood (T41, design §14.1) ----------------------------------------------------------------------------------
+
+    static final List<String> NS_SOURCES = List.of(FLOWS + "CreateFlow.java", FLOWS + "CreateFlowRules.java",
+            "org/example/t36flow/backend/client/integrator/Line_changeInputs.java", "org/example/t36flow/backend/client/integrator/ChangingOutputs.java",
+            "org/example/t36flow/actions/client/integrator/RepriceInputs.java", "org/example/t36flow/actions/client/integrator/RepriceRequest.java",
+            "org/example/t36flow/actions/client/integrator/RepriceReply.java");
+
+    /** A stand-in for the rules of a flow, by the interface's name: each method answers from the map; what it was called with is kept. */
+    static Object rulesOf(ClassLoader l, String name, Map<String, Object> answers, Calls calls) throws Exception {
+        Class<?> rules = l.loadClass(FLOWS_PKG + name);
+        return Proxy.newProxyInstance(l, new Class<?>[]{rules}, (proxy, method, args) -> {
+            calls.names.add(method.getName());
+            calls.arguments.put(method.getName(), args);
+            if (!answers.containsKey(method.getName())) throw new IllegalStateException("no answer for the rule " + method.getName());
+            return answers.get(method.getName());
+        });
+    }
+
+    public void testAFlowThatStandsOnNothingTakesItsNodesFromTheApplication() throws Exception {
+        generate("ns", List.of(LINE_CHANGE, REPRICE, FLOW_NS));
+        ClassLoader l = compile("ns", NS_SOURCES);
+        if (l == null) return;
+        Class<?> flow = l.loadClass(FLOWS_PKG + "CreateFlow");
+        // no stood thing: ask takes the request and the rules, record the user bean and the rules, and nothing of a previous record
+        assertEquals(2, flow.getMethod("ask", l.loadClass(ACTIONS_PKG + "RepriceRequest"), l.loadClass(FLOWS_PKG + "CreateFlowRules")).getParameterCount());
+        assertEquals(2, flow.getMethod("record", l.loadClass(ACTIONS_PKG + "RepriceInputs"), l.loadClass(FLOWS_PKG + "CreateFlowRules")).getParameterCount());
+
+        Map<String, Object> answers = new LinkedHashMap<>();
+        answers.put("caller", "agent-7");
+        answers.put("clock", "2026-11-16T10:00:00Z");
+        answers.put("documentNode", "D-new");
+        answers.put("lineNode", "P-new");
+        answers.put("product", "bolt");
+        answers.put("version", "v1");
+        answers.put("count", "1");
+        Calls calls = new Calls();
+        Object rules = rulesOf(l, "CreateFlowRules", answers, calls);
+        Object asked = T36SubtypeTest.invoke(null, flow, "ask", request(l, 3, 12.5), rules);
+        assertEquals("SUPPLIED: the node the request addresses is the application's", "D-new", T36SubtypeTest.get(asked, "subject0"));
+        assertEquals("agent-7", T36SubtypeTest.get(asked, "agent"));
+        Object recorded = T36SubtypeTest.invoke(null, flow, "record", asked, rules);
+        Map<String, Object> expected = new TreeMap<>();
+        expected.put("agent", "agent-7");
+        expected.put("time", "2026-11-16T10:00:00Z");
+        expected.put("document0", "D-new");          // AS ASKED: the user bean's node
+        expected.put("part0", "P-new");              // SUPPLIED
+        expected.put("atype", "Creating");           // CONSTANT
+        expected.put("partLine", "3");
+        expected.put("priceUnit", "12.5");
+        expected.put("partPriceUnit", "12.5");
+        expected.put("partProduct", "bolt");
+        expected.put("partQuantity", "1");
+        expected.put("overwrite", "false");
+        expected.put("partPriceSource", "catalogue");
+        expected.put("erpId1", "v1");
+        expected.put("items", "1");
+        Map<String, Object> got = fieldsOf(recorded);
+        assertEquals(Map.of(), got.remove("attributesOther"));
+        assertNull("absent", got.remove("pattributesOther") == null ? null : ((Map<?, ?>) got.get("pattributesOther")));
+        for (Map.Entry<String, Object> e : got.entrySet()) assertEquals(e.getKey(), expected.get(e.getKey()), e.getValue());
+        assertEquals(expected.keySet(), got.entrySet().stream().filter(e -> e.getValue() != null).map(Map.Entry::getKey).collect(Collectors.toSet()));
+        // the reply is given as before
+        Object made = make(l, BACKEND_PKG + "ChangingOutputs", "document1", "D2");
+        assertEquals("accepted", T36SubtypeTest.get(T36SubtypeTest.invoke(null, flow, "answer", asked, recorded, made), "outcome"));
+    }
+
+    public void testWhatIsLeftToTheApplicationWhenNothingStoodIsSaidInTheTable() throws Exception {
+        generate("nsdoc", List.of(LINE_CHANGE, REPRICE, FLOW_NS));
+        String doc = Files.readString(Path.of(OUT + "nsdoc/libs/" + DOC));
+        assertTrue(doc, doc.contains("<tr><td>ask</td><td>subject0</td><td class='csv_kind'>supplied</td><td>the application's rule documentNode</td></tr>"));
+        assertTrue(doc, doc.contains("<tr><td>record</td><td>part0</td><td class='csv_kind'>supplied</td><td>the application's rule lineNode</td></tr>"));
+        assertTrue(doc, doc.contains("<tr><td>record</td><td>document0</td><td class='csv_kind'>asked</td><td>the user bean's subject0</td></tr>"));
+        assertFalse("nothing is chained", doc.contains("<td class='csv_kind'>chained</td>"));
+    }
+
+    public void testNothingStoodStillAccountsForEveryInputExactlyOnce() throws Exception {
+        refusedNs("a node left out", f -> obj(f, "record").remove("part0"), "inputs [part0] are not accounted for");
+        refusedNs("a compulsory node left absent", f -> obj(f, "record").put("part0", "absent"), "part0 is compulsory");
+        refusedNs("nothing to carry from", f -> obj(f, "carry").put("line", "rest"), "carry.line names no stood thing");
+        refusedNs("an own node of the user bean left out", f -> obj(f, "ask").remove("subject0"), "own values [subject0] are not accounted for");
+    }
+
+    void refusedNs(String title, Consumer<ObjectNode> edit, String... contains) throws Exception {
+        ObjectNode flow = (ObjectNode) om.readTree(FLOW_NS);
+        flow.set("carry", om.createObjectNode());
+        edit.accept(flow);
+        ObjectNode c = catalogue("refusal", List.of(LINE_CHANGE, REPRICE, om.writeValueAsString(flow)));
+        TemplatesProjectConfiguration configs = ConfigProcessor.objectMapper.readValue(om.writeValueAsString(c), TemplatesProjectConfiguration.class);
+        try {
+            new ConfigProcessor(pf).checkSubtypes(configs, ".");
+            fail(title + ": accepted");
+        } catch (FlowException e) {
+            for (String m : contains) assertTrue(title + ": " + m + " in " + e.getMessage(), e.getMessage().contains(m));
+        }
     }
 }

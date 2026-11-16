@@ -70,6 +70,26 @@ public abstract class T36FlowFixture extends TestCase {
             + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
             + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
 
+    static final String ANSWERS = "\"reply\":{\"answer\":{\"outcome\":{\"when\":{\"made\":\"document1\"},\"is\":\"accepted\",\"otherwise\":\"failed\"},\"result\":{\"recorded\":\"erpId1\"},\"code\":\"absent\"},"
+            + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
+            + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}";
+
+    /**
+     * NS (T41, design §14.1): a request that stands on nothing, a line made from nothing: no stood thing, the nodes supplied by the application
+     * (or asked, from a user value), the values asked, constant, supplied or absent.
+     */
+    static final String FLOW_NS = "{\"@type\":\"flow\",\"name\":\"create_flow\",\"fullyQualifiedName\":\"" + PKG + ".flows.CreateFlow\",\"package\":\"" + PKG + ".flows\","
+            + "\"from\":\"t36.Reprice\",\"to\":\"t36.LineChange\","
+            + "\"ask\":{\"agent\":{\"supplied\":\"caller\"},\"time\":{\"supplied\":\"clock\"},\"subject0\":{\"supplied\":\"documentNode\"}},"
+            + "\"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"document0\":{\"asked\":\"subject0\"},\"part0\":{\"supplied\":\"lineNode\"},"
+            + "  \"atype\":{\"constant\":\"Creating\"},"
+            + "  \"partLine\":{\"asked\":\"line\",\"as\":\"text\"},\"priceUnit\":{\"asked\":\"unitPrice\",\"as\":\"text\"},\"partPriceUnit\":{\"asked\":\"unitPrice\",\"as\":\"text\"},"
+            + "  \"partProduct\":{\"supplied\":\"product\"},\"partQuantity\":{\"constant\":\"1\"},\"overwrite\":{\"constant\":\"false\"},\"partPriceSource\":{\"constant\":\"catalogue\"},"
+            + "  \"erpId1\":{\"supplied\":\"version\"},\"items\":{\"supplied\":\"count\"},"
+            + "  \"name1\":\"absent\",\"state1\":\"absent\",\"ptype\":\"absent\",\"priceBefore\":\"absent\",\"partPriceBefore\":\"absent\",\"estimate\":\"absent\","
+            + "  \"attributesOther\":\"absent\",\"pattributesOther\":\"absent\"},"
+            + ANSWERS + "}";
+
     /** The catalogue: the two templates, their subtypes and the given flow entries (before the others when {@code first}). */
     ObjectNode catalogue(String id, List<String> entries) throws Exception {
         String dir = OUT + id + "/";

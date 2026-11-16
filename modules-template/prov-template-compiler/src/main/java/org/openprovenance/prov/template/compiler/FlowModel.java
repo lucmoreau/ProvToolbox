@@ -294,7 +294,7 @@ public class FlowModel {
             else if ("reply".equals(f.performative)) replyValues.add(f.name);
             else ownValues.add(f.name);
         }
-        if (requestValues.isEmpty()) throw refusal("the user subtype " + from.fullyQualifiedName + " has no request value: there is nothing to ask (declare @performative \"request\")");
+        // T41 (a continuation, no ruling needed: a relaxation like G1): a request may give nothing (the address names the document); the flow's ask then has no request class
 
         List<Decl> decls = decls();
         Map<Rec, Decl> declOf = new LinkedHashMap<>();

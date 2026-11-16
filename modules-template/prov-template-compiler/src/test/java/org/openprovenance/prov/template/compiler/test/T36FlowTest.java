@@ -894,4 +894,35 @@ public class T36FlowTest extends T36FlowFixture {
                 log.contains("Incompatible types"));
         assertFalse(log, log.contains("  ERROR:"));
     }
+
+    // ---- a request that gives nothing (T41, continuation) ---------------------------------------------------------------------
+
+    public void testARequestThatGivesNothingHasNoRequestClassAndAskTakesNoRequest() throws Exception {
+        generate("noask", List.of(LINE_CHANGE, ASK_SEND, SENDING, CONFIRM, FLOW_NOASK));
+        Path src = Path.of(OUT + "noask/libs/t36/t36_cli/src/main/java/org/example/t36flow/actions/client/integrator/");
+        assertTrue(Files.exists(src.resolve("ConfirmInputs.java")));
+        assertTrue(Files.exists(src.resolve("ConfirmReply.java")));
+        assertFalse("no request value, no request class", Files.exists(src.resolve("ConfirmRequest.java")));
+        ClassLoader l = compile("noask", List.of(FLOWS + "ConfirmFlow.java", FLOWS + "ConfirmFlowRules.java",
+                "org/example/t36flow/backend/client/integrator/SendingInputs.java", "org/example/t36flow/backend/client/integrator/ExchangingOutputs.java",
+                "org/example/t36flow/backend/client/integrator/Line_changeInputs.java", "org/example/t36flow/backend/client/integrator/ChangingOutputs.java",
+                "org/example/t36flow/actions/client/integrator/ConfirmInputs.java", "org/example/t36flow/actions/client/integrator/ConfirmReply.java"));
+        if (l == null) return;
+        Class<?> flow = l.loadClass(FLOWS_PKG + "ConfirmFlow");
+        Class<?> rulesClass = l.loadClass(FLOWS_PKG + "ConfirmFlowRules");
+        assertEquals("ask takes the rules and what the stood thing made, and no request", 2, flow.getMethod("ask", rulesClass, l.loadClass(BACKEND_PKG + "ChangingOutputs")).getParameterCount());
+        Map<String, Object> answers = new LinkedHashMap<>();
+        answers.put("caller", "agent-7");
+        answers.put("clock", "2026-11-16T10:00:00Z");
+        answers.put("vendor", "acme");
+        Object rules = rulesOf(l, "ConfirmFlowRules", answers, new Calls());
+        Object made = make(l, BACKEND_PKG + "ChangingOutputs", "document1", "D1");
+        Object asked = T36SubtypeTest.invoke(null, flow, "ask", rules, made);
+        assertEquals("D1", T36SubtypeTest.get(asked, "subject0"));
+        assertEquals("agent-7", T36SubtypeTest.get(asked, "agent"));
+        Object recorded = T36SubtypeTest.invoke(null, flow, "record", asked, make(l, BACKEND_PKG + "Line_changeInputs", "name1", "RFQ-1"), made, rules);
+        assertEquals("acme", T36SubtypeTest.get(recorded, "vendor"));
+        assertEquals("RFQ-1", T36SubtypeTest.get(recorded, "name1"));
+        assertEquals("accepted", T36SubtypeTest.get(T36SubtypeTest.invoke(null, flow, "answer", asked, recorded, make(l, BACKEND_PKG + "ExchangingOutputs", "document1", "D2")), "outcome"));
+    }
 }

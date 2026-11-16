@@ -251,16 +251,21 @@ public class CompilerFlow {
         boolean rules = items.stream().anyMatch(i -> i.kind == FlowModel.Kind.SUPPLIED);
         ClassName user = userBean(l, m);
         Method method = METHOD("ask").MODIFIERS(Modifier.PUBLIC, Modifier.STATIC).RETURNS(user)
-                .COMMENT("1. The request becomes the user bean: what the person asked is copied, the rest is given here.\n")
-                .PARAMETER(request(l, m), REQUEST);
+                .COMMENT(m.requestValues.isEmpty() ? "1. The request gives nothing: the user bean is made here, from what the service gives.\n"
+                        : "1. The request becomes the user bean: what the person asked is copied, the rest is given here.\n");
+        if (!m.requestValues.isEmpty()) method.PARAMETER(request(l, m), REQUEST);
         if (rules) method.PARAMETER(rulesClass(m), RULES);
         for (FlowModel.Stood s : m.stood.values()) if (s.addressed != null) method.PARAMETER(outputsBean(l, s.template), s.name + MADE_SUFFIX);
         method.commentFileLocation();
 
         List<String> asked = new ArrayList<>();
         for (FlowModel.Item i : items) if (i.kind == FlowModel.Kind.AS_ASKED) asked.add(i.target);
-        method.BODY(new Comment(("AS ASKED      " + String.join(", ", asked) + ": the request's values").replace("$", "")));
-        method.BODY(DEFINITION(user, VARIABLE(ASKED), METHOD_CALL(VARIABLE(REQUEST), "into", List.of(CONSTRUCTOR_CALL(user, List.of())))));
+        if (m.requestValues.isEmpty()) {
+            method.BODY(DEFINITION(user, VARIABLE(ASKED), CONSTRUCTOR_CALL(user, List.of())));
+        } else {
+            method.BODY(new Comment(("AS ASKED      " + String.join(", ", asked) + ": the request's values").replace("$", "")));
+            method.BODY(DEFINITION(user, VARIABLE(ASKED), METHOD_CALL(VARIABLE(REQUEST), "into", List.of(CONSTRUCTOR_CALL(user, List.of())))));
+        }
         for (FlowModel.Kind kind : List.of(FlowModel.Kind.CHAINED, FlowModel.Kind.CONSTANT, FlowModel.Kind.ABSENT, FlowModel.Kind.SUPPLIED)) {
             for (FlowModel.Item i : items) {
                 if (i.kind != kind) continue;

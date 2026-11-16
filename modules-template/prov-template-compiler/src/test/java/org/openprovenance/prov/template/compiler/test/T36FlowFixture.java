@@ -141,6 +141,23 @@ public abstract class T36FlowFixture extends TestCase {
             + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
             + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
 
+    /**
+     * A request that gives nothing (T41, continuation): the address names the document and the body is empty. The user subtype carries no request value, so it has no
+     * request class and the flow's ask has no request.
+     */
+    static final String CONFIRM = "{\"@type\":\"subtype\",\"name\":\"confirm\",\"fullyQualifiedName\":\"t36.Confirm\",\"package\":\"" + PKG + ".actions\","
+            + "\"refines\":\"t36.Inquiry\",\"fixed\":{\"atype\":\"Confirming\"},\"carries\":{}}";
+
+    static final String FLOW_NOASK = "{\"@type\":\"flow\",\"name\":\"confirm_flow\",\"fullyQualifiedName\":\"" + PKG + ".flows.ConfirmFlow\",\"package\":\"" + PKG + ".flows\","
+            + "\"from\":\"t36.Confirm\",\"to\":\"t36.Sending\","
+            + "\"stood\":{\"document\":{\"node\":\"document0\",\"madeBy\":\"document1\",\"addressed\":\"subject0\",\"of\":\"t36.LineChange\"}},"
+            + "\"ask\":{\"agent\":{\"supplied\":\"caller\"},\"time\":{\"supplied\":\"clock\"},\"attributes\":\"absent\"},"
+            + "\"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Confirming\"},\"vendor\":{\"supplied\":\"vendor\"},\"attributesOther\":\"absent\"},"
+            + "\"carry\":{\"document\":[\"name1\"]},"
+            + "\"reply\":{\"answer\":{\"outcome\":{\"when\":{\"made\":\"document1\"},\"is\":\"accepted\",\"otherwise\":\"failed\"},\"result\":{\"recorded\":\"name1\"},\"code\":\"absent\"},"
+            + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
+            + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
+
     /** The catalogue: the two templates, their subtypes and the given flow entries (before the others when {@code first}). */
     ObjectNode catalogue(String id, List<String> entries) throws Exception {
         String dir = OUT + id + "/";

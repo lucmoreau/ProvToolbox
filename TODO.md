@@ -78,14 +78,19 @@ A library that adds `@inJson` to a template of another library compiles an annot
 
 T36's `flow` entry (design §13) came from one example: one request, one previous record of the same template as the one made, one record made. The first application tried it on all of its 46 commands: 2 are expressible; 44 are not, for four reasons: **NS** (12 commands: nothing stood: `stood` may not be empty), **XT** (18: the record that stood was made by another template), **MR** (10: one request makes several records, some of them a number that depends on the request), **LD** (4: statements written through a ledger enactor, not a document template).
 
-**Design**: `docs/T36-INJSON-SUBTYPES-DESIGN.md`, part F (§14). Rulings: asked of Luc, recorded in §14.
+**Design**: `docs/T36-INJSON-SUBTYPES-DESIGN.md`, part F (§14); rulings G1 to G5 and the findings recorded there (§14.7), what was built in §14.10.
 
 **DoD.**
 - A flow with nothing that stood (NS), a stood record of another template (XT) and a flow of several records in order (MR) can be declared, each with a real case in the test fixture (made-up names).
 - Every input of every record is still accounted for exactly once, the six kinds stay, each assignment marked with its kind in every language.
 - Compatibility: the stage 9 declarations compile to the same classes (or to classes shown equivalent); a catalogue without a flow is unchanged.
-- LD: what it would take is reported to Luc; it is not built unless he says so.
-- The compiler findings of the first application are put to Luc as tickets or fixes (not fixed silently).
+- LD: what it would take is reported to Luc; it is not built unless he says so (G5: not built; the application declares its ledger statements as templates).
+- The compiler findings of the first application are put to Luc as tickets or fixes (not fixed silently): done: finding (2) fixed in T41, (1), (3), (4) are T42, T43, T44.
+
+**Built** (branch `claude/t41-flow-extension`, from `origin/development2_0` at `78e095819`, 2026-11-16; never pushed):
+- **Stage A, NS**: a flow may stand on nothing (G1). **Stage B, XT**: a stood record is typed by its own template, `of` any subtype or template (G2). **Stage C, MR**: `records`, chaining from an earlier record's bean and outputs, one method for each record, replies naming their record (G3); the stage 9 members stay as the shorthand. **Stage D**: the type checker knows the JSON text runtime's types.
+- Tests: `T36FlowTest` (26), `T36FlowCompatTest` (1: the stage 9 declaration compiles to the same Java, Python and JavaScript, against goldens), the fixture with three more templates (`exchanging`, `registering`) and a case for each gap with made-up names.
+- **Not verified**: the Python and JavaScript are parsed, not run; the first application's own 44 commands are not run through the new shapes; two flows of one request tied by the application (G4) are the application's.
 
 ---
 

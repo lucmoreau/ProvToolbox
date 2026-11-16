@@ -1014,7 +1014,7 @@ A flow has an ordered list of **records**, each with its own backend subtype, wh
 
 - **Compatibility.** The members of §13.2 at the top (`to`, `stood`, `record`, `carry`, `carryOpen`) are the shorthand of a flow of **one record, named `record`**: it generates
   the same class as before (the same methods, `record`, `answer`, with the same parameters and names), which is a test. A flow declares either the shorthand or
-  `records`, not both. In a flow of several records, `stood` at the top is for the things `ask` addresses; a thing a record stands on is declared in that record.
+  `records`, not both. In a flow of several records there is no `stood` at the top: a thing a record stands on is declared in that record (a name is used once in the flow), and `ask` addresses the things any record declares with `addressed`.
 - **A later record chains from an earlier one.** A stood thing of a record names an earlier record of the flow (`"record": "register"`) instead of `of`: its inputs are the
   bean that record built, its outputs what the store made of it, and `madeBy` an output node of that record's template. There is no guard (nothing the user said can
   differ), and `carry`, `carried` and `rest` read that bean. A record cannot stand on a later one: the order is the order of `records`.
@@ -1083,4 +1083,34 @@ of a template also writes that template's own beans; (4) a `ClassNotFoundExcepti
 ### 14.9 Not verified
 
 Nothing of part F is built or run. The real cases are the first application's 44 commands, read from its inventory, not run; the fixture's cases are made up.
+
+### 14.10 Built (T41) and what the code changed in this part
+
+Stages, each committed with its tests green on the branch `claude/t41-flow-extension`: **A (NS)** `stood` optional (the refusal removed from `FlowModel`, `stood` no longer required by the project
+schema); **B (XT)** each stood thing has its own template: `of` names any subtype or simple template of the catalogue (the typed bean of the subtype, or the general input bean), its outputs bean
+is that template's, `madeBy` must be an output node of that template; **C (MR)** `records`, the stage 9 members kept as the shorthand of one record named `record`, chaining from an earlier
+record (`stood.x.record`), one method for each record, `answer` with every record's bean and outputs, replies naming their record; **D** the generator's type checker knows the types
+of the JSON text runtime (finding (2) of §14.8: "fix in T41"). `T36FlowCompatTest` keeps the Java, Python and JavaScript that stage 9 generated for its declaration
+(`src/test/resources/t36/flow/golden/`) and compares: the declaration compiles to the same classes.
+
+Checked against the code while building, what changed in §14.1 to §14.5:
+
+1. **Types of nodes.** `madeBy` and the node it becomes, and the user node `addressed`, must have the same type: now checked (a stood thing of another template can have nodes of another type).
+2. **A stood thing's name is used once in the whole flow**, so that the parameters of `ask` and `answer` do not collide: a record that stands on the same previous record as another declares it
+   under another name, and the application passes the same beans to both calls.
+3. **The shorthand.** `records` and the members at the top (`to`, `stood`, `record`, `carry`, `carryOpen`) are refused together; with the shorthand the class is the one of stage 9 (methods `record`,
+   `answer`, parameters `recorded`, `made`); with `records` the methods are `record<Name>` and the parameters of `answer` are `<name>Recorded`, `<name>Made` for each record in order.
+4. **Where the rules receive what.** A record's rules receive the user bean, the bean being built and the stood things (an earlier record's bean and outputs among them); `answer`'s rules, the
+   user bean and every record's bean and outputs.
+5. **A flow with several records and `rest`.** `rest` is per record (at most one stood thing of each); the open keys, `carryOpen`, are per record.
+6. **`of` with a template that has no subtype** reads the general input bean: its fields are the template's inputs, a carrier as the text it is (an in-JSON value is not a field of it).
+
+### 14.11 Not verified (T41)
+
+- The Python and JavaScript of each shape are parsed (`py_compile`, `node --check`) and their kinds checked, not run (T33 would spoil the guards in Python; T34 stops a JavaScript client).
+- The fixtures' cases are made up; the 44 commands of the first application are not run through the new shapes (the real cases it will write are the test of that), and what each one
+  needs beyond what the fixtures show (a previous record whose template has no beans in the catalogue; a template with an enactment instead of an exchange) is for it to find.
+- A previous record that may be of one of several templates at run time: one flow for each case (G2); not tested as a pair.
+- `of` naming a template whose general input bean has no value the flow carries is refused by name, not tried on a large template.
+- LD is not built (G5); the findings (1), (3) and (4) are tickets T42, T43, T44.
 

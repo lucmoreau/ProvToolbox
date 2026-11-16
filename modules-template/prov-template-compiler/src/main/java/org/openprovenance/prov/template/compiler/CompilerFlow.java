@@ -103,12 +103,9 @@ public class CompilerFlow {
         return compilerSubtype.messageType(l, m.userTemplate, m.from, "reply");
     }
 
-    private ClassName backendBean(Locations l, FlowModel m, SubtypeTemplateCompilerConfig st) {
-        return compilerSubtype.typedBeanType(l, m.backendTemplate, st);
-    }
-
-    private ClassName outputsBean(Locations l, FlowModel m) {
-        return outputsBean(l, m.backendTemplate);
+    /** The typed bean of a backend subtype of a template. */
+    private ClassName backendBean(Locations l, SimpleTemplateCompilerConfig template, SubtypeTemplateCompilerConfig st) {
+        return compilerSubtype.typedBeanType(l, template, st);
     }
 
     /** The outputs bean of a template: what the store made of a record of it. */
@@ -118,7 +115,7 @@ public class CompilerFlow {
 
     /** The inputs of a stood thing's previous record: the typed bean of its subtype, or the general input bean of its template (T41, G2). */
     private ClassName stoodInputs(Locations l, FlowModel m, FlowModel.Stood s) {
-        return s.record != null ? backendBean(l, m, s.record) : compilerSubtype.generalBeanType(l, s.template);
+        return s.record != null ? backendBean(l, s.template, s.record) : compilerSubtype.generalBeanType(l, s.template);
     }
 
     private ClassName flowClass(FlowModel m) {
@@ -151,20 +148,25 @@ public class CompilerFlow {
     private Map<String, TypeName> ruleParameters(Locations l, FlowModel m, String step) {
         Map<String, TypeName> res = new LinkedHashMap<>();
         res.put(ASKED, userBean(l, m));
+        if (step.startsWith("record")) {
+            FlowModel.Rec rec = null;
+            for (FlowModel.Rec r : m.records) if (r.stepKey().equals(step)) rec = r;
+            res.put(RECORDED, backendBean(l, rec.template, rec.to));
+            for (FlowModel.Stood s : rec.stood.values()) {
+                res.put(s.name, stoodInputs(l, m, s));
+                res.put(s.name + MADE_SUFFIX, outputsBean(l, s.template));
+            }
+            return res;
+        }
         switch (step) {
             case "ask":
                 for (FlowModel.Stood s : m.stood.values()) if (s.addressed != null) res.put(s.name + MADE_SUFFIX, outputsBean(l, s.template));
                 break;
-            case "record":
-                res.put(RECORDED, backendBean(l, m, m.to));
-                for (FlowModel.Stood s : m.stood.values()) {
-                    res.put(s.name, stoodInputs(l, m, s));
-                    res.put(s.name + MADE_SUFFIX, outputsBean(l, s.template));
-                }
-                break;
             case "answer":
-                res.put(RECORDED, backendBean(l, m, m.to));
-                res.put(MADE, outputsBean(l, m));
+                for (FlowModel.Rec r : m.records) {
+                    res.put(r.recordedVariable(), backendBean(l, r.template, r.to));
+                    res.put(r.madeVariable(), outputsBean(l, r.template));
+                }
                 break;
             default:   // refused, failed: nothing was recorded
                 break;
@@ -179,13 +181,15 @@ public class CompilerFlow {
         ClassName self = flowClass(m);
         ClassName rules = rulesClass(m);
         Class pastClass = compilerUtil.getPastFactory().CLASS(self.simpleName).MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
-                .COMMENT("The flow $N: the pattern that connects the beans of a request to the beans of the backend's record, from $N to $N.\n", m.flow.fullyQualifiedName, m.from.fullyQualifiedName, m.to.fullyQualifiedName)
-                .COMMENT("The request becomes the user bean ($N), the user bean and what stood become the backend's bean ($N), and what the store made becomes the reply ($N).\n", "ask", "record", "answer")
+                .COMMENT("The flow $N: the pattern that connects the beans of a request to the beans of the backend's record, from $N to $N.\n", m.flow.fullyQualifiedName, m.from.fullyQualifiedName,
+                        m.records.stream().map(r -> r.to.fullyQualifiedName).collect(java.util.stream.Collectors.joining(", ")))
+                .COMMENT("The request becomes the user bean ($N), the user bean and what stood become the backend's bean ($N), and what the store made becomes the reply ($N).\n", "ask",
+                        m.records.stream().map(FlowModel.Rec::methodName).collect(java.util.stream.Collectors.joining(", ")), "answer")
                 .COMMENT("Every input of those beans has one stated origin, said beside it: AS ASKED, CHAINED, CARRIED OVER, CONSTANT, SUPPLIED or AS MADE; the values the application computes are the rules of $N.\n", rules.simpleName)
                 .COMMENT("Generated from the catalogue entry: the application writes the rules and nothing else.\n");
 
         pastClass.METHOD(ask(locations, m));
-        pastClass.METHOD(record(locations, m));
+        for (FlowModel.Rec rec : m.records) pastClass.METHOD(record(locations, m, rec));
         if (m.steps.containsKey("answer")) {
             for (String block : List.of("answer", "refused", "failed")) if (m.steps.containsKey(block)) pastClass.METHOD(replyMethod(locations, m, block));
         }
@@ -285,15 +289,15 @@ public class CompilerFlow {
 
     // ---- record --------------------------------------------------------------------------------------------------------------
 
-    private Method record(Locations l, FlowModel m) {
-        List<FlowModel.Item> items = m.steps.get("record");
+    private Method record(Locations l, FlowModel m, FlowModel.Rec rec) {
+        List<FlowModel.Item> items = m.steps.get(rec.stepKey());
         boolean rules = items.stream().anyMatch(i -> i.kind == FlowModel.Kind.SUPPLIED);
-        ClassName backend = backendBean(l, m, m.to);
-        Method method = METHOD("record").MODIFIERS(Modifier.PUBLIC, Modifier.STATIC).RETURNS(backend)
+        ClassName backend = backendBean(l, rec.template, rec.to);
+        Method method = METHOD(rec.methodName()).MODIFIERS(Modifier.PUBLIC, Modifier.STATIC).RETURNS(backend)
                 .COMMENT("2. The user bean and what stood become the backend's bean. Each stood thing is the inputs and the outputs of the record that made it;\n")
                 .COMMENT("a previous record that does not match the request is refused before anything is built.\n")
                 .PARAMETER(userBean(l, m), ASKED);
-        for (FlowModel.Stood s : m.stood.values()) {
+        for (FlowModel.Stood s : rec.stood.values()) {
             method.PARAMETER(stoodInputs(l, m, s), s.name);
             method.PARAMETER(outputsBean(l, s.template), s.name + MADE_SUFFIX);
         }
@@ -302,7 +306,7 @@ public class CompilerFlow {
 
         // the guards
         String flow = m.flow.fullyQualifiedName;
-        for (FlowModel.Stood s : m.stood.values()) {
+        for (FlowModel.Stood s : rec.stood.values()) {
             if (s.identityUser != null) {
                 FlowModel.Field u = m.userFields.get(s.identityUser), b = s.fields.get(s.identityBackend);
                 Expression user = field(ASKED, s.identityUser);
@@ -366,8 +370,10 @@ public class CompilerFlow {
                         : "3''. A request that failed in the service for a reason that is not a refusal: nothing was recorded.\n")
                 .PARAMETER(userBean(l, m), ASKED);
         if (answer) {
-            method.PARAMETER(backendBean(l, m, m.to), RECORDED);
-            method.PARAMETER(outputsBean(l, m), MADE);
+            for (FlowModel.Rec r : m.records) {
+                method.PARAMETER(backendBean(l, r.template, r.to), r.recordedVariable());
+                method.PARAMETER(outputsBean(l, r.template), r.madeVariable());
+            }
         }
         if (rules) method.PARAMETER(rulesClass(m), RULES);
         for (FlowModel.Item i : items) if (i.argument) method.PARAMETER(i.field.past, i.target);
@@ -385,12 +391,12 @@ public class CompilerFlow {
                     break;
                 case AS_MADE:
                     if (i.whenMade != null) {
-                        method.BODY(IF(BINARY_OP(field(MADE, i.whenMade), "==", Constant.getNull()),
+                        method.BODY(IF(BINARY_OP(field(i.rec.madeVariable(), i.whenMade), "==", Constant.getNull()),
                                 List.of(ASSIGNMENT(target, constant(i.field, i.otherwise))), List.of(ASSIGNMENT(target, constant(i.field, i.is)))));
                     } else if ("made".equals(i.from)) {
-                        method.BODY(ASSIGNMENT(target, field(MADE, i.source)));
+                        method.BODY(ASSIGNMENT(target, field(i.rec.madeVariable(), i.source)));
                     } else {
-                        method.BODY(ASSIGNMENT(target, text(field(RECORDED, i.source), i.as)));
+                        method.BODY(ASSIGNMENT(target, text(field(i.rec.recordedVariable(), i.source), i.as)));
                     }
                     break;
                 default:   // absent

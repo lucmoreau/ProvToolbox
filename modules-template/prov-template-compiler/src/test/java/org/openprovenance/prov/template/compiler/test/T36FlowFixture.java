@@ -113,6 +113,34 @@ public abstract class T36FlowFixture extends TestCase {
             + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
             + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
 
+    static final String LINE_REGISTERING = "{\"@type\":\"subtype\",\"name\":\"line_registering\",\"fullyQualifiedName\":\"t36.LineRegistering\",\"package\":\"" + PKG + ".backend\","
+            + "\"refines\":\"t36.Registering\",\"fixed\":{},\"carries\":{\"partLine\":\"required\",\"partPriceUnit\":\"required\",\"partProduct\":\"required\","
+            + "\"partQuantity\":\"required\",\"partPriceSource\":\"required\"}}";
+
+    /**
+     * MR (T41, design §14.3): a request that makes two records, a line registered and then changed into a document. The second record chains from the
+     * outputs of the first (the line as it stood is the record before it), carries its values, and stands on the previous record of the document.
+     */
+    static final String FLOW_MR = "{\"@type\":\"flow\",\"name\":\"add_flow\",\"fullyQualifiedName\":\"" + PKG + ".flows.AddFlow\",\"package\":\"" + PKG + ".flows\","
+            + "\"from\":\"t36.Reprice\","
+            + "\"ask\":{\"agent\":{\"supplied\":\"caller\"},\"time\":{\"supplied\":\"clock\"}},"
+            + "\"records\":["
+            + "  {\"name\":\"register\",\"to\":\"t36.LineRegistering\","
+            + "   \"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Registering\"},\"partLine\":{\"asked\":\"line\",\"as\":\"text\"},"
+            + "              \"partPriceUnit\":{\"asked\":\"unitPrice\",\"as\":\"text\"},\"partProduct\":{\"supplied\":\"product\"},\"partQuantity\":{\"constant\":\"1\"},"
+            + "              \"partPriceSource\":{\"constant\":\"catalogue\"},\"pattributesOther\":\"absent\"}},"
+            + "  {\"name\":\"change\",\"to\":\"t36.LineChange\","
+            + "   \"stood\":{\"document\":{\"node\":\"document0\",\"madeBy\":\"document1\",\"addressed\":\"subject0\"},"
+            + "              \"line\":{\"node\":\"part0\",\"madeBy\":\"part1\",\"record\":\"register\"}},"
+            + "   \"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Adding\"},\"priceUnit\":{\"asked\":\"unitPrice\",\"as\":\"text\"},"
+            + "              \"overwrite\":{\"constant\":\"false\"},\"estimate\":{\"supplied\":\"estimate\"},\"erpId1\":{\"supplied\":\"version\"},\"items\":{\"supplied\":\"count\"},"
+            + "              \"ptype\":\"absent\",\"priceBefore\":\"absent\",\"partPriceBefore\":\"absent\",\"attributesOther\":\"absent\"},"
+            + "   \"carry\":{\"line\":[\"partLine\",\"partPriceUnit\",\"partProduct\",\"partQuantity\",\"partPriceSource\"],\"document\":[\"name1\",\"state1\"]},"
+            + "   \"carryOpen\":{\"pattributes\":\"line\"}}],"
+            + "\"reply\":{\"answer\":{\"outcome\":{\"when\":{\"made\":\"change.document1\"},\"is\":\"accepted\",\"otherwise\":\"failed\"},\"result\":{\"recorded\":\"change.erpId1\"},\"code\":\"absent\"},"
+            + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
+            + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
+
     /** The catalogue: the two templates, their subtypes and the given flow entries (before the others when {@code first}). */
     ObjectNode catalogue(String id, List<String> entries) throws Exception {
         String dir = OUT + id + "/";
@@ -121,6 +149,7 @@ public abstract class T36FlowFixture extends TestCase {
         Files.copy(Path.of(RES + "changing-bindings.json"), Path.of(dir + "changing.json"));
         Files.copy(Path.of(RES + "inquiry-bindings.json"), Path.of(dir + "inquiry.json"));
         Files.copy(Path.of(RES + "exchanging-bindings.json"), Path.of(dir + "exchanging.json"));
+        Files.copy(Path.of(RES + "registering-bindings.json"), Path.of(dir + "registering.json"));
         ObjectNode c = (ObjectNode) om.readTree("{\n"
                 + "  \"group\": \"org.example\", \"name\": \"t36\", \"destination\": \"" + dir + "libs\",\n"
                 + "  \"description\": \"T36 part E\", \"version\": \"0.1.0\", \"integrator\": true,\n"
@@ -135,6 +164,8 @@ public abstract class T36FlowFixture extends TestCase {
                 + " \"package\": \"" + PKG + ".actions\", \"template\": \"t36.inquiry\", \"cbindings\": \"" + dir + "inquiry.json\" }"));
         templates.add(om.readTree("{ \"@type\": \"simple\", \"fullyQualifiedName\": \"t36.Exchanging\", \"name\": \"exchanging\","
                 + " \"package\": \"" + PKG + ".backend\", \"template\": \"t36.exchanging\", \"cbindings\": \"" + dir + "exchanging.json\" }"));
+        templates.add(om.readTree("{ \"@type\": \"simple\", \"fullyQualifiedName\": \"t36.Registering\", \"name\": \"registering\","
+                + " \"package\": \"" + PKG + ".backend\", \"template\": \"t36.registering\", \"cbindings\": \"" + dir + "registering.json\" }"));
         for (String e : entries) templates.add(om.readTree(e));
         return c;
     }

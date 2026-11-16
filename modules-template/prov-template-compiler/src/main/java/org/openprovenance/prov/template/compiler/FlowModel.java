@@ -83,6 +83,8 @@ public class FlowModel {
         public Map<String, Field> fields;
         /** The outputs of that template. */
         public Map<String, Field> outputs;
+        /** When the thing is an earlier record of this flow (T41, G3), that record; else null: a previous record of another request. */
+        public Rec chained;
 
         /** The previous record's subtype, or its template, by name. */
         public String describe() {
@@ -117,6 +119,13 @@ public class FlowModel {
         public String madeBy;
         /** Where the source is: {@code "user"} (the user bean), {@code "recorded"}, {@code "made"}, {@code "stood"}, {@code "request"}. */
         public String from = "";
+        /** For a reply that reads what a record recorded or the store made of it: that record, and whether the flow has several (then its name qualifies the value). */
+        public Rec rec;
+        public boolean qualified;
+
+        private String q() {
+            return qualified && rec != null ? rec.name + "." : "";
+        }
 
         Item(String step, String target, Field field, Kind kind) {
             this.step = step;
@@ -139,8 +148,8 @@ public class FlowModel {
                 case SUPPLIED:
                     return argument ? "an argument of the method" : "the application's rule " + rule;
                 case AS_MADE:
-                    if (whenMade != null) return (is + " when the store made " + whenMade + ", otherwise " + otherwise);
-                    return "made".equals(from) ? "what the store made: " + source : "the backend's " + source + " as recorded" + (as == null ? "" : ", as " + as);
+                    if (whenMade != null) return (is + " when the store made " + q() + whenMade + ", otherwise " + otherwise);
+                    return "made".equals(from) ? "what the store made: " + q() + source : "the backend's " + q() + source + " as recorded" + (as == null ? "" : ", as " + as);
                 default:
                     return "left unset";
             }
@@ -162,6 +171,54 @@ public class FlowModel {
         }
     }
 
+    /**
+     * One record of a flow (T41, G3): its backend subtype, what it stands on and its assignments. The members of design §13.2 at the top of a
+     * flow are the shorthand of one record named {@code record}, which generates what stage 9 generated.
+     */
+    public static final class Rec {
+        public final String name;
+        public final boolean shorthand;
+        public SubtypeTemplateCompilerConfig to;
+        public SimpleTemplateCompilerConfig template;
+        public TemplateBindingsSchema schema;
+        public Map<String, Field> fields, outputs;
+        /** The things this record stands on. */
+        public final Map<String, Stood> stood = new LinkedHashMap<>();
+
+        Rec(String name, boolean shorthand) {
+            this.name = name;
+            this.shorthand = shorthand;
+        }
+
+        /** The key of the step in {@link FlowModel#steps}, and the step in the table: {@code record}, or {@code record <name>}. */
+        public String stepKey() {
+            return shorthand ? "record" : "record " + name;
+        }
+
+        /** The name of the method in the generated class. */
+        public String methodName() {
+            return shorthand ? "record" : "record" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
+        }
+
+        /** The names of the parameters of {@code answer} for this record: the bean built, and what the store made of it. */
+        public String recordedVariable() {
+            return shorthand ? "recorded" : name + "Recorded";
+        }
+
+        public String madeVariable() {
+            return shorthand ? "made" : name + "Made";
+        }
+    }
+
+    /** What a record declares, as the catalogue gives it. */
+    private static final class Decl {
+        String name;
+        String to;
+        Map<String, Map<String, Object>> stood = new LinkedHashMap<>();
+        Map<String, Object> record = new LinkedHashMap<>(), carry = new LinkedHashMap<>();
+        Map<String, String> carryOpen = new LinkedHashMap<>();
+    }
+
     /** The simple name of the generated class: the last segment of the flow's fully qualified name. */
     public String className() {
         String fqn = flow.fullyQualifiedName;
@@ -169,15 +226,23 @@ public class FlowModel {
     }
 
     public final FlowTemplateCompilerConfig flow;
-    public SubtypeTemplateCompilerConfig from, to;
-    public SimpleTemplateCompilerConfig userTemplate, backendTemplate;
-    public TemplateBindingsSchema userSchema, backendSchema;
+    public SubtypeTemplateCompilerConfig from;
+    public SimpleTemplateCompilerConfig userTemplate;
+    public TemplateBindingsSchema userSchema;
     public Map<String, Field> userFields = new LinkedHashMap<>();
-    public Map<String, Field> backendFields = new LinkedHashMap<>();
-    /** The outputs of the backend template's outputs bean. */
-    public Map<String, Field> outputs = new LinkedHashMap<>();
+    // the record being read (see use()): its backend subtype, template, schema, inputs and outputs
+    private SubtypeTemplateCompilerConfig to;
+    private SimpleTemplateCompilerConfig backendTemplate;
+    private TemplateBindingsSchema backendSchema;
+    private Map<String, Field> backendFields = new LinkedHashMap<>();
+    private Map<String, Field> outputs = new LinkedHashMap<>();
     public final List<String> requestValues = new ArrayList<>(), replyValues = new ArrayList<>(), ownValues = new ArrayList<>();
+    /** Every stood thing of the flow, by name (a name is used once in the flow); each is also in the record that stands on it. */
     public final Map<String, Stood> stood = new LinkedHashMap<>();
+    /** The records, in order (one for the shorthand). */
+    public final List<Rec> records = new ArrayList<>();
+    private Rec curRec;
+    private Decl cur;
     /** The assignments of each step: {@code ask}, {@code record}, and the reply blocks {@code answer}, {@code refused}, {@code failed}. */
     public final Map<String, List<Item>> steps = new LinkedHashMap<>();
     public final Map<String, Rule> rules = new LinkedHashMap<>();
@@ -220,14 +285,9 @@ public class FlowModel {
             throw new FlowException("flow " + flow.fullyQualifiedName + ": name, fullyQualifiedName and package are all required");
         }
         from = subtype(configs, flow.from, "from");
-        to = subtype(configs, flow.to, "to");
         userTemplate = CompilerSubtype.refined(configs, from);
-        backendTemplate = CompilerSubtype.refined(configs, to);
         userSchema = compilerUtil.getBindingsSchema(userTemplate, cbindingsBaseDir);
-        backendSchema = compilerUtil.getBindingsSchema(backendTemplate, cbindingsBaseDir);
-
         userFields = fieldsOf(userSchema, from, compilerUtil, compilerSubtype);
-        backendFields = fieldsOf(backendSchema, to, compilerUtil, compilerSubtype);
         for (Field f : userFields.values()) {
             if (f.isOtherKeys()) continue;
             if ("request".equals(f.performative)) requestValues.add(f.name);
@@ -235,12 +295,88 @@ public class FlowModel {
             else ownValues.add(f.name);
         }
         if (requestValues.isEmpty()) throw refusal("the user subtype " + from.fullyQualifiedName + " has no request value: there is nothing to ask (declare @performative \"request\")");
-        outputs = outputsOf(backendSchema, compilerUtil);
 
-        readStood(configs, compilerUtil, compilerSubtype, cbindingsBaseDir);
+        List<Decl> decls = decls();
+        Map<Rec, Decl> declOf = new LinkedHashMap<>();
+        Set<String> names = new HashSet<>();
+        for (Decl d : decls) {
+            if (!names.add(d.name)) throw refusal("the record " + d.name + " is declared twice");
+            Rec rec = new Rec(d.name, decls.size() == 1 && flow.records.isEmpty());
+            rec.to = subtype(configs, d.to, "records." + d.name + ".to");
+            rec.template = CompilerSubtype.refined(configs, rec.to);
+            rec.schema = compilerUtil.getBindingsSchema(rec.template, cbindingsBaseDir);
+            rec.fields = fieldsOf(rec.schema, rec.to, compilerUtil, compilerSubtype);
+            rec.outputs = outputsOf(rec.schema, compilerUtil);
+            records.add(rec);
+            declOf.put(rec, d);
+        }
+        // what each record stands on, in order: a later record may chain from an earlier one
+        for (Rec rec : records) {
+            use(rec, declOf.get(rec));
+            readStood(configs, compilerUtil, compilerSubtype, cbindingsBaseDir);
+        }
         readAsk();
-        readRecord();
+        for (Rec rec : records) {
+            use(rec, declOf.get(rec));
+            readRecord();
+        }
         readReply();
+    }
+
+    /** The records the flow declares: {@code records}, or the members at the top as one record named {@code record}. */
+    private List<Decl> decls() {
+        List<Decl> res = new ArrayList<>();
+        boolean shorthand = flow.to != null || !flow.stood.isEmpty() || !flow.record.isEmpty() || !flow.carry.isEmpty() || !flow.carryOpen.isEmpty();
+        if (!flow.records.isEmpty()) {
+            if (shorthand) throw refusal("it declares records, and also to, stood, record, carry or carryOpen at the top: a flow has one or the other");
+            for (int i = 0; i < flow.records.size(); i++) {
+                Map<String, Object> m = flow.records.get(i);
+                String place = "records[" + i + "]";
+                for (String k : m.keySet()) if (!RECORD_KEYS.contains(k)) throw refusal(place + ": unknown member " + k + " (" + RECORD_KEYS + ")");
+                Decl d = new Decl();
+                d.name = string(m.get("name"), place + ".name");
+                if (d.name == null || !d.name.matches("[A-Za-z][A-Za-z0-9_]*")) throw refusal(place + ".name is required, an identifier (not " + d.name + ")");
+                d.to = string(m.get("to"), place + ".to");
+                d.stood = stoodMap(m.get("stood"), place + ".stood");
+                d.record = m.get("record") == null ? new LinkedHashMap<>() : map(m.get("record"), place + ".record");
+                d.carry = m.get("carry") == null ? new LinkedHashMap<>() : map(m.get("carry"), place + ".carry");
+                d.carryOpen = new LinkedHashMap<>();
+                if (m.get("carryOpen") != null) for (Map.Entry<String, Object> e : map(m.get("carryOpen"), place + ".carryOpen").entrySet()) d.carryOpen.put(e.getKey(), string(e.getValue(), place + ".carryOpen." + e.getKey()));
+                res.add(d);
+            }
+        } else {
+            if (flow.to == null) throw refusal("to is required: the backend subtype the flow ends in (or records)");
+            Decl d = new Decl();
+            d.name = "record";
+            d.to = flow.to;
+            d.stood = flow.stood;
+            d.record = flow.record;
+            d.carry = flow.carry;
+            d.carryOpen = flow.carryOpen;
+            res.add(d);
+        }
+        return res;
+    }
+
+    private static final Set<String> RECORD_KEYS = Set.of("name", "to", "stood", "record", "carry", "carryOpen");
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Map<String, Object>> stoodMap(Object o, String place) {
+        Map<String, Map<String, Object>> res = new LinkedHashMap<>();
+        if (o == null) return res;
+        for (Map.Entry<String, Object> e : map(o, place).entrySet()) res.put(e.getKey(), map(e.getValue(), place + "." + e.getKey()));
+        return res;
+    }
+
+    /** Makes the record being read the context of the readers below. */
+    private void use(Rec rec, Decl decl) {
+        curRec = rec;
+        cur = decl;
+        to = rec.to;
+        backendTemplate = rec.template;
+        backendSchema = rec.schema;
+        backendFields = rec.fields;
+        outputs = rec.outputs;
     }
 
     /** The fields of a subtype's typed bean (design §5.2), in order: the ordinary inputs it keeps, the carried values, a map of other keys per carrier. */
@@ -302,15 +438,16 @@ public class FlowModel {
 
     // ---- stood ---------------------------------------------------------------------------------------------------------------
 
-    private static final Set<String> STOOD_KEYS = Set.of("node", "madeBy", "addressed", "identity", "of");
+    private static final Set<String> STOOD_KEYS = Set.of("node", "madeBy", "addressed", "identity", "of", "record");
 
     private void readStood(TemplatesProjectConfiguration configs, CompilerUtil compilerUtil, CompilerSubtype compilerSubtype, String cbindingsBaseDir) {
         // T41 (G1, "stood optional, nodes from the application"): a flow may stand on nothing. The nodes are then said by the other kinds:
         // supplied by the application, asked, a constant, or absent.
-        for (Map.Entry<String, Map<String, Object>> e : flow.stood.entrySet()) {
+        for (Map.Entry<String, Map<String, Object>> e : cur.stood.entrySet()) {
             String name = e.getKey();
             Map<String, Object> d = e.getValue();
             for (String k : d.keySet()) if (!STOOD_KEYS.contains(k)) throw refusal("stood." + name + ": unknown member " + k + " (" + STOOD_KEYS + ")");
+            if (stood.containsKey(name)) throw refusal("the stood thing " + name + " is named twice in the flow: a name is used once (a record that stands on the same thing declares it under another name)");
             Stood s = new Stood(name);
             s.node = string(d.get("node"), "stood." + name + ".node");
             s.madeBy = string(d.get("madeBy"), "stood." + name + ".madeBy");
@@ -323,32 +460,50 @@ public class FlowModel {
                 s.identityBackend = string(id.get("backend"), "stood." + name + ".identity.backend");
                 if (s.identityUser == null || s.identityBackend == null) throw refusal("stood." + name + ".identity needs user and backend");
             }
+            String chain = string(d.get("record"), "stood." + name + ".record");
             String of = string(d.get("of"), "stood." + name + ".of");
-            // T41 (G2, "(b) typed record of its own template"): the previous record may be of any subtype or template of the catalogue, not only of the template `to` refines
-            s.record = to;
-            s.template = backendTemplate;
-            if (of != null) {
-                SubtypeTemplateCompilerConfig sub = null;
-                for (TemplateCompilerConfig c : configs.templates) {
-                    if (c instanceof SubtypeTemplateCompilerConfig && Objects.equals(c.fullyQualifiedName, of)) sub = (SubtypeTemplateCompilerConfig) c;
-                }
-                if (sub != null) {
-                    s.record = sub;
-                    s.template = CompilerSubtype.refined(configs, sub);
-                } else {
-                    s.record = null;
-                    s.template = null;
+            TemplateBindingsSchema stoodSchema;
+            if (chain != null) {
+                // T41 (G3): a later record chains from an earlier one of this flow: its inputs are the bean that record built, its outputs what the store made of it
+                if (of != null) throw refusal("stood." + name + " has both record and of: it stands on an earlier record of this flow, or on a previous record of another request");
+                if (s.addressed != null || s.identityUser != null) throw refusal("stood." + name + ": a record of this flow has nothing the request could differ from: no addressed, no identity");
+                Rec earlier = null;
+                for (Rec r : records.subList(0, records.indexOf(curRec))) if (r.name.equals(chain)) earlier = r;
+                if (earlier == null) throw refusal("stood." + name + ".record is " + chain + ", which is no record before " + curRec.name + " in this flow (an earlier record is built and made first)");
+                s.record = earlier.to;
+                s.template = earlier.template;
+                s.fields = earlier.fields;
+                s.outputs = earlier.outputs;
+                s.chained = earlier;
+                stoodSchema = earlier.schema;
+            } else {
+                // T41 (G2, "(b) typed record of its own template"): the previous record may be of any subtype or template of the catalogue, not only of the template `to` refines
+                s.record = to;
+                s.template = backendTemplate;
+                if (of != null) {
+                    SubtypeTemplateCompilerConfig sub = null;
                     for (TemplateCompilerConfig c : configs.templates) {
-                        if (c instanceof SimpleTemplateCompilerConfig && Objects.equals(c.fullyQualifiedName, of)) s.template = (SimpleTemplateCompilerConfig) c;
+                        if (c instanceof SubtypeTemplateCompilerConfig && Objects.equals(c.fullyQualifiedName, of)) sub = (SubtypeTemplateCompilerConfig) c;
                     }
-                    if (s.template == null) throw refusal("stood." + name + ".of names " + of + ", which is no subtype or template of the catalogue");
+                    if (sub != null) {
+                        s.record = sub;
+                        s.template = CompilerSubtype.refined(configs, sub);
+                    } else {
+                        s.record = null;
+                        s.template = null;
+                        for (TemplateCompilerConfig c : configs.templates) {
+                            if (c instanceof SimpleTemplateCompilerConfig && Objects.equals(c.fullyQualifiedName, of)) s.template = (SimpleTemplateCompilerConfig) c;
+                        }
+                        if (s.template == null) throw refusal("stood." + name + ".of names " + of + ", which is no subtype or template of the catalogue");
+                    }
                 }
-            }
-            TemplateBindingsSchema stoodSchema = s.template == backendTemplate ? backendSchema : compilerUtil.getBindingsSchema(s.template, cbindingsBaseDir);
-            s.outputs = s.template == backendTemplate ? outputs : outputsOf(stoodSchema, compilerUtil);
-            s.fields = s.record == to ? backendFields
-                    : s.record != null ? fieldsOf(stoodSchema, s.record, compilerUtil, compilerSubtype) : fieldsOfTemplate(stoodSchema, compilerUtil);
+                stoodSchema = s.template == backendTemplate ? backendSchema : compilerUtil.getBindingsSchema(s.template, cbindingsBaseDir);
+                s.outputs = s.template == backendTemplate ? outputs : outputsOf(stoodSchema, compilerUtil);
+                s.fields = s.record == to ? backendFields
+                        : s.record != null ? fieldsOf(stoodSchema, s.record, compilerUtil, compilerSubtype) : fieldsOfTemplate(stoodSchema, compilerUtil);
 
+
+            }
             // node: an input node of the backend's bean; madeBy: an output node of the store, of the template of the previous record, of the same type
             Field node = backendFields.get(s.node);
             if (node == null || !node.isNode()) throw refusal("stood." + name + ".node is " + s.node + ", which is no node input of the backend subtype's bean");
@@ -380,9 +535,10 @@ public class FlowModel {
                 }
             }
             stood.put(name, s);
+            curRec.stood.put(name, s);
         }
         Set<String> nodes = new HashSet<>();
-        for (Stood s : stood.values()) {
+        for (Stood s : curRec.stood.values()) {
             if (!nodes.add(s.node)) throw refusal("the node " + s.node + " is named by two stood things");
         }
     }
@@ -441,18 +597,19 @@ public class FlowModel {
 
     // ---- record --------------------------------------------------------------------------------------------------------------
 
-    private final Map<String, String> backendAccounted = new LinkedHashMap<>();
+    private Map<String, String> backendAccounted = new LinkedHashMap<>();
 
     private void readRecord() {
+        backendAccounted = new LinkedHashMap<>();
         List<Item> items = new ArrayList<>();
-        for (Stood s : stood.values()) {
+        for (Stood s : curRec.stood.values()) {
             claim(backendAccounted, s.node, "stood." + s.name + ".node", "backend value");
-            Item i = new Item("record", s.node, backendFields.get(s.node), Kind.CHAINED);
+            Item i = new Item(curRec.stepKey(), s.node, backendFields.get(s.node), Kind.CHAINED);
             i.thing = s.name;
             i.madeBy = s.madeBy;
             items.add(i);
         }
-        for (Map.Entry<String, Object> e : flow.record.entrySet()) {
+        for (Map.Entry<String, Object> e : cur.record.entrySet()) {
             String target = e.getKey();
             Field f = backendFields.get(target);
             if (f == null) throw refusal("record." + target + " is no input of the backend subtype " + to.fullyQualifiedName + " (inputs: " + backendFields.keySet() + ")");
@@ -461,9 +618,9 @@ public class FlowModel {
         }
         // carried over, by name
         String restThing = null;
-        for (Map.Entry<String, Object> e : flow.carry.entrySet()) {
-            Stood s = stood.get(e.getKey());
-            if (s == null) throw refusal("carry." + e.getKey() + " names no stood thing (" + stood.keySet() + ")");
+        for (Map.Entry<String, Object> e : cur.carry.entrySet()) {
+            Stood s = curRec.stood.get(e.getKey());
+            if (s == null) throw refusal("carry." + e.getKey() + " names no stood thing (" + curRec.stood.keySet() + ")");
             if ("rest".equals(e.getValue())) {
                 if (restThing != null) throw refusal("carry: \"rest\" is used for two stood things (" + restThing + " and " + s.name + "): it is for at most one");
                 restThing = s.name;
@@ -480,9 +637,9 @@ public class FlowModel {
             }
         }
         // the other keys of a carrier
-        for (Map.Entry<String, String> e : flow.carryOpen.entrySet()) {
-            Stood s = stood.get(e.getValue());
-            if (s == null) throw refusal("carryOpen." + e.getKey() + " names no stood thing (" + stood.keySet() + ")");
+        for (Map.Entry<String, String> e : cur.carryOpen.entrySet()) {
+            Stood s = curRec.stood.get(e.getValue());
+            if (s == null) throw refusal("carryOpen." + e.getKey() + " names no stood thing (" + curRec.stood.keySet() + ")");
             String target = CompilerSubtype.otherKeysField(e.getKey());
             Field f = backendFields.get(target);
             if (f == null) throw refusal("carryOpen names the carrier " + e.getKey() + ", of which the backend subtype carries no value (" + carriersOf(backendFields) + ")");
@@ -493,7 +650,7 @@ public class FlowModel {
         List<String> left = new ArrayList<>();
         for (Field f : backendFields.values()) if (!backendAccounted.containsKey(f.name)) left.add(f.name);
         if (restThing != null) {
-            Stood s = stood.get(restThing);
+            Stood s = curRec.stood.get(restThing);
             for (String target : new ArrayList<>(left)) {
                 Field f = backendFields.get(target);
                 if (f.isOtherKeys()) continue;   // the open keys are said by carryOpen, or absent
@@ -508,7 +665,7 @@ public class FlowModel {
         }
         List<Field> order = new ArrayList<>(backendFields.values());
         items.sort(Comparator.comparingInt((Item i) -> i.kind.ordinal()).thenComparingInt(i -> order.indexOf(i.field)));
-        steps.put("record", items);
+        steps.put(curRec.stepKey(), items);
     }
 
     private static Set<String> carriersOf(Map<String, Field> fields) {
@@ -520,7 +677,7 @@ public class FlowModel {
     private Item recordItem(String target, Field f, Object spec) {
         String place = "record." + target;
         if ("asked".equals(spec)) return askedItem(target, f, target, null, place);
-        if ("absent".equals(spec)) return absentItem("record", target, f, place);
+        if ("absent".equals(spec)) return absentItem(curRec.stepKey(), target, f, place);
         Map<String, Object> d = map(spec, place);
         Set<String> keys = new TreeSet<>(d.keySet());
         if (keys.equals(Set.of("asked")) || keys.equals(Set.of("asked", "as"))) {
@@ -530,18 +687,18 @@ public class FlowModel {
             String c = string(d.get("carried"), place + ".carried");
             int dot = c == null ? -1 : c.indexOf('.');
             if (dot < 1 || dot == c.length() - 1) throw refusal(place + ".carried is \"thing.value\" (not " + c + ")");
-            Stood s = stood.get(c.substring(0, dot));
-            if (s == null) throw refusal(place + ".carried names no stood thing: " + c.substring(0, dot) + " (" + stood.keySet() + ")");
+            Stood s = curRec.stood.get(c.substring(0, dot));
+            if (s == null) throw refusal(place + ".carried names no stood thing: " + c.substring(0, dot) + " (" + curRec.stood.keySet() + ")");
             return carriedItem(s, f, c.substring(dot + 1));
         }
         if (keys.equals(Set.of("constant"))) {
-            Item i = new Item("record", target, f, Kind.CONSTANT);
+            Item i = new Item(curRec.stepKey(), target, f, Kind.CONSTANT);
             i.constant = constant(f, d.get("constant"), place);
             return i;
         }
         if (keys.equals(Set.of("supplied"))) {
-            Item i = new Item("record", target, f, Kind.SUPPLIED);
-            i.rule = rule(string(d.get("supplied"), place + ".supplied"), "record", f, place);
+            Item i = new Item(curRec.stepKey(), target, f, Kind.SUPPLIED);
+            i.rule = rule(string(d.get("supplied"), place + ".supplied"), curRec.stepKey(), f, place);
             return i;
         }
         throw refusal(place + " is \"asked\", \"absent\", or one of {\"asked\": value, \"as\": \"text\"}, {\"carried\": \"thing.value\"}, {\"constant\": value}, {\"supplied\": rule}");
@@ -554,7 +711,7 @@ public class FlowModel {
         }
         if (!convertible(u, f, as)) throw refusal(place + ": the user value " + user + " (" + u.declared + ") cannot be given to " + f.name + " (" + f.declared + ")"
                 + (as == null ? "; say \"as\": \"text\" for a number or a boolean" : ""));
-        Item i = new Item("record", target, f, Kind.AS_ASKED);
+        Item i = new Item(curRec.stepKey(), target, f, Kind.AS_ASKED);
         i.source = user;
         i.as = as;
         i.from = "user";
@@ -566,7 +723,7 @@ public class FlowModel {
         String place = "the " + s.name + "'s " + name;
         if (src == null) throw refusal(place + " does not exist: the previous record's bean (" + s.describe() + ") has no " + name + " to carry to " + target.name);
         if (!convertible(src, target, null)) throw refusal(place + " (" + src.declared + ") cannot be carried to " + target.name + " (" + target.declared + "): the types differ");
-        Item i = new Item("record", target.name, target, Kind.CARRIED);
+        Item i = new Item(curRec.stepKey(), target.name, target, Kind.CARRIED);
         i.thing = s.name;
         i.source = name;
         return i;
@@ -626,33 +783,45 @@ public class FlowModel {
             return i;
         }
         if (keys.equals(Set.of("recorded")) || keys.equals(Set.of("recorded", "as"))) {
-            String name = string(d.get("recorded"), place + ".recorded");
-            Field b = backendFields.get(name);
+            Object[] ref = recordRef(string(d.get("recorded"), place + ".recorded"), place + ".recorded");
+            Rec rec = (Rec) ref[0];
+            String name = (String) ref[1];
+            Field b = rec.fields.get(name);
             String as = string(d.get("as"), place + ".as");
-            if (b == null || b.isOtherKeys()) throw refusal(place + ".recorded is " + name + ", which is no value of the backend's bean");
+            if (b == null || b.isOtherKeys()) throw refusal(place + ".recorded is " + name + ", which is no value of the bean of " + rec.to.fullyQualifiedName);
             if (!convertible(b, f, as)) throw refusal(place + ": the backend value " + name + " (" + b.declared + ") cannot be given to " + target + " (" + f.declared + ")");
             Item i = new Item(block, target, f, Kind.AS_MADE);
             i.source = name;
             i.as = as;
             i.from = "recorded";
+            i.rec = rec;
+            i.qualified = records.size() > 1;
             return i;
         }
         if (keys.equals(Set.of("made"))) {
-            String name = string(d.get("made"), place + ".made");
-            Field o = outputs.get(name);
-            if (o == null) throw refusal(place + ".made is " + name + ", which is no output of " + backendTemplate.fullyQualifiedName + " (outputs: " + outputs.keySet() + ")");
+            Object[] ref = recordRef(string(d.get("made"), place + ".made"), place + ".made");
+            Rec rec = (Rec) ref[0];
+            String name = (String) ref[1];
+            Field o = rec.outputs.get(name);
+            if (o == null) throw refusal(place + ".made is " + name + ", which is no output of " + rec.template.fullyQualifiedName + " (outputs: " + rec.outputs.keySet() + ")");
             if (!convertible(o, f, null)) throw refusal(place + ": the output " + name + " (" + o.declared + ") cannot be given to " + target + " (" + f.declared + ")");
             Item i = new Item(block, target, f, Kind.AS_MADE);
             i.source = name;
             i.from = "made";
+            i.rec = rec;
+            i.qualified = records.size() > 1;
             return i;
         }
         if (keys.equals(Set.of("is", "otherwise", "when"))) {
             Map<String, Object> w = map(d.get("when"), place + ".when");
-            String name = w.size() == 1 ? string(w.get("made"), place + ".when.made") : null;
-            if (name == null || !outputs.containsKey(name)) throw refusal(place + ".when is {\"made\": output} with an output of " + backendTemplate.fullyQualifiedName + " (" + outputs.keySet() + ")");
+            Object[] ref = w.size() == 1 ? recordRef(string(w.get("made"), place + ".when.made"), place + ".when.made") : null;
+            if (ref == null || !((Rec) ref[0]).outputs.containsKey((String) ref[1])) {
+                throw refusal(place + ".when is {\"made\": output} with an output of a record's template (" + (ref == null ? "" : ((Rec) ref[0]).outputs.keySet()) + ")");
+            }
             Item i = new Item(block, target, f, Kind.AS_MADE);
-            i.whenMade = name;
+            i.whenMade = (String) ref[1];
+            i.rec = (Rec) ref[0];
+            i.qualified = records.size() > 1;
             i.is = constant(f, d.get("is"), place + ".is");
             i.otherwise = constant(f, d.get("otherwise"), place + ".otherwise");
             i.from = "made";
@@ -673,6 +842,21 @@ public class FlowModel {
     }
 
     // ---- pieces --------------------------------------------------------------------------------------------------------------
+
+    /** A value of a record, as a reply names it: {@code record.value}, or {@code value} when the flow has one record. Returns the record and the value's name. */
+    private Object[] recordRef(String text, String place) {
+        if (text == null) throw refusal(place + " is a text");
+        List<String> names = new ArrayList<>();
+        for (Rec r : records) names.add(r.name);
+        int dot = text.indexOf('.');
+        if (dot > 0) {
+            String r = text.substring(0, dot);
+            for (Rec x : records) if (x.name.equals(r)) return new Object[]{x, text.substring(dot + 1)};
+            throw refusal(place + ": " + r + " is no record of the flow (" + names + ")");
+        }
+        if (records.size() != 1) throw refusal(place + ": " + text + " is ambiguous: the flow makes several records (" + names + "); say record." + text);
+        return new Object[]{records.get(0), text};
+    }
 
     private void claim(Map<String, String> accounted, String target, String place, String what) {
         String before = accounted.put(target, place);

@@ -16,8 +16,13 @@ public class FlowTemplateCompilerConfig extends ClientSideTemplateCompilerConfig
 
     /** The fully qualified name of the user subtype the flow starts from. */
     public String from;
-    /** The fully qualified name of the backend subtype the flow ends in. */
+    /** The fully qualified name of the backend subtype the flow ends in (the shorthand of a flow of one record, named {@code record}). */
     public String to;
+    /**
+     * T41 (G3, "records, shorthand kept"): the records of a flow, in order, each with its own {@code name}, {@code to}, {@code stood}, {@code record},
+     * {@code carry} and {@code carryOpen}. The members at the top are the shorthand of one record; a flow has one or the other.
+     */
+    public java.util.List<Map<String, Object>> records = new java.util.ArrayList<>();
     /** Each thing that stood before, by a name of the flow's own: {@code node}, {@code madeBy}, optional {@code addressed}, {@code identity} ({@code user}, {@code backend}) and {@code of}. */
     public Map<String, Map<String, Object>> stood = new LinkedHashMap<>();
     /** The user bean's own values (not the request's, nor the reply's): each {@code supplied} or {@code constant}. */

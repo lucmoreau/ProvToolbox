@@ -1,0 +1,109 @@
+{
+  "var": {
+    "registering": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The registration",
+        "@output": "true"
+      }
+    ],
+    "part1": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The line made",
+        "@output": "true"
+      }
+    ],
+    "agent": [
+      {
+        "@id": "ex:*",
+        "@documentation": "Who registers",
+        "@input": "compulsory"
+      }
+    ],
+    "atype": [
+      {
+        "@id": "ex:*",
+        "@documentation": "The kind of act",
+        "@input": "compulsory"
+      }
+    ],
+    "time": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "When",
+          "@input": "compulsory"
+        }
+      ]
+    ],
+    "pattributes": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The line's keys, as JSON",
+          "@input": "optional"
+        }
+      ]
+    ],
+    "partLine": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The line's number",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "line"
+        }
+      ]
+    ],
+    "partPriceUnit": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The line's price, as text",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "priceUnit"
+        }
+      ]
+    ],
+    "partProduct": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The product",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "product"
+        }
+      ]
+    ],
+    "partQuantity": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "The quantity, as text",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "quantity"
+        }
+      ]
+    ],
+    "partPriceSource": [
+      [
+        {
+          "@type": "xsd:string",
+          "@documentation": "Where the price comes from",
+          "@input": "optional",
+          "@inJson": "pattributes",
+          "@inJson.key": "priceSource"
+        }
+      ]
+    ]
+  },
+  "context": {
+    "ex": "http://example.org/"
+  },
+  "template": "https://example.org/templates/t36/registering.provn"
+}

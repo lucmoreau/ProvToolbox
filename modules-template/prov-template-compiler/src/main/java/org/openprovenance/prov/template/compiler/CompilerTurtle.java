@@ -102,7 +102,8 @@ public class CompilerTurtle {
                 .append("    rdfs:label ").append(literal(flow.flow.name)).append(" ;\n")
                 .append("    tpl:fullyQualifiedName ").append(literal(flow.flow.fullyQualifiedName)).append(" ;\n")
                 .append("    tpl:from :").append(local(flow.from.name)).append(" ;\n")
-                .append("    tpl:to :").append(local(flow.to.name)).append(" ;\n");
+                ;
+        for (FlowModel.Rec r : flow.records) sb.append("    tpl:to :").append(local(r.to.name)).append(" ;\n");
         List<String> origins = new java.util.ArrayList<>();
         for (java.util.Map.Entry<String, List<FlowModel.Item>> step : flow.steps.entrySet()) {
             for (FlowModel.Item i : step.getValue()) {

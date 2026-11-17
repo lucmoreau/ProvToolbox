@@ -107,7 +107,7 @@ public abstract class T36FlowFixture extends TestCase {
             + "\"stood\":{\"document\":{\"node\":\"document0\",\"madeBy\":\"document1\",\"addressed\":\"subject0\",\"of\":\"OF\","
             + "              \"identity\":{\"user\":\"reference\",\"backend\":\"name1\"}}},"
             + "\"ask\":{\"agent\":{\"supplied\":\"caller\"},\"time\":{\"supplied\":\"clock\"}},"
-            + "\"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Sending\"},\"vendor\":\"asked\",\"attributesOther\":\"absent\"},"
+            + "\"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Sending\"},\"vendor\":\"asked\",\"witness\":\"absent\",\"attributesOther\":\"absent\"},"
             + "\"carry\":{\"document\":[\"name1\"]},"
             + "\"reply\":{\"answer\":{\"outcome\":{\"when\":{\"made\":\"document1\"},\"is\":\"accepted\",\"otherwise\":\"failed\"},\"result\":{\"recorded\":\"name1\"},\"code\":\"absent\"},"
             + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
@@ -152,9 +152,26 @@ public abstract class T36FlowFixture extends TestCase {
             + "\"from\":\"t36.Confirm\",\"to\":\"t36.Sending\","
             + "\"stood\":{\"document\":{\"node\":\"document0\",\"madeBy\":\"document1\",\"addressed\":\"subject0\",\"of\":\"t36.LineChange\"}},"
             + "\"ask\":{\"agent\":{\"supplied\":\"caller\"},\"time\":{\"supplied\":\"clock\"},\"attributes\":\"absent\"},"
-            + "\"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Confirming\"},\"vendor\":{\"supplied\":\"vendor\"},\"attributesOther\":\"absent\"},"
+            + "\"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Confirming\"},\"vendor\":{\"supplied\":\"vendor\"},\"witness\":\"absent\",\"attributesOther\":\"absent\"},"
             + "\"carry\":{\"document\":[\"name1\"]},"
             + "\"reply\":{\"answer\":{\"outcome\":{\"when\":{\"made\":\"document1\"},\"is\":\"accepted\",\"otherwise\":\"failed\"},\"result\":{\"recorded\":\"name1\"},\"code\":\"absent\"},"
+            + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
+            + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
+
+    /**
+     * A composite record (T41, G6): a request that gives nothing sends a document made of several: the composite's own values, then one element for each previous record
+     * the application has (it loops), each standing on its own previous record, the agent shared between the elements.
+     */
+    static final String FLOW_COMPOSITE = "{\"@type\":\"flow\",\"name\":\"bundle_flow\",\"fullyQualifiedName\":\"" + PKG + ".flows.BundleFlow\",\"package\":\"" + PKG + ".flows\","
+            + "\"from\":\"t36.Confirm\","
+            + "\"ask\":{\"agent\":{\"supplied\":\"caller\"},\"time\":{\"supplied\":\"clock\"},\"subject0\":{\"supplied\":\"documentNode\"},\"attributes\":\"absent\"},"
+            + "\"records\":[{\"name\":\"bundle\",\"composite\":\"t36.ExchangingComposite\","
+            + "   \"record\":{\"count\":{\"supplied\":\"count\"},\"type\":{\"constant\":\"exchanging\"}},"
+            + "   \"shared\":{\"witness\":{\"supplied\":\"witness\"}},"
+            + "   \"elements\":{\"stood\":{\"cited\":{\"node\":\"document0\",\"madeBy\":\"document1\",\"of\":\"t36.LineChange\"}},"
+            + "                 \"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Citing\"},\"attributes\":{\"supplied\":\"attributes\"}},"
+            + "                 \"carry\":{\"cited\":[\"name1\"]}}}],"
+            + "\"reply\":{\"answer\":{\"outcome\":{\"constant\":\"accepted\"},\"result\":{\"recorded\":\"bundle.count\",\"as\":\"text\"},\"code\":\"absent\"},"
             + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
             + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
 
@@ -183,6 +200,8 @@ public abstract class T36FlowFixture extends TestCase {
                 + " \"package\": \"" + PKG + ".backend\", \"template\": \"t36.exchanging\", \"cbindings\": \"" + dir + "exchanging.json\" }"));
         templates.add(om.readTree("{ \"@type\": \"simple\", \"fullyQualifiedName\": \"t36.Registering\", \"name\": \"registering\","
                 + " \"package\": \"" + PKG + ".backend\", \"template\": \"t36.registering\", \"cbindings\": \"" + dir + "registering.json\" }"));
+        templates.add(om.readTree("{\"@type\":\"composite\",\"fullyQualifiedName\":\"t36.ExchangingComposite\",\"name\":\"exchanging_composite\",\"package\":\"" + PKG + ".backend\","
+                + "\"consistsOf\":\"t36.Exchanging\",\"sharing\":[\"witness\"]}"));
         for (String e : entries) templates.add(om.readTree(e));
         return c;
     }

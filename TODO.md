@@ -99,6 +99,7 @@ T36's `flow` entry (design §13) came from one example: one request, one previou
 **Built** (branch `claude/t41-flow-extension`, from `origin/development2_0` at `78e095819`, 2026-11-16; never pushed):
 - **Stage A, NS**: a flow may stand on nothing (G1). **Stage B, XT**: a stood record is typed by its own template, `of` any subtype or template (G2). **Stage C, MR**: `records`, chaining from an earlier record's bean and outputs, one method for each record, replies naming their record (G3); the stage 9 members stay as the shorthand. **Stage D**: the type checker knows the JSON text runtime's types.
 - Tests: `T36FlowTest` (26), `T36FlowCompatTest` (1: the stage 9 declaration compiles to the same Java, Python and JavaScript, against goldens), the fixture with three more templates (`exchanging`, `registering`) and a case for each gap with made-up names.
+- **Continuation (2026-11-17)**: a request that gives nothing has no request class and `ask` takes none; `rest: absent` narrows a shared subtype (G7a); the composite record (G6): `composite`, `elements`, `shared`, three methods, the application loops (design §14.12 to §14.15). `spread` is T45.
 - **Not verified**: the Python and JavaScript are parsed, not run; the first application's own 44 commands are not run through the new shapes; two flows of one request tied by the application (G4) are the application's.
 
 ---

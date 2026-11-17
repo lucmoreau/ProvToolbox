@@ -71,6 +71,14 @@
           "@inJson": "attributes"
         }
       ]
+    ],
+    "witness": [
+      {
+        "@id": "ex:*",
+        "@type": "xsd:int",
+        "@documentation": "A witness, by its number",
+        "@input": "optional"
+      }
     ]
   },
   "context": {

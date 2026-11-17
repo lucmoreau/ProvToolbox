@@ -433,7 +433,7 @@ public class T36FlowTest extends T36FlowFixture {
             ((ArrayNode) obj(f, "carry").get("document")).add("ptype");
             obj(f, "record").put("ptype", "absent");
         }, "ptype is accounted for twice");
-        refused("an input that is no input", f -> obj(f, "record").put("nosuch", "absent"), "record.nosuch is no input of the backend subtype");
+        refused("an input that is no input", f -> obj(f, "record").put("nosuch", "absent"), "record.nosuch is no input of t36.LineChange");
         refused("the open keys of a carrier left out", f -> obj(f, "carryOpen").removeAll(), "pattributesOther", "not accounted for");
         refused("the open keys of a carrier that is no carrier", f -> obj(f, "carryOpen").put("nocarrier", "line"), "nocarrier");
         refused("rest for two things", f -> obj(f, "carry").put("document", "rest"), "\"rest\" is used for two stood things");
@@ -949,5 +949,98 @@ public class T36FlowTest extends T36FlowFixture {
         } catch (FlowException e) {
             assertTrue(e.getMessage(), e.getMessage().contains("partProduct is compulsory"));
         }
+    }
+
+    // ---- a composite record (T41, G6, design §14.12) ----------------------------------------------------------------------------
+
+    static final List<String> COMPOSITE_SOURCES = List.of(FLOWS + "BundleFlow.java", FLOWS + "BundleFlowRules.java",
+            "org/example/t36flow/backend/client/integrator/Exchanging_compositeInputs.java", "org/example/t36flow/backend/client/integrator/ExchangingInputs_1.java",
+            "org/example/t36flow/backend/client/integrator/Line_changeInputs.java", "org/example/t36flow/backend/client/integrator/ChangingOutputs.java",
+            "org/example/t36flow/actions/client/integrator/ConfirmInputs.java", "org/example/t36flow/actions/client/integrator/ConfirmReply.java");
+
+    public void testACompositeRecordIsBuiltInPartsAndTheApplicationLoops() throws Exception {
+        generate("comp", List.of(LINE_CHANGE, CONFIRM, FLOW_COMPOSITE));
+        ClassLoader l = compile("comp", COMPOSITE_SOURCES);
+        if (l == null) return;
+        Class<?> flow = l.loadClass(FLOWS_PKG + "BundleFlow");
+        List<String> names = Arrays.stream(flow.getMethods()).filter(m -> java.lang.reflect.Modifier.isStatic(m.getModifiers())).map(java.lang.reflect.Method::getName).sorted().collect(Collectors.toList());
+        assertEquals(List.of("answer", "ask", "failed", "recordBundle", "recordBundleElement", "recordBundleShare", "refused"), names);
+
+        Map<String, Object> answers = new LinkedHashMap<>();
+        answers.put("caller", "agent-7");
+        answers.put("clock", "2026-11-16T10:00:00Z");
+        answers.put("documentNode", "D-new");
+        answers.put("count", 2);
+        answers.put("attributes", "{}");
+        answers.put("witness", 7);
+        Object rules = rulesOf(l, "BundleFlowRules", answers, new Calls());
+        Object asked = T36SubtypeTest.invoke(null, flow, "ask", rules);
+        Object bundle = T36SubtypeTest.invoke(null, flow, "recordBundle", asked, rules);
+        assertEquals(2, T36SubtypeTest.get(bundle, "count"));
+        assertEquals("exchanging", T36SubtypeTest.get(bundle, "type"));
+        assertEquals("no element yet: the application adds them", 0, ((List<?>) T36SubtypeTest.get(bundle, "__elements")).size());
+
+        // the application loops: one element for each previous record it cites, each standing on its own
+        for (String[] cited : new String[][]{{"D1", "RFQ-1"}, {"D2", "RFQ-2"}}) {
+            Object previous = make(l, BACKEND_PKG + "Line_changeInputs", "name1", cited[1]);
+            Object previousMade = make(l, BACKEND_PKG + "ChangingOutputs", "document1", cited[0]);
+            Object element = T36SubtypeTest.invoke(null, flow, "recordBundleElement", asked, bundle, previous, previousMade, rules);
+            assertEquals("CHAINED from the element's own previous record", cited[0], T36SubtypeTest.get(element, "document0"));
+            assertEquals("CARRIED OVER from it", cited[1], T36SubtypeTest.get(element, "name1"));
+            assertEquals("CONSTANT", "Citing", T36SubtypeTest.get(element, "atype"));
+            assertEquals("AS ASKED: the user bean's agent", "agent-7", T36SubtypeTest.get(element, "agent"));
+            assertEquals("AS ASKED: the user bean's time", "2026-11-16T10:00:00Z", T36SubtypeTest.get(element, "time"));
+            assertNull("the shared witness is not the element's own to give: the sharing applies it", T36SubtypeTest.get(element, "witness"));
+            T36SubtypeTest.invoke(bundle, bundle.getClass(), "addElements", element);
+        }
+        Object shared = T36SubtypeTest.invoke(null, flow, "recordBundleShare", asked, bundle, rules);
+        assertSame(bundle, shared);
+        for (Object element : (List<?>) T36SubtypeTest.get(bundle, "__elements")) assertEquals("the shared variable is given to every element", 7, T36SubtypeTest.get(element, "witness"));
+        Object reply = T36SubtypeTest.invoke(null, flow, "answer", asked, bundle);
+        assertEquals("accepted", T36SubtypeTest.get(reply, "outcome"));
+        assertEquals("2", T36SubtypeTest.get(reply, "result"));
+    }
+
+    public void testTheTableSaysWhatIsGivenForEachElement() throws Exception {
+        generate("compdoc", List.of(LINE_CHANGE, CONFIRM, FLOW_COMPOSITE));
+        String doc = Files.readString(Path.of(OUT + "compdoc/libs/" + DOC));
+        assertTrue(doc, doc.contains("<tr><td>record bundle</td><td>count</td><td class='csv_kind'>supplied</td><td>the application's rule count</td></tr>"));
+        assertTrue(doc, doc.contains("<tr><td>record bundle element</td><td>document0</td><td class='csv_kind'>chained</td><td>the cited as it stood: document1 of the record that made it</td></tr>"));
+        assertTrue(doc, doc.contains("<tr><td>record bundle element</td><td>name1</td><td class='csv_kind'>carried over</td><td>the cited's name1, unchanged</td></tr>"));
+        assertTrue(doc, doc.contains("<tr><td>record bundle shared</td><td>witness</td><td class='csv_kind'>supplied</td><td>the application's rule witness</td></tr>"));
+    }
+
+    void refusedComposite(String title, Consumer<ObjectNode> edit, String... contains) throws Exception {
+        ObjectNode flow = (ObjectNode) om.readTree(FLOW_COMPOSITE);
+        edit.accept(flow);
+        ObjectNode c = catalogue("refusal", List.of(LINE_CHANGE, CONFIRM, om.writeValueAsString(flow)));
+        TemplatesProjectConfiguration configs = ConfigProcessor.objectMapper.readValue(om.writeValueAsString(c), TemplatesProjectConfiguration.class);
+        try {
+            new ConfigProcessor(pf).checkSubtypes(configs, ".");
+            fail(title + ": accepted");
+        } catch (FlowException e) {
+            for (String m : contains) assertTrue(title + ": " + m + " in " + e.getMessage(), e.getMessage().contains(m));
+        }
+    }
+
+    public void testEveryInputOfTheCompositeAndOfItsElementsIsAccountedForOnce() throws Exception {
+        refusedComposite("an input of the composite left out", f -> obj(rec(f, 0), "record").remove("count"), "inputs [count] are not accounted for");
+        refusedComposite("an input of the element left out", f -> obj(obj(rec(f, 0), "elements"), "record").remove("atype"), "inputs [atype] are not accounted for");
+        refusedComposite("a shared variable left out", f -> obj(rec(f, 0), "shared").removeAll(), "[witness], are not accounted for", "shared");
+        refusedComposite("a variable that is not shared", f -> obj(rec(f, 0), "shared").set("time", om.readTree("\"asked\"")), "shared.time is not shared");
+        refusedComposite("a shared variable also said by the element", f -> obj(obj(rec(f, 0), "elements"), "record").put("witness", "absent"), "no input of");
+        refusedComposite("an element that stands on a thing it cannot name", f -> ((ObjectNode) obj(obj(rec(f, 0), "elements"), "stood").get("cited")).remove("of"),
+                "a stood thing of a composite record says its previous record");
+        refusedComposite("an element with an address to check", f -> ((ObjectNode) obj(obj(rec(f, 0), "elements"), "stood").get("cited")).put("addressed", "subject0"), "no addressed, no identity");
+        refusedComposite("a composite that is none", f -> rec(f, 0).put("composite", "t36.Nope"), "is no composite of the catalogue");
+        refusedComposite("a composite without elements", f -> rec(f, 0).remove("elements"), "says how one element is built");
+        refusedComposite("elements with a subtype", f -> {
+            rec(f, 0).remove("composite");
+            rec(f, 0).put("to", "t36.LineChange");
+        }, "elements and shared are for a composite record");
+    }
+
+    public void testACompositeRecordEmitsWellFormedPythonAndJavaScript() throws Exception {
+        wellFormed("emitcomp", List.of(LINE_CHANGE, CONFIRM, FLOW_COMPOSITE), "BundleFlow", "BundleFlowRules");
     }
 }

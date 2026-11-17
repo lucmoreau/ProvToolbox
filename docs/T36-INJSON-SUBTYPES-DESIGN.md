@@ -1160,3 +1160,19 @@ Put to Luc: build it as designed, or not (G6).
 - **G7. "(a) rest: absent (Recommended)" and "File `spread` as a ticket (Recommended)"**: `"rest": "absent"` in `record` is built (a flow narrows a shared subtype; refused for a compulsory
   input; shown as `absent` rows); (b), reusing a rule for several values, is not built; the `spread` origin is ticket T45.
 
+### 14.15 Built: the composite record (G6) and what the code changed in §14.12
+
+Built as designed: a record names a composite (`composite`), says how one element is built (`elements`: stood, record, carry, carryOpen) and where each shared variable comes from (`shared`).
+Generated, for a record named `bundle`: `recordBundle` (the composite's own bean), `recordBundleElement` (one element: the user bean, the composite so far, what the element stands on, the
+rules) and `recordBundleShare` (applies the shared variables to every element the composite holds, through the bean's own `shareAll<Variable>` mutators, and returns the composite).
+The application loops, adds each element with `addElements`, then calls the sharing. Every input of the composite, of the element and every shared variable is accounted for exactly once;
+the table's steps are `record bundle`, `record bundle element`, `record bundle shared`. Checked against the code, what changed:
+
+1. The composite's own inputs are the compiler's plumbing (`count`, `type`: the library schema `composite-bean.json`; the name of the bean is a constant), not template variables: the record says those.
+2. **A shared variable must be an `Integer`**: the compiler's mutators for shared variables take one (nextgen's nodes are `xsd:int`); the model refuses another type by name. That is the compiler's
+   own limit (`generateMutatorForSharedVariables`), not changed here.
+3. An element stands on a previous record of its own, which the request cannot address or name: no `addressed`, no `identity`; its stood things say `of` or `record`.
+4. What the store makes of a composite is per element: a reply or a later record cannot chain from a composite's outputs (it has none).
+5. Two composites of one template make the generator's own type checker log an error (`BeanLocalEnactor2`): pre-existing, not part of this; the fixture has one.
+6. **G7a**, `"rest": "absent"` in `record`, is built and tested.
+

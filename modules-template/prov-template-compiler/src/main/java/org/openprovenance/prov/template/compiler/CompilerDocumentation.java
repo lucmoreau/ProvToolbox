@@ -248,7 +248,7 @@ public class CompilerDocumentation {
     private void flowTable(FlowModel flow) {
         os.println("<div class='csv_flow' id='flow_" + html(flow.flow.fullyQualifiedName.replace('.', '_')) + "'>");
         os.println("<div class='csv_flow_title'>" + makeSpan("Flow " + html(flow.flow.fullyQualifiedName), "csv_flow_name")
-                + makeSpan("from " + html(flow.from.fullyQualifiedName) + " to " + html(flow.records.stream().map(r -> r.to.fullyQualifiedName).collect(java.util.stream.Collectors.joining(", "))), "csv_doc") + "</div>");
+                + makeSpan("from " + html(flow.from.fullyQualifiedName) + " to " + html(flow.records.stream().map(FlowModel.Rec::describe).collect(java.util.stream.Collectors.joining(", "))), "csv_doc") + "</div>");
         os.println("<div class='csv_doc'>Every input of the backend's bean and of the user bean has one origin, said here and in a comment beside the assignment in the generated code.</div>");
         os.println("<table class='csv_flow_table'>");
         os.println("<tr><th>step</th><th>value</th><th>kind</th><th>comes from</th></tr>");

@@ -1,5 +1,6 @@
 package org.openprovenance.prov.template.compiler;
 
+import org.openprovenance.prov.template.compiler.configuration.CompositeTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.FlowTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.SimpleTemplateCompilerConfig;
 import org.openprovenance.prov.template.compiler.configuration.SubtypeTemplateCompilerConfig;
@@ -176,8 +177,15 @@ public class FlowModel {
      * flow are the shorthand of one record named {@code record}, which generates what stage 9 generated.
      */
     public static final class Rec {
+        /** What the record builds (T41, G6): a bean of a subtype; a composite's own bean; one element of it; or the application of the composite's shared variables. */
+        public enum RecKind { SUBTYPE, COMPOSITE, ELEMENT, SHARED }
+
         public final String name;
         public final boolean shorthand;
+        public RecKind kind = RecKind.SUBTYPE;
+        public CompositeTemplateCompilerConfig composite;
+        /** For a composite: the record of one element and the application of the shared variables. */
+        public Rec element, shared;
         public SubtypeTemplateCompilerConfig to;
         public SimpleTemplateCompilerConfig template;
         public TemplateBindingsSchema schema;
@@ -192,12 +200,18 @@ public class FlowModel {
 
         /** The key of the step in {@link FlowModel#steps}, and the step in the table: {@code record}, or {@code record <name>}. */
         public String stepKey() {
-            return shorthand ? "record" : "record " + name;
+            return shorthand ? "record" : "record " + name + (kind == RecKind.ELEMENT ? " element" : kind == RecKind.SHARED ? " shared" : "");
+        }
+
+        /** The subtype, or the composite, in words. */
+        public String describe() {
+            return to != null ? to.fullyQualifiedName : composite.fullyQualifiedName;
         }
 
         /** The name of the method in the generated class. */
         public String methodName() {
-            return shorthand ? "record" : "record" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
+            return shorthand ? "record" : "record" + Character.toUpperCase(name.charAt(0)) + name.substring(1)
+                    + (kind == RecKind.ELEMENT ? "Element" : kind == RecKind.SHARED ? "Share" : "");
         }
 
         /** The names of the parameters of {@code answer} for this record: the bean built, and what the store made of it. */
@@ -214,6 +228,10 @@ public class FlowModel {
     private static final class Decl {
         String name;
         String to;
+        /** T41 (G6): a composite record: the composite's fully qualified name, the declaration of one element, and the shared variables. */
+        String composite;
+        Decl elements;
+        Map<String, Object> shared = new LinkedHashMap<>();
         Map<String, Map<String, Object>> stood = new LinkedHashMap<>();
         Map<String, Object> record = new LinkedHashMap<>(), carry = new LinkedHashMap<>();
         Map<String, String> carryOpen = new LinkedHashMap<>();
@@ -243,6 +261,8 @@ public class FlowModel {
     public final List<Rec> records = new ArrayList<>();
     private Rec curRec;
     private Decl cur;
+    /** Every record read, the elements and the sharing of a composite included (the steps the table and the rules name). */
+    public final List<Rec> allRecs = new ArrayList<>();
     /** The assignments of each step: {@code ask}, {@code record}, and the reply blocks {@code answer}, {@code refused}, {@code failed}. */
     public final Map<String, List<Item>> steps = new LinkedHashMap<>();
     public final Map<String, Rule> rules = new LinkedHashMap<>();
@@ -302,25 +322,99 @@ public class FlowModel {
         for (Decl d : decls) {
             if (!names.add(d.name)) throw refusal("the record " + d.name + " is declared twice");
             Rec rec = new Rec(d.name, decls.size() == 1 && flow.records.isEmpty());
-            rec.to = subtype(configs, d.to, "records." + d.name + ".to");
-            rec.template = CompilerSubtype.refined(configs, rec.to);
-            rec.schema = compilerUtil.getBindingsSchema(rec.template, cbindingsBaseDir);
-            rec.fields = fieldsOf(rec.schema, rec.to, compilerUtil, compilerSubtype);
-            rec.outputs = outputsOf(rec.schema, compilerUtil);
+            if (d.composite != null) {
+                composite(configs, compilerUtil, cbindingsBaseDir, d, rec, declOf);
+            } else {
+                rec.to = subtype(configs, d.to, "records." + d.name + ".to");
+                rec.template = CompilerSubtype.refined(configs, rec.to);
+                rec.schema = compilerUtil.getBindingsSchema(rec.template, cbindingsBaseDir);
+                rec.fields = fieldsOf(rec.schema, rec.to, compilerUtil, compilerSubtype);
+                rec.outputs = outputsOf(rec.schema, compilerUtil);
+                declOf.put(rec, d);
+            }
             records.add(rec);
-            declOf.put(rec, d);
+            allRecs.add(rec);
+            if (rec.element != null) allRecs.add(rec.element);
+            if (rec.shared != null) allRecs.add(rec.shared);
         }
         // what each record stands on, in order: a later record may chain from an earlier one
-        for (Rec rec : records) {
+        for (Rec rec : allRecs) {
+            if (rec.kind == Rec.RecKind.SHARED) continue;
             use(rec, declOf.get(rec));
             readStood(configs, compilerUtil, compilerSubtype, cbindingsBaseDir);
         }
         readAsk();
-        for (Rec rec : records) {
+        for (Rec rec : allRecs) {
             use(rec, declOf.get(rec));
-            readRecord();
+            if (rec.kind == Rec.RecKind.SHARED) readShared(declOf.get(rec));
+            else readRecord();
         }
         readReply();
+    }
+
+    /**
+     * T41 (G6, "Build as designed"): a record that names a composite. The record builds the composite's own bean; {@code elements} says how one element is built (the
+     * general bean of the template the composite consists of, minus the variables the composite shares); {@code shared} says where each shared variable comes from.
+     */
+    private void composite(TemplatesProjectConfiguration configs, CompilerUtil compilerUtil, String cbindingsBaseDir, Decl d, Rec rec, Map<Rec, Decl> declOf) {
+        CompositeTemplateCompilerConfig comp = null;
+        for (TemplateCompilerConfig c : configs.templates) {
+            if (c instanceof CompositeTemplateCompilerConfig && Objects.equals(c.fullyQualifiedName, d.composite)) comp = (CompositeTemplateCompilerConfig) c;
+        }
+        if (comp == null) throw refusal("records." + d.name + ".composite names " + d.composite + ", which is no composite of the catalogue");
+        if (d.elements == null) throw refusal("records." + d.name + ": a composite record says how one element is built (elements)");
+        SimpleTemplateCompilerConfig consisted = null;
+        for (TemplateCompilerConfig c : configs.templates) {
+            if (c instanceof SimpleTemplateCompilerConfig && Objects.equals(c.fullyQualifiedName, comp.consistsOf)) consisted = (SimpleTemplateCompilerConfig) c;
+        }
+        if (consisted == null) throw refusal("the composite " + d.composite + " consists of " + comp.consistsOf + ", which is no template of the catalogue");
+        List<String> sharing = comp.sharing == null ? List.of() : comp.sharing;
+        for (String k : d.shared.keySet()) if (!sharing.contains(k)) throw refusal("records." + d.name + ".shared." + k + " is not shared by " + d.composite + " (it shares " + sharing + ")");
+
+        SimpleTemplateCompilerConfig own = new SimpleTemplateCompilerConfig();
+        own.name = comp.name;
+        own.package_ = comp.package_;
+        own.cbindings = org.openprovenance.prov.template.compiler.common.Constants.OPENPROVENANCE_COMPOSITE_BEAN_JSON;
+        own.template = "openprovenance:composite-bean.provn";
+        TemplateBindingsSchema compositeSchema = compilerUtil.getBindingsSchema(own);
+        TemplateBindingsSchema elementSchema = compilerUtil.getBindingsSchema(consisted, cbindingsBaseDir);
+
+        rec.kind = Rec.RecKind.COMPOSITE;
+        rec.composite = comp;
+        rec.template = consisted;
+        rec.schema = compositeSchema;
+        rec.fields = fieldsOfTemplate(compositeSchema, compilerUtil);
+        rec.outputs = new LinkedHashMap<>();   // what the store makes of a composite is per element: nothing to chain from or answer with
+
+        Map<String, Field> elementFields = fieldsOfTemplate(elementSchema, compilerUtil);
+        Map<String, Field> sharedFields = new LinkedHashMap<>();
+        for (String v : sharing) {
+            Field f = elementFields.remove(v);
+            if (f == null) throw refusal("the composite " + d.composite + " shares " + v + ", which is no input of its elements' template");
+            if (!String.valueOf(f.past).equals(String.valueOf(ClassName.INTEGER))) {
+                throw refusal("the composite " + d.composite + " shares " + v + ", whose type is not Integer: the compiler's mutators for shared variables (shareAll<Variable>) take an Integer");
+            }
+            sharedFields.put(v, f);
+        }
+        Rec element = new Rec(d.name, false);
+        element.kind = Rec.RecKind.ELEMENT;
+        element.composite = comp;
+        element.template = consisted;
+        element.schema = elementSchema;
+        element.fields = elementFields;
+        element.outputs = new LinkedHashMap<>();
+        Rec shared = new Rec(d.name, false);
+        shared.kind = Rec.RecKind.SHARED;
+        shared.composite = comp;
+        shared.template = consisted;
+        shared.schema = elementSchema;
+        shared.fields = sharedFields;
+        shared.outputs = new LinkedHashMap<>();
+        rec.element = element;
+        rec.shared = shared;
+        declOf.put(rec, d);
+        declOf.put(element, d.elements);
+        declOf.put(shared, d);
     }
 
     /** The records the flow declares: {@code records}, or the members at the top as one record named {@code record}. */
@@ -333,15 +427,21 @@ public class FlowModel {
                 Map<String, Object> m = flow.records.get(i);
                 String place = "records[" + i + "]";
                 for (String k : m.keySet()) if (!RECORD_KEYS.contains(k)) throw refusal(place + ": unknown member " + k + " (" + RECORD_KEYS + ")");
-                Decl d = new Decl();
+                Decl d = body(m, place);
                 d.name = string(m.get("name"), place + ".name");
                 if (d.name == null || !d.name.matches("[A-Za-z][A-Za-z0-9_]*")) throw refusal(place + ".name is required, an identifier (not " + d.name + ")");
                 d.to = string(m.get("to"), place + ".to");
-                d.stood = stoodMap(m.get("stood"), place + ".stood");
-                d.record = m.get("record") == null ? new LinkedHashMap<>() : map(m.get("record"), place + ".record");
-                d.carry = m.get("carry") == null ? new LinkedHashMap<>() : map(m.get("carry"), place + ".carry");
-                d.carryOpen = new LinkedHashMap<>();
-                if (m.get("carryOpen") != null) for (Map.Entry<String, Object> e : map(m.get("carryOpen"), place + ".carryOpen").entrySet()) d.carryOpen.put(e.getKey(), string(e.getValue(), place + ".carryOpen." + e.getKey()));
+                d.composite = string(m.get("composite"), place + ".composite");
+                if ((d.to == null) == (d.composite == null)) throw refusal(place + " names a subtype (to) or a composite (composite), one of the two");
+                if (d.composite != null) {
+                    if (m.get("elements") == null) throw refusal(place + ": a composite record says how one element is built (elements)");
+                    Map<String, Object> em = map(m.get("elements"), place + ".elements");
+                    for (String k : em.keySet()) if (!BODY_KEYS.contains(k)) throw refusal(place + ".elements: unknown member " + k + " (" + BODY_KEYS + ")");
+                    d.elements = body(em, place + ".elements");
+                    if (m.get("shared") != null) d.shared = map(m.get("shared"), place + ".shared");
+                } else if (m.get("elements") != null || m.get("shared") != null) {
+                    throw refusal(place + ": elements and shared are for a composite record");
+                }
                 res.add(d);
             }
         } else {
@@ -358,7 +458,19 @@ public class FlowModel {
         return res;
     }
 
-    private static final Set<String> RECORD_KEYS = Set.of("name", "to", "stood", "record", "carry", "carryOpen");
+    private static final Set<String> RECORD_KEYS = Set.of("name", "to", "composite", "elements", "shared", "stood", "record", "carry", "carryOpen");
+    private static final Set<String> BODY_KEYS = Set.of("stood", "record", "carry", "carryOpen");
+
+    /** The members every record has, as the catalogue gives them. */
+    private Decl body(Map<String, Object> m, String place) {
+        Decl d = new Decl();
+        d.stood = stoodMap(m.get("stood"), place + ".stood");
+        d.record = m.get("record") == null ? new LinkedHashMap<>() : map(m.get("record"), place + ".record");
+        d.carry = m.get("carry") == null ? new LinkedHashMap<>() : map(m.get("carry"), place + ".carry");
+        d.carryOpen = new LinkedHashMap<>();
+        if (m.get("carryOpen") != null) for (Map.Entry<String, Object> e : map(m.get("carryOpen"), place + ".carryOpen").entrySet()) d.carryOpen.put(e.getKey(), string(e.getValue(), place + ".carryOpen." + e.getKey()));
+        return d;
+    }
 
     @SuppressWarnings("unchecked")
     private Map<String, Map<String, Object>> stoodMap(Object o, String place) {
@@ -462,6 +574,10 @@ public class FlowModel {
             }
             String chain = string(d.get("record"), "stood." + name + ".record");
             String of = string(d.get("of"), "stood." + name + ".of");
+            if (curRec.to == null && chain == null && of == null) throw refusal("stood." + name + ": a stood thing of a composite record says its previous record (of, or record)");
+            if (curRec.kind == Rec.RecKind.ELEMENT && (s.addressed != null || s.identityUser != null)) {
+                throw refusal("stood." + name + ": an element stands on a previous record of its own, which the request cannot address or name (no addressed, no identity)");
+            }
             TemplateBindingsSchema stoodSchema;
             if (chain != null) {
                 // T41 (G3): a later record chains from an earlier one of this flow: its inputs are the bean that record built, its outputs what the store made of it
@@ -595,6 +711,26 @@ public class FlowModel {
         steps.put("ask", items);
     }
 
+    // ---- the shared variables of a composite (T41, G6) -----------------------------------------------------------------------------
+
+    /** Where each variable the composite shares between its elements comes from: said once, applied to every element. */
+    private void readShared(Decl d) {
+        Rec comp = null;
+        for (Rec r : records) if (r.shared == curRec) comp = r;
+        curRec.stood.putAll(comp.stood);
+        List<Item> items = new ArrayList<>();
+        Map<String, String> accounted = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> e : d.shared.entrySet()) {
+            Field f = curRec.fields.get(e.getKey());
+            claim(accounted, e.getKey(), "shared." + e.getKey(), "shared variable");
+            items.add(recordItem(e.getKey(), f, e.getValue()));
+        }
+        List<String> missing = new ArrayList<>();
+        for (String v : curRec.fields.keySet()) if (!accounted.containsKey(v)) missing.add(v);
+        if (!missing.isEmpty()) throw refusal("the variables " + comp.composite.fullyQualifiedName + " shares between its elements, " + missing + ", are not accounted for: say each in shared");
+        steps.put(curRec.stepKey(), items);
+    }
+
     // ---- record --------------------------------------------------------------------------------------------------------------
 
     private Map<String, String> backendAccounted = new LinkedHashMap<>();
@@ -618,7 +754,7 @@ public class FlowModel {
                 continue;
             }
             Field f = backendFields.get(target);
-            if (f == null) throw refusal("record." + target + " is no input of the backend subtype " + to.fullyQualifiedName + " (inputs: " + backendFields.keySet() + ")");
+            if (f == null) throw refusal("record." + target + " is no input of " + curRec.describe() + " (inputs: " + backendFields.keySet() + ")");
             claim(backendAccounted, target, "record." + target, "backend value");
             items.add(recordItem(target, f, e.getValue()));
         }
@@ -801,7 +937,7 @@ public class FlowModel {
             String name = (String) ref[1];
             Field b = rec.fields.get(name);
             String as = string(d.get("as"), place + ".as");
-            if (b == null || b.isOtherKeys()) throw refusal(place + ".recorded is " + name + ", which is no value of the bean of " + rec.to.fullyQualifiedName);
+            if (b == null || b.isOtherKeys()) throw refusal(place + ".recorded is " + name + ", which is no value of the bean of " + rec.describe());
             if (!convertible(b, f, as)) throw refusal(place + ": the backend value " + name + " (" + b.declared + ") cannot be given to " + target + " (" + f.declared + ")");
             Item i = new Item(block, target, f, Kind.AS_MADE);
             i.source = name;

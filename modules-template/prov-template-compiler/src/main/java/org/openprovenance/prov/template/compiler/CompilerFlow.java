@@ -113,6 +113,24 @@ public class CompilerFlow {
         return get(compilerUtil.beanNameClass(template.name, BeanDirection.OUTPUTS), l.getBeansPackage(template.fullyQualifiedName, BeanDirection.OUTPUTS));
     }
 
+    /** The bean a record builds: the typed bean of its subtype; the composite's own bean; or one element of it, the general bean of the template the composite consists of, with the suffix the compiler gives. */
+    private ClassName recBean(Locations l, FlowModel.Rec rec) {
+        switch (rec.kind) {
+            case COMPOSITE:
+                return get(compilerUtil.beanNameClass(rec.composite.name, BeanDirection.INPUTS), l.getBeansPackage(rec.composite.fullyQualifiedName, BeanDirection.INPUTS));
+            case ELEMENT:
+                return get(compilerUtil.beanNameClass(rec.template.name, BeanDirection.INPUTS) + "_1", l.getBeansPackage(rec.template.fullyQualifiedName, BeanDirection.INPUTS));
+            default:
+                return backendBean(l, rec.template, rec.to);
+        }
+    }
+
+    /** The composite record an element, or the sharing, belongs to. */
+    private FlowModel.Rec compositeOf(FlowModel m, FlowModel.Rec rec) {
+        for (FlowModel.Rec r : m.records) if (r.element == rec || r.shared == rec) return r;
+        throw new IllegalStateException(rec.name);
+    }
+
     /** The inputs of a stood thing's previous record: the typed bean of its subtype, or the general input bean of its template (T41, G2). */
     private ClassName stoodInputs(Locations l, FlowModel m, FlowModel.Stood s) {
         return s.record != null ? backendBean(l, s.template, s.record) : compilerSubtype.generalBeanType(l, s.template);
@@ -150,8 +168,9 @@ public class CompilerFlow {
         res.put(ASKED, userBean(l, m));
         if (step.startsWith("record")) {
             FlowModel.Rec rec = null;
-            for (FlowModel.Rec r : m.records) if (r.stepKey().equals(step)) rec = r;
-            res.put(RECORDED, backendBean(l, rec.template, rec.to));
+            for (FlowModel.Rec r : m.allRecs) if (r.stepKey().equals(step)) rec = r;
+            if (rec.kind != FlowModel.Rec.RecKind.COMPOSITE && rec.kind != FlowModel.Rec.RecKind.SUBTYPE) res.put("composite", recBean(l, compositeOf(m, rec)));
+            if (rec.kind != FlowModel.Rec.RecKind.SHARED) res.put(RECORDED, recBean(l, rec));
             for (FlowModel.Stood s : rec.stood.values()) {
                 res.put(s.name, stoodInputs(l, m, s));
                 res.put(s.name + MADE_SUFFIX, outputsBean(l, s.template));
@@ -164,8 +183,8 @@ public class CompilerFlow {
                 break;
             case "answer":
                 for (FlowModel.Rec r : m.records) {
-                    res.put(r.recordedVariable(), backendBean(l, r.template, r.to));
-                    res.put(r.madeVariable(), outputsBean(l, r.template));
+                    res.put(r.recordedVariable(), recBean(l, r));
+                    if (r.kind == FlowModel.Rec.RecKind.SUBTYPE) res.put(r.madeVariable(), outputsBean(l, r.template));
                 }
                 break;
             default:   // refused, failed: nothing was recorded
@@ -182,14 +201,14 @@ public class CompilerFlow {
         ClassName rules = rulesClass(m);
         Class pastClass = compilerUtil.getPastFactory().CLASS(self.simpleName).MODIFIERS(Modifier.PUBLIC, Modifier.FINAL)
                 .COMMENT("The flow $N: the pattern that connects the beans of a request to the beans of the backend's record, from $N to $N.\n", m.flow.fullyQualifiedName, m.from.fullyQualifiedName,
-                        m.records.stream().map(r -> r.to.fullyQualifiedName).collect(java.util.stream.Collectors.joining(", ")))
+                        m.records.stream().map(FlowModel.Rec::describe).collect(java.util.stream.Collectors.joining(", ")))
                 .COMMENT("The request becomes the user bean ($N), the user bean and what stood become the backend's bean ($N), and what the store made becomes the reply ($N).\n", "ask",
                         m.records.stream().map(FlowModel.Rec::methodName).collect(java.util.stream.Collectors.joining(", ")), "answer")
                 .COMMENT("Every input of those beans has one stated origin, said beside it: AS ASKED, CHAINED, CARRIED OVER, CONSTANT, SUPPLIED or AS MADE; the values the application computes are the rules of $N.\n", rules.simpleName)
                 .COMMENT("Generated from the catalogue entry: the application writes the rules and nothing else.\n");
 
         pastClass.METHOD(ask(locations, m));
-        for (FlowModel.Rec rec : m.records) pastClass.METHOD(record(locations, m, rec));
+        for (FlowModel.Rec rec : m.allRecs) pastClass.METHOD(rec.kind == FlowModel.Rec.RecKind.SHARED ? share(locations, m, rec) : record(locations, m, rec));
         if (m.steps.containsKey("answer")) {
             for (String block : List.of("answer", "refused", "failed")) if (m.steps.containsKey(block)) pastClass.METHOD(replyMethod(locations, m, block));
         }
@@ -297,11 +316,12 @@ public class CompilerFlow {
     private Method record(Locations l, FlowModel m, FlowModel.Rec rec) {
         List<FlowModel.Item> items = m.steps.get(rec.stepKey());
         boolean rules = items.stream().anyMatch(i -> i.kind == FlowModel.Kind.SUPPLIED);
-        ClassName backend = backendBean(l, rec.template, rec.to);
+        ClassName backend = recBean(l, rec);
         Method method = METHOD(rec.methodName()).MODIFIERS(Modifier.PUBLIC, Modifier.STATIC).RETURNS(backend)
                 .COMMENT("2. The user bean and what stood become the backend's bean. Each stood thing is the inputs and the outputs of the record that made it;\n")
                 .COMMENT("a previous record that does not match the request is refused before anything is built.\n")
                 .PARAMETER(userBean(l, m), ASKED);
+        if (rec.kind == FlowModel.Rec.RecKind.ELEMENT) method.PARAMETER(recBean(l, compositeOf(m, rec)), "composite");
         for (FlowModel.Stood s : rec.stood.values()) {
             method.PARAMETER(stoodInputs(l, m, s), s.name);
             method.PARAMETER(outputsBean(l, s.template), s.name + MADE_SUFFIX);
@@ -363,6 +383,53 @@ public class CompilerFlow {
         return method;
     }
 
+    /**
+     * T41 (G6): the variables a composite shares between its elements, applied to every element it holds by the composite bean's own mutators
+     * ({@code shareAll<Variable>}); called by the application once the elements are added.
+     */
+    private Method share(Locations l, FlowModel m, FlowModel.Rec rec) {
+        FlowModel.Rec comp = compositeOf(m, rec);
+        List<FlowModel.Item> items = m.steps.get(rec.stepKey());
+        boolean rules = items.stream().anyMatch(i -> i.kind == FlowModel.Kind.SUPPLIED);
+        ClassName composite = recBean(l, comp);
+        Method method = METHOD(rec.methodName()).MODIFIERS(Modifier.PUBLIC, Modifier.STATIC).RETURNS(composite)
+                .COMMENT("2'. The variables the composite shares between its elements, given to every element it holds: call it once the elements are added.\n")
+                .PARAMETER(userBean(l, m), ASKED)
+                .PARAMETER(composite, "composite");
+        for (FlowModel.Stood s : comp.stood.values()) {
+            method.PARAMETER(stoodInputs(l, m, s), s.name);
+            method.PARAMETER(outputsBean(l, s.template), s.name + MADE_SUFFIX);
+        }
+        if (rules) method.PARAMETER(rulesClass(m), RULES);
+        method.commentFileLocation();
+        for (FlowModel.Item i : items) {
+            method.BODY(comment(i));
+            Expression value;
+            switch (i.kind) {
+                case AS_ASKED:
+                    value = text(field(ASKED, i.source), i.as);
+                    break;
+                case CHAINED:
+                    value = field(i.thing + MADE_SUFFIX, i.madeBy);
+                    break;
+                case CARRIED:
+                    value = field(i.thing, i.source);
+                    break;
+                case CONSTANT:
+                    value = constant(i.field, i.constant);
+                    break;
+                case SUPPLIED:
+                    value = ruleCall(l, m, i);
+                    break;
+                default:
+                    continue;   // absent
+            }
+            method.BODY(METHOD_CALL(VARIABLE("composite"), "shareAll" + Character.toUpperCase(i.target.charAt(0)) + i.target.substring(1), List.of(value)));
+        }
+        method.BODY(RETURN(VARIABLE("composite")));
+        return method;
+    }
+
     // ---- the reply -----------------------------------------------------------------------------------------------------------
 
     private Method replyMethod(Locations l, FlowModel m, String block) {
@@ -376,8 +443,8 @@ public class CompilerFlow {
                 .PARAMETER(userBean(l, m), ASKED);
         if (answer) {
             for (FlowModel.Rec r : m.records) {
-                method.PARAMETER(backendBean(l, r.template, r.to), r.recordedVariable());
-                method.PARAMETER(outputsBean(l, r.template), r.madeVariable());
+                method.PARAMETER(recBean(l, r), r.recordedVariable());
+                if (r.kind == FlowModel.Rec.RecKind.SUBTYPE) method.PARAMETER(outputsBean(l, r.template), r.madeVariable());
             }
         }
         if (rules) method.PARAMETER(rulesClass(m), RULES);

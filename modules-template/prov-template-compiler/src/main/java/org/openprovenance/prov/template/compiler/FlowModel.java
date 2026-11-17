@@ -609,8 +609,14 @@ public class FlowModel {
             i.madeBy = s.madeBy;
             items.add(i);
         }
+        boolean absentRest = false;
         for (Map.Entry<String, Object> e : cur.record.entrySet()) {
             String target = e.getKey();
+            if ("rest".equals(target) && "absent".equals(e.getValue()) && !backendFields.containsKey("rest")) {
+                // T41 (G7a, "rest: absent"): a flow narrows a subtype shared by several flows: every input not said otherwise is left unset
+                absentRest = true;
+                continue;
+            }
             Field f = backendFields.get(target);
             if (f == null) throw refusal("record." + target + " is no input of the backend subtype " + to.fullyQualifiedName + " (inputs: " + backendFields.keySet() + ")");
             claim(backendAccounted, target, "record." + target, "backend value");
@@ -656,6 +662,13 @@ public class FlowModel {
                 if (f.isOtherKeys()) continue;   // the open keys are said by carryOpen, or absent
                 claim(backendAccounted, target, "carry." + restThing + " (rest)", "backend value");
                 items.add(carriedItem(s, f, target));
+                left.remove(target);
+            }
+        }
+        if (absentRest) {
+            for (String target : new ArrayList<>(left)) {
+                claim(backendAccounted, target, "record.rest (absent)", "backend value");
+                items.add(absentItem(curRec.stepKey(), target, backendFields.get(target), "record.rest (absent): " + target));
                 left.remove(target);
             }
         }

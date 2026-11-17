@@ -925,4 +925,29 @@ public class T36FlowTest extends T36FlowFixture {
         assertEquals("RFQ-1", T36SubtypeTest.get(recorded, "name1"));
         assertEquals("accepted", T36SubtypeTest.get(T36SubtypeTest.invoke(null, flow, "answer", asked, recorded, make(l, BACKEND_PKG + "ExchangingOutputs", "document1", "D2")), "outcome"));
     }
+
+    // ---- a flow narrows a shared subtype (T41, G7a) ----------------------------------------------------------------------------
+
+    public void testAFlowLeavesWhatItDoesNotGiveAbsentWithRestAbsent() throws Exception {
+        ObjectNode flow = (ObjectNode) om.readTree(FLOW_NS);
+        ObjectNode record = (ObjectNode) flow.get("record");
+        for (String v : List.of("name1", "state1", "ptype", "priceBefore", "partPriceBefore", "estimate", "attributesOther", "pattributesOther")) record.remove(v);
+        record.put("rest", "absent");
+        generate("rest", List.of(LINE_CHANGE, REPRICE, om.writeValueAsString(flow)));
+        String doc = Files.readString(Path.of(OUT + "rest/libs/" + DOC));
+        for (String v : List.of("name1", "ptype", "priceBefore", "estimate", "pattributesOther")) {
+            assertTrue(v + " is a row of the table, absent", doc.contains("<tr><td>record</td><td>" + v + "</td><td class='csv_kind'>absent</td><td>left unset</td></tr>"));
+        }
+        // a compulsory input is not left unset by it
+        ObjectNode flow2 = (ObjectNode) om.readTree(FLOW_NS);
+        ((ObjectNode) flow2.get("record")).remove("partProduct");
+        ((ObjectNode) flow2.get("record")).put("rest", "absent");
+        ObjectNode c = catalogue("refusal", List.of(LINE_CHANGE, REPRICE, om.writeValueAsString(flow2)));
+        try {
+            new ConfigProcessor(pf).checkSubtypes(ConfigProcessor.objectMapper.readValue(om.writeValueAsString(c), TemplatesProjectConfiguration.class), ".");
+            fail("a compulsory value left unset");
+        } catch (FlowException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("partProduct is compulsory"));
+        }
+    }
 }

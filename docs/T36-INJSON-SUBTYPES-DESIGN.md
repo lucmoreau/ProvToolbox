@@ -1154,3 +1154,9 @@ Put to Luc: build it as designed, or not (G6).
 4. **The runtime refuses a JSON library's tree nodes** ("not a JSON value"). Intended: the runtime takes JSON values only (null, text, number, boolean, map, list) and depends on no JSON
    library; the application converts a tree to plain values first. Not a defect; to say in the specification, and the refusal could name the class it met.
 
+### 14.14 Rulings of the continuation (Luc, 2026-11-17)
+
+- **G6. "Build as designed (Recommended)"**: the composite record of §14.12.
+- **G7. "(a) rest: absent (Recommended)" and "File `spread` as a ticket (Recommended)"**: `"rest": "absent"` in `record` is built (a flow narrows a shared subtype; refused for a compulsory
+  input; shown as `absent` rows); (b), reusing a rule for several values, is not built; the `spread` origin is ticket T45.
+

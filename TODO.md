@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T44** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T45) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T45** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T46) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,6 +21,7 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
+| T45 | A flow cannot spread a JSON object the person gives into a carrier's open keys: a `spread` origin (a seventh kind: as asked, through a parse) would merge its members, refusing a key the subtype declares. | ⬜ BACKLOG | Template compiler / Flow | [T45 section](#-t45-a-flow-cannot-spread-a-given-json-object-into-open-keys) |
 | T44 | A `ClassNotFoundException` for `org.openprovenance.prov.interop.InteropFramework` is logged while the template compiler generates a library; the generated classes compile and run, the build succeeds. | ⬜ BACKLOG | Template compiler | [T44 section](#-t44-classnotfoundexception-for-interopframework-during-generation) |
 | T43 | Compiling an annotated copy of a template (to add `@inJson` to a template of another library) also writes that template's own beans, which the application's jar then has to exclude. | ⬜ BACKLOG | Template compiler | [T43 section](#-t43-an-annotated-copy-of-a-template-writes-the-templates-own-beans) |
 | T42 | `JsonText.text` of a number writes the exponent forms of RFC 8785 (`1e+21`, `1e-7`) where the first application expected plain digits. | ⬜ BACKLOG | Template compiler / Runtime | [T42 section](#-t42-jsontext-text-writes-exponent-forms) |
@@ -47,6 +48,14 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 ---
 
 ## Tasks
+
+### ⬜ T45: A flow cannot spread a given JSON object into open keys
+
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Flow.  **Filed 2026-11-17** with T41 (Luc: "File `spread` as a ticket (Recommended)"), from a finding of the first application.
+
+A request value of type `json` is text; the map of other keys of a carrier is filled from other keys only, so the application passes a given object's fields in a supplied map. **Proposed**: a `{"spread": value}` origin for `<carrier>Other`, which reads the text as an object (`JsonText.parse`, in the three ports) and merges its members, refusing a key the subtype declares. Not built.
+
+---
 
 ### ⬜ T44: ClassNotFoundException for InteropFramework during generation
 

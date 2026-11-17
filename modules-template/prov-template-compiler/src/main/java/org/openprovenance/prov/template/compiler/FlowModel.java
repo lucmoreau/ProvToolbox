@@ -389,8 +389,11 @@ public class FlowModel {
         Map<String, Field> elementFields = fieldsOfTemplate(elementSchema, compilerUtil);
         Map<String, Field> sharedFields = new LinkedHashMap<>();
         for (String v : sharing) {
-            Field f = elementFields.remove(v);
-            if (f == null) throw refusal("the composite " + d.composite + " shares " + v + ", which is no input of its elements' template");
+            // T41 (finding of the first application): a shared variable may be an OUTPUT of the element template (the new document, the new activity, the new bundle, which the
+            // application gives as placeholders so that every element names the same). The element bean has it as a field because it is shared.
+            if (!elementSchema.getVar().containsKey(v)) throw refusal("the composite " + d.composite + " shares " + v + ", which is no variable of its elements' template");
+            Field f = variableField(elementSchema, v, compilerUtil);
+            elementFields.remove(v);
             if (!String.valueOf(f.past).equals(String.valueOf(ClassName.INTEGER))) {
                 throw refusal("the composite " + d.composite + " shares " + v + ", whose type is not Integer: the compiler's mutators for shared variables (shareAll<Variable>) take an Integer");
             }
@@ -534,18 +537,23 @@ public class FlowModel {
     /** The fields of the general input bean of a template (T41, G2: a previous record of a template that has no subtype): its inputs, a carrier as the text it is. */
     static Map<String, Field> fieldsOfTemplate(TemplateBindingsSchema schema, CompilerUtil compilerUtil) {
         Map<String, Field> res = new LinkedHashMap<>();
-        Map<String, List<Descriptor>> var = schema.getVar();
         for (String key : descriptorUtils.fieldNames(schema)) {
             if (!descriptorUtils.isInput(key, schema)) continue;
-            Descriptor d = var.get(key).get(0);
-            boolean node = !descriptorUtils.getAttributeVariable(key, d).isPresent();
-            String type = node ? "node" : descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getType, nd -> null);
-            String doc = descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
-            Field f = new Field(key, type, compilerUtil.getPastTypeForDeclaredType(var, key), descriptorUtils.isCompulsoryInput(key, schema), null, null, doc);
-            if (node) f.valueType = nodeType(d);
-            res.put(key, f);
+            res.put(key, variableField(schema, key, compilerUtil));
         }
         return res;
+    }
+
+    /** A variable of a template as a field, input or output (a compulsory input is compulsory; an output is not). */
+    static Field variableField(TemplateBindingsSchema schema, String key, CompilerUtil compilerUtil) {
+        Map<String, List<Descriptor>> var = schema.getVar();
+        Descriptor d = var.get(key).get(0);
+        boolean node = !descriptorUtils.getAttributeVariable(key, d).isPresent();
+        String type = node ? "node" : descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getType, nd -> null);
+        String doc = descriptorUtils.getFromDescriptor(d, AttributeDescriptor::getDocumentation, NameDescriptor::getDocumentation);
+        Field f = new Field(key, type, compilerUtil.getPastTypeForDeclaredType(var, key), descriptorUtils.isInput(key, schema) && descriptorUtils.isCompulsoryInput(key, schema), null, null, doc);
+        if (node) f.valueType = nodeType(d);
+        return f;
     }
 
     // ---- stood ---------------------------------------------------------------------------------------------------------------
@@ -584,7 +592,11 @@ public class FlowModel {
                 if (of != null) throw refusal("stood." + name + " has both record and of: it stands on an earlier record of this flow, or on a previous record of another request");
                 if (s.addressed != null || s.identityUser != null) throw refusal("stood." + name + ": a record of this flow has nothing the request could differ from: no addressed, no identity");
                 Rec earlier = null;
-                for (Rec r : records.subList(0, records.indexOf(curRec))) if (r.name.equals(chain)) earlier = r;
+                // (the position is in allRecs: an element of a composite is not in records, and indexOf there was -1, a crash in subList)
+                for (Rec r : allRecs.subList(0, allRecs.indexOf(curRec))) if (r.name.equals(chain) && earlier == null) earlier = r;
+                if (earlier != null && earlier.kind != Rec.RecKind.SUBTYPE) {
+                    throw refusal("stood." + name + ".record is " + chain + ", a composite record: what the store makes of a composite is per element, so there is nothing to stand on");
+                }
                 if (earlier == null) throw refusal("stood." + name + ".record is " + chain + ", which is no record before " + curRec.name + " in this flow (an earlier record is built and made first)");
                 s.record = earlier.to;
                 s.template = earlier.template;

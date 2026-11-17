@@ -1176,3 +1176,27 @@ the table's steps are `record bundle`, `record bundle element`, `record bundle s
 5. Two composites of one template make the generator's own type checker log an error (`BeanLocalEnactor2`): pre-existing, not part of this; the fixture has one.
 6. **G7a**, `"rest": "absent"` in `record`, is built and tested.
 
+### 14.16 A composite that shares outputs, and what a reply may read from a composite (continuation, 2026-11-17)
+
+The first application's composite is the compiler's own template-library composite of a template that makes a document, an activity and a bundle: it shares three variables, **and all three
+are outputs** of the element template (the nodes the store creates: the application gives placeholders, so that every element names the same new document, the same new activity and
+the same bundle). Checked against its real declaration (the template's bindings: `document1`, `referencing` and `bundle` are `@output: true`, `xsd:int`; the catalogue's composite entry shares them).
+
+**Built (no ruling needed).** What the generator puts in an element bean is the template's **inputs plus the variables the composite shares**, whether inputs or outputs (read off a generated element
+bean: an output appears in it only when shared). The model took the shared variables from the inputs only, so it refused. It now takes them from every variable of the element template; a shared
+output is not compulsory, and must be an `Integer` (the compiler's mutators). A placeholder is said with the kinds that exist: `{"constant": -1}`, or `{"supplied": rule}` when the application
+numbers them; no new kind. The fixture's composite shares an `xsd:int` output with `{"constant": -1}`.
+
+**The crash.** The generator alone does not fail on a composite with an empty sharing list (tried on the real template in a scratch directory, with an empty list and with its three variables). The crash
+`fromIndex(0) > toIndex(-1)` is the flow's own: an element chaining from a record (`stood.x.record`) looked its position up in `records`, where an element is not (`indexOf` was -1). Fixed: the position is
+looked up among all the records, and chaining from a composite is refused by name ("a composite record: what the store makes of a composite is per element, so there is nothing to stand on").
+
+**What the store makes of a composite.** Its outputs bean has `ID`, the composite's own `bean`, `count` and `type`, and a list, `__elements`, of the element template's **outputs beans**, one for each
+element it held. The shared output nodes are the same in every element, by construction: that is where "what the run made" is read.
+
+**Proposed: what a reply may read from a composite record** (put to Luc, G8): `{"recorded": "run.count"}` (built: the composite's own bean) and a new `{"made": "run.<shared output>"}`, which reads the output
+from the first element's outputs bean (null when the composite held no element), allowed only for a variable the composite shares (identical in every element, so the first is as good as any). `answer` then takes
+the composite's outputs bean (`runMade`) beside its bean (`runRecorded`). Nothing else of the outputs is read.
+
+**Not proposed:** a later record standing on what a composite made (the first application's composite is the last record of its command; refused by name as above).
+

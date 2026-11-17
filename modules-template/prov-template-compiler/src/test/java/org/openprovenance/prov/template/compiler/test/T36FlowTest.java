@@ -995,7 +995,10 @@ public class T36FlowTest extends T36FlowFixture {
         }
         Object shared = T36SubtypeTest.invoke(null, flow, "recordBundleShare", asked, bundle, rules);
         assertSame(bundle, shared);
-        for (Object element : (List<?>) T36SubtypeTest.get(bundle, "__elements")) assertEquals("the shared variable is given to every element", 7, T36SubtypeTest.get(element, "witness"));
+        for (Object element : (List<?>) T36SubtypeTest.get(bundle, "__elements")) {
+            assertEquals("the shared variable is given to every element", 7, T36SubtypeTest.get(element, "witness"));
+            assertEquals("a shared OUTPUT of the element template, a placeholder (a constant): the same new node for every element", -1, T36SubtypeTest.get(element, "receipt"));
+        }
         Object reply = T36SubtypeTest.invoke(null, flow, "answer", asked, bundle);
         assertEquals("accepted", T36SubtypeTest.get(reply, "outcome"));
         assertEquals("2", T36SubtypeTest.get(reply, "result"));
@@ -1007,6 +1010,7 @@ public class T36FlowTest extends T36FlowFixture {
         assertTrue(doc, doc.contains("<tr><td>record bundle</td><td>count</td><td class='csv_kind'>supplied</td><td>the application's rule count</td></tr>"));
         assertTrue(doc, doc.contains("<tr><td>record bundle element</td><td>document0</td><td class='csv_kind'>chained</td><td>the cited as it stood: document1 of the record that made it</td></tr>"));
         assertTrue(doc, doc.contains("<tr><td>record bundle element</td><td>name1</td><td class='csv_kind'>carried over</td><td>the cited's name1, unchanged</td></tr>"));
+        assertTrue(doc, doc.contains("<tr><td>record bundle shared</td><td>receipt</td><td class='csv_kind'>constant</td><td>the constant -1</td></tr>"));
         assertTrue(doc, doc.contains("<tr><td>record bundle shared</td><td>witness</td><td class='csv_kind'>supplied</td><td>the application's rule witness</td></tr>"));
     }
 
@@ -1026,7 +1030,7 @@ public class T36FlowTest extends T36FlowFixture {
     public void testEveryInputOfTheCompositeAndOfItsElementsIsAccountedForOnce() throws Exception {
         refusedComposite("an input of the composite left out", f -> obj(rec(f, 0), "record").remove("count"), "inputs [count] are not accounted for");
         refusedComposite("an input of the element left out", f -> obj(obj(rec(f, 0), "elements"), "record").remove("atype"), "inputs [atype] are not accounted for");
-        refusedComposite("a shared variable left out", f -> obj(rec(f, 0), "shared").removeAll(), "[witness], are not accounted for", "shared");
+        refusedComposite("a shared variable left out", f -> obj(rec(f, 0), "shared").removeAll(), "[witness, receipt], are not accounted for", "shared");
         refusedComposite("a variable that is not shared", f -> obj(rec(f, 0), "shared").set("time", om.readTree("\"asked\"")), "shared.time is not shared");
         refusedComposite("a shared variable also said by the element", f -> obj(obj(rec(f, 0), "elements"), "record").put("witness", "absent"), "no input of");
         refusedComposite("an element that stands on a thing it cannot name", f -> ((ObjectNode) obj(obj(rec(f, 0), "elements"), "stood").get("cited")).remove("of"),
@@ -1042,5 +1046,13 @@ public class T36FlowTest extends T36FlowFixture {
 
     public void testACompositeRecordEmitsWellFormedPythonAndJavaScript() throws Exception {
         wellFormed("emitcomp", List.of(LINE_CHANGE, CONFIRM, FLOW_COMPOSITE), "BundleFlow", "BundleFlowRules");
+    }
+
+    public void testAnElementThatStandsOnARecordOfTheFlowIsRefusedByName() throws Exception {
+        // an element that chains from a record before it used to crash (a sublist of -1); a record that is a composite has no outputs
+        refusedComposite("an element that stands on its own composite", f -> { ObjectNode c = (ObjectNode) obj(obj(rec(f, 0), "elements"), "stood").get("cited"); c.remove("of"); c.put("record", "bundle"); },
+                "stood.cited.record is bundle, a composite record", "nothing to stand on");
+        refusedComposite("an element that stands on a record that does not exist", f -> { ObjectNode c = (ObjectNode) obj(obj(rec(f, 0), "elements"), "stood").get("cited"); c.remove("of"); c.put("record", "nothing"); },
+                "no record before bundle");
     }
 }

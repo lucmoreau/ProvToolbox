@@ -11,10 +11,12 @@ document
   entity(var:document0)
   entity(var:atype)
   entity(var:witness)
+  entity(var:receipt)
   used(var:exchanging, var:document0, -)
   wasInfluencedBy(var:exchanging, var:atype)
   wasInfluencedBy(var:exchanging, var:witness)
   wasGeneratedBy(var:document1, var:exchanging, -)
+  wasGeneratedBy(var:receipt, var:exchanging, -)
   wasAssociatedWith(var:exchanging, var:agent, -)
  endBundle
 endDocument

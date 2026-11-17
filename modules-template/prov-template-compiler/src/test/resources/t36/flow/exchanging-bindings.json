@@ -79,6 +79,14 @@
         "@documentation": "A witness, by its number",
         "@input": "optional"
       }
+    ],
+    "receipt": [
+      {
+        "@id": "ex:*",
+        "@type": "xsd:int",
+        "@documentation": "The receipt the exchange creates",
+        "@output": "true"
+      }
     ]
   },
   "context": {

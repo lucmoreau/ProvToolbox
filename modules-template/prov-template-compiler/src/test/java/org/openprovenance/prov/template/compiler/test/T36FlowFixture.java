@@ -167,7 +167,7 @@ public abstract class T36FlowFixture extends TestCase {
             + "\"ask\":{\"agent\":{\"supplied\":\"caller\"},\"time\":{\"supplied\":\"clock\"},\"subject0\":{\"supplied\":\"documentNode\"},\"attributes\":\"absent\"},"
             + "\"records\":[{\"name\":\"bundle\",\"composite\":\"t36.ExchangingComposite\","
             + "   \"record\":{\"count\":{\"supplied\":\"count\"},\"type\":{\"constant\":\"exchanging\"}},"
-            + "   \"shared\":{\"witness\":{\"supplied\":\"witness\"}},"
+            + "   \"shared\":{\"witness\":{\"supplied\":\"witness\"},\"receipt\":{\"constant\":-1}},"
             + "   \"elements\":{\"stood\":{\"cited\":{\"node\":\"document0\",\"madeBy\":\"document1\",\"of\":\"t36.LineChange\"}},"
             + "                 \"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Citing\"},\"attributes\":{\"supplied\":\"attributes\"}},"
             + "                 \"carry\":{\"cited\":[\"name1\"]}}}],"
@@ -201,7 +201,7 @@ public abstract class T36FlowFixture extends TestCase {
         templates.add(om.readTree("{ \"@type\": \"simple\", \"fullyQualifiedName\": \"t36.Registering\", \"name\": \"registering\","
                 + " \"package\": \"" + PKG + ".backend\", \"template\": \"t36.registering\", \"cbindings\": \"" + dir + "registering.json\" }"));
         templates.add(om.readTree("{\"@type\":\"composite\",\"fullyQualifiedName\":\"t36.ExchangingComposite\",\"name\":\"exchanging_composite\",\"package\":\"" + PKG + ".backend\","
-                + "\"consistsOf\":\"t36.Exchanging\",\"sharing\":[\"witness\"]}"));
+                + "\"consistsOf\":\"t36.Exchanging\",\"sharing\":[\"witness\",\"receipt\"]}"));
         for (String e : entries) templates.add(om.readTree(e));
         return c;
     }

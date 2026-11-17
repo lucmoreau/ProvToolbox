@@ -171,7 +171,7 @@ public abstract class T36FlowFixture extends TestCase {
             + "   \"elements\":{\"stood\":{\"cited\":{\"node\":\"document0\",\"madeBy\":\"document1\",\"of\":\"t36.LineChange\"}},"
             + "                 \"record\":{\"agent\":\"asked\",\"time\":\"asked\",\"atype\":{\"constant\":\"Citing\"},\"attributes\":{\"supplied\":\"attributes\"}},"
             + "                 \"carry\":{\"cited\":[\"name1\"]}}}],"
-            + "\"reply\":{\"answer\":{\"outcome\":{\"constant\":\"accepted\"},\"result\":{\"recorded\":\"bundle.count\",\"as\":\"text\"},\"code\":\"absent\"},"
+            + "\"reply\":{\"answer\":{\"outcome\":{\"when\":{\"made\":\"bundle.receipt\"},\"is\":\"accepted\",\"otherwise\":\"failed\"},\"result\":{\"recorded\":\"bundle.count\",\"as\":\"text\"},\"code\":\"absent\"},"
             + "          \"refused\":{\"outcome\":{\"constant\":\"refused\"},\"code\":{\"argument\":true},\"result\":\"absent\"},"
             + "          \"failed\":{\"outcome\":{\"constant\":\"failed\"},\"code\":\"absent\",\"result\":\"absent\"}}}";
 

@@ -955,6 +955,7 @@ public class T36FlowTest extends T36FlowFixture {
 
     static final List<String> COMPOSITE_SOURCES = List.of(FLOWS + "BundleFlow.java", FLOWS + "BundleFlowRules.java",
             "org/example/t36flow/backend/client/integrator/Exchanging_compositeInputs.java", "org/example/t36flow/backend/client/integrator/ExchangingInputs_1.java",
+            "org/example/t36flow/backend/client/integrator/Exchanging_compositeOutputs.java", "org/example/t36flow/backend/client/integrator/ExchangingOutputs.java",
             "org/example/t36flow/backend/client/integrator/Line_changeInputs.java", "org/example/t36flow/backend/client/integrator/ChangingOutputs.java",
             "org/example/t36flow/actions/client/integrator/ConfirmInputs.java", "org/example/t36flow/actions/client/integrator/ConfirmReply.java");
 
@@ -999,7 +1000,13 @@ public class T36FlowTest extends T36FlowFixture {
             assertEquals("the shared variable is given to every element", 7, T36SubtypeTest.get(element, "witness"));
             assertEquals("a shared OUTPUT of the element template, a placeholder (a constant): the same new node for every element", -1, T36SubtypeTest.get(element, "receipt"));
         }
-        Object reply = T36SubtypeTest.invoke(null, flow, "answer", asked, bundle);
+        // what the store made of the composite: one outputs bean for each element; the shared output is the same in every one, and is read from the first (G8)
+        Object madeBundle = make(l, BACKEND_PKG + "Exchanging_compositeOutputs");
+        Object reply = T36SubtypeTest.invoke(null, flow, "answer", asked, bundle, madeBundle);
+        assertEquals("no element made: failed", "failed", T36SubtypeTest.get(reply, "outcome"));
+        T36SubtypeTest.invoke(madeBundle, madeBundle.getClass(), "addElements", make(l, BACKEND_PKG + "ExchangingOutputs", "receipt", 5));
+        T36SubtypeTest.invoke(madeBundle, madeBundle.getClass(), "addElements", make(l, BACKEND_PKG + "ExchangingOutputs", "receipt", 5));
+        reply = T36SubtypeTest.invoke(null, flow, "answer", asked, bundle, madeBundle);
         assertEquals("accepted", T36SubtypeTest.get(reply, "outcome"));
         assertEquals("2", T36SubtypeTest.get(reply, "result"));
     }
@@ -1010,6 +1017,7 @@ public class T36FlowTest extends T36FlowFixture {
         assertTrue(doc, doc.contains("<tr><td>record bundle</td><td>count</td><td class='csv_kind'>supplied</td><td>the application's rule count</td></tr>"));
         assertTrue(doc, doc.contains("<tr><td>record bundle element</td><td>document0</td><td class='csv_kind'>chained</td><td>the cited as it stood: document1 of the record that made it</td></tr>"));
         assertTrue(doc, doc.contains("<tr><td>record bundle element</td><td>name1</td><td class='csv_kind'>carried over</td><td>the cited's name1, unchanged</td></tr>"));
+        assertTrue(doc, doc.contains("<tr><td>answer</td><td>outcome</td><td class='csv_kind'>as made</td><td>accepted when the store made receipt, otherwise failed</td></tr>"));
         assertTrue(doc, doc.contains("<tr><td>record bundle shared</td><td>receipt</td><td class='csv_kind'>constant</td><td>the constant -1</td></tr>"));
         assertTrue(doc, doc.contains("<tr><td>record bundle shared</td><td>witness</td><td class='csv_kind'>supplied</td><td>the application's rule witness</td></tr>"));
     }
@@ -1036,6 +1044,8 @@ public class T36FlowTest extends T36FlowFixture {
         refusedComposite("an element that stands on a thing it cannot name", f -> ((ObjectNode) obj(obj(rec(f, 0), "elements"), "stood").get("cited")).remove("of"),
                 "a stood thing of a composite record says its previous record");
         refusedComposite("an element with an address to check", f -> ((ObjectNode) obj(obj(rec(f, 0), "elements"), "stood").get("cited")).put("addressed", "subject0"), "no addressed, no identity");
+        refusedComposite("a reply that reads an output the composite does not share", f -> obj((ObjectNode) obj(f, "reply"), "answer").set("result", om.readTree("{\"made\":\"bundle.document1\"}")),
+                "made is document1", "no output of");
         refusedComposite("a composite that is none", f -> rec(f, 0).put("composite", "t36.Nope"), "is no composite of the catalogue");
         refusedComposite("a composite without elements", f -> rec(f, 0).remove("elements"), "says how one element is built");
         refusedComposite("elements with a subtype", f -> {

@@ -398,6 +398,8 @@ public class FlowModel {
                 throw refusal("the composite " + d.composite + " shares " + v + ", whose type is not Integer: the compiler's mutators for shared variables (shareAll<Variable>) take an Integer");
             }
             sharedFields.put(v, f);
+            // G8 (Luc, 2026-11-17, "Yes, shared outputs only"): a reply may read a shared output of the composite: the same in every element, read from the first
+            if (descriptorUtils.isOutput(v, elementSchema)) rec.outputs.put(v, f);
         }
         Rec element = new Rec(d.name, false);
         element.kind = Rec.RecKind.ELEMENT;

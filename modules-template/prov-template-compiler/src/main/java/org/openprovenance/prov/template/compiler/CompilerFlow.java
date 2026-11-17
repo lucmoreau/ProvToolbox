@@ -125,6 +125,13 @@ public class CompilerFlow {
         }
     }
 
+    /** What the store made of a record: the outputs bean of its template, or, for a composite, the composite's own outputs bean (which holds one outputs bean for each element). */
+    private ClassName madeBean(Locations l, FlowModel.Rec r) {
+        return r.kind == FlowModel.Rec.RecKind.COMPOSITE
+                ? get(compilerUtil.beanNameClass(r.composite.name, BeanDirection.OUTPUTS), l.getBeansPackage(r.composite.fullyQualifiedName, BeanDirection.OUTPUTS))
+                : outputsBean(l, r.template);
+    }
+
     /** The composite record an element, or the sharing, belongs to. */
     private FlowModel.Rec compositeOf(FlowModel m, FlowModel.Rec rec) {
         for (FlowModel.Rec r : m.records) if (r.element == rec || r.shared == rec) return r;
@@ -184,7 +191,7 @@ public class CompilerFlow {
             case "answer":
                 for (FlowModel.Rec r : m.records) {
                     res.put(r.recordedVariable(), recBean(l, r));
-                    if (r.kind == FlowModel.Rec.RecKind.SUBTYPE) res.put(r.madeVariable(), outputsBean(l, r.template));
+                    res.put(r.madeVariable(), madeBean(l, r));
                 }
                 break;
             default:   // refused, failed: nothing was recorded
@@ -432,6 +439,19 @@ public class CompilerFlow {
 
     // ---- the reply -----------------------------------------------------------------------------------------------------------
 
+    /** Whether the composite's outputs hold no element. */
+    private static Expression noElement(FlowModel.Item i) {
+        return BINARY_OP(METHOD_CALL((org.openprovenance.prov.template.compiler.past.MethodCall) field(i.rec.madeVariable(), "__elements"), "size", List.of()), "==", CONSTANT(0));
+    }
+
+    /** What the store made: a field of the outputs bean, or, for a composite, of the first element's outputs bean. */
+    private static Expression madeExpression(FlowModel.Item i, String name) {
+        if (i.rec.kind != FlowModel.Rec.RecKind.COMPOSITE) return field(i.rec.madeVariable(), name);
+        org.openprovenance.prov.template.compiler.past.MethodCall first = METHOD_CALL(
+                (org.openprovenance.prov.template.compiler.past.MethodCall) field(i.rec.madeVariable(), "__elements"), "get", List.of(CONSTANT(0)));
+        return METHOD_CALL((Expression) first, name);
+    }
+
     private Method replyMethod(Locations l, FlowModel m, String block) {
         List<FlowModel.Item> items = m.steps.get(block);
         boolean answer = "answer".equals(block);
@@ -444,7 +464,7 @@ public class CompilerFlow {
         if (answer) {
             for (FlowModel.Rec r : m.records) {
                 method.PARAMETER(recBean(l, r), r.recordedVariable());
-                if (r.kind == FlowModel.Rec.RecKind.SUBTYPE) method.PARAMETER(outputsBean(l, r.template), r.madeVariable());
+                method.PARAMETER(madeBean(l, r), r.madeVariable());
             }
         }
         if (rules) method.PARAMETER(rulesClass(m), RULES);
@@ -463,10 +483,16 @@ public class CompilerFlow {
                     break;
                 case AS_MADE:
                     if (i.whenMade != null) {
-                        method.BODY(IF(BINARY_OP(field(i.rec.madeVariable(), i.whenMade), "==", Constant.getNull()),
-                                List.of(ASSIGNMENT(target, constant(i.field, i.otherwise))), List.of(ASSIGNMENT(target, constant(i.field, i.is)))));
+                        Expression absent = BINARY_OP(madeExpression(i, i.whenMade), "==", Constant.getNull());
+                        if (i.rec.kind == FlowModel.Rec.RecKind.COMPOSITE) absent = BINARY_OP(noElement(i), "||", absent);
+                        method.BODY(IF(absent, List.of(ASSIGNMENT(target, constant(i.field, i.otherwise))), List.of(ASSIGNMENT(target, constant(i.field, i.is)))));
                     } else if ("made".equals(i.from)) {
-                        method.BODY(ASSIGNMENT(target, field(i.rec.madeVariable(), i.source)));
+                        if (i.rec.kind == FlowModel.Rec.RecKind.COMPOSITE) {
+                            // read from the first element: a shared variable is the same in every element; nothing when the composite held none
+                            method.BODY(IF(BINARY_OP(noElement(i), "==", CONSTANT(false)), List.of(ASSIGNMENT(target, madeExpression(i, i.source))), List.of()));
+                        } else {
+                            method.BODY(ASSIGNMENT(target, field(i.rec.madeVariable(), i.source)));
+                        }
                     } else {
                         method.BODY(ASSIGNMENT(target, text(field(i.rec.recordedVariable(), i.source), i.as)));
                     }

@@ -1200,3 +1200,7 @@ the composite's outputs bean (`runMade`) beside its bean (`runRecorded`). Nothin
 
 **Not proposed:** a later record standing on what a composite made (the first application's composite is the last record of its command; refused by name as above).
 
+**Ruled by Luc, 2026-11-17 (G8): "Yes, shared outputs only (Recommended)".** Built: in a reply, `{"made": "run.<shared output>"}` and `{"when": {"made": "run.<shared output>"}, ...}` read the output from the
+first element's outputs bean (nothing, for `when` "otherwise", when the composite held no element); `answer` takes the composite's outputs bean (`runMade`) beside its bean (`runRecorded`); a variable the
+composite does not share is refused by name ("no output of"). Tested against the fixture's composite, which shares an `xsd:int` output given as the constant `-1`.
+

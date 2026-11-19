@@ -24,6 +24,10 @@
                 },
                 "cbindings": {
                     "type": "string"
+                },
+                "external": {
+                    "type": "boolean",
+                    "description": "The template belongs to another library (T43): its classes are written under src/external/java of the generated modules, not src/main/java, and its packages are listed in external-packages.txt, so that an application can leave them to that library."
                 }
             },
             "required": [
@@ -64,6 +68,10 @@
                             "type": "string"
                         }
                     ]
+                },
+                "external": {
+                    "type": "boolean",
+                    "description": "The composite belongs to another library (T43): see the same member of a simple template."
                 }
             },
             "required": [

@@ -21,6 +21,16 @@ abstract public class TemplateCompilerConfig {
     @JsonProperty("package")
     public String package_;
 
+    /**
+     * T43: the template (a simple one or a composite) belongs to another library, of which this catalogue holds an annotated copy.
+     * The compiler still writes its classes, which the catalogue's own classes import, but under {@code src/external/java} of
+     * the generated modules and not {@code src/main/java}, and lists their packages in {@code external-packages.txt}, so that an
+     * application leaves them to that library (a second copy of a package is a split package on the module path and a silent
+     * shadowing on the class path).
+     */
+    @JsonProperty("external")
+    public boolean external;
+
     @JsonProperty("@type")
     public String getType_() {
         return type_;

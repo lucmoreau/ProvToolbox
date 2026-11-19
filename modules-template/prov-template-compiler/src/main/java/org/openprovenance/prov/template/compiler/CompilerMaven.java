@@ -120,6 +120,10 @@ public class CompilerMaven {
             addBuildHelperMavenPlugin(model);
         }
 
+        if (!Locations.externalPackagesOf(configs).isEmpty()) {
+            addExternalSources(model);
+        }
+
         try {
             new MavenXpp3Writer().write(new FileWriter(dir + "/pom.xml"), model);
             return true;
@@ -442,6 +446,43 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
         Build b=new Build();
         b.addPlugin(plugin);
         model.setBuild(b);
+    }
+
+    /**
+     * T43: the classes of the external templates are written under {@code src/external/java}; the module compiles them with its own,
+     * as it did when they were all in {@code src/main/java}. An application that does not want them leaves that root out, and reads
+     * {@code external-packages.txt} to keep them out of the jar it builds: here the backend compiles against this module's jar, so
+     * this module's jar keeps them.
+     */
+    public void addExternalSources(Model model) {
+        Build b = model.getBuild();
+        if (b == null) {
+            b = new Build();
+            model.setBuild(b);
+        }
+        Plugin plugin = null;
+        for (Plugin p : b.getPlugins()) {
+            if ("build-helper-maven-plugin".equals(p.getArtifactId())) plugin = p;
+        }
+        if (plugin == null) {
+            plugin = new Plugin();
+            plugin.setGroupId("org.codehaus.mojo");
+            plugin.setArtifactId("build-helper-maven-plugin");
+            plugin.setVersion("3.0.0");
+            b.addPlugin(plugin);
+        }
+        Xpp3Dom configuration = new Xpp3Dom("configuration");
+        Xpp3Dom sources = new Xpp3Dom("sources");
+        Xpp3Dom source = new Xpp3Dom("source");
+        source.setValue("${project.basedir}/src/external/java");
+        sources.addChild(source);
+        configuration.addChild(sources);
+        PluginExecution pe = new PluginExecution();
+        pe.setId("add-external-sources");
+        pe.setPhase("generate-sources");
+        pe.addGoal("add-source");
+        pe.setConfiguration(configuration);
+        plugin.addExecution(pe);
     }
 
     public void addBuildHelperMavenPlugin(Model model) {

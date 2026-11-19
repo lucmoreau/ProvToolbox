@@ -213,6 +213,10 @@ public class ConfigProcessor implements Constants {
             final String cli_webjar_dir=cli_dir+"/src/main/resources/META-INF/resources/webjars/" + configs.name + "_cli/" + configs.version;
             final String cli_webjar_bindings_dir=cli_webjar_dir + "/bindings";
             final String cli_webjar_templates_dir=cli_webjar_dir + "/templates";
+            // T43: the classes of the templates that belong to another library are written apart, and listed
+            final boolean hasExternal=!Locations.externalPackagesOf(configs).isEmpty();
+            final String l2p_external_src_dir=hasExternal ? l2p_dir+"/src/external/java" : null;
+            final String cli_external_src_dir=hasExternal ? cli_dir+"/src/external/java" : null;
             new File(l2p_src_dir).mkdirs();
             new File(cli_src_dir).mkdirs();
             new File(l2p_test_src_dir).mkdirs();
@@ -233,7 +237,13 @@ public class ConfigProcessor implements Constants {
             //List<String> templatePath= List.of(templatePathString.split(":"));
             //System.out.println("---> Using template path: " + templatePath);
 
-            Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
+            checkExternalPackages(configs);
+            Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir, cli_external_src_dir, l2p_external_src_dir);
+            if (hasExternal) {
+                new File(l2p_external_src_dir).mkdirs();
+                new File(cli_external_src_dir).mkdirs();
+                writeExternalPackages(root_dir, locations.getExternalPackages());
+            }
 
             if (configs.variableCheck!=null) {
                 ProvVariables pv=objectMapper.readValue(new File(addBaseDirIfRelative(configs.variableCheck, inputBaseDir)), ProvVariables.class);
@@ -875,6 +885,39 @@ public class ConfigProcessor implements Constants {
         return compilerUtil.getBindingsSchema(location);
     }
 
+
+    /**
+     * T43: a template that is not external may not write into the package of one that is, since its classes would be written
+     * with the other library's and left out with them.
+     */
+    static void checkExternalPackages(TemplatesProjectConfiguration configs) {
+        List<String> external=Locations.externalPackagesOf(configs);
+        if (external.isEmpty()) return;
+        for (String p: external) {
+            if (configs.root_package != null && (configs.root_package.equals(p) || configs.root_package.startsWith(p + "."))) {
+                throw new IllegalArgumentException("the catalogue's root package " + configs.root_package + " is inside the package " + p + " of an external template (T43)");
+            }
+        }
+        for (TemplateCompilerConfig t: configs.templates) {
+            if (t.external || t.package_==null) continue;
+            for (String p: external) {
+                if (t.package_.equals(p) || t.package_.startsWith(p + ".")) {
+                    throw new IllegalArgumentException("template " + t.fullyQualifiedName + " is in package " + t.package_
+                            + ", which is inside the package " + p + " of an external template (T43): mark it external, or give it another package");
+                }
+            }
+        }
+    }
+
+    /** T43: one package per line, as a directory ('com/provmind/chron'), for the application to read when it packages its own jar. */
+    static void writeExternalPackages(String root_dir, List<String> packages) {
+        try {
+            java.nio.file.Files.writeString(new File(root_dir, "external-packages.txt").toPath(),
+                    packages.stream().map(p -> p.replace('.', '/') + "\n").collect(java.util.stream.Collectors.joining()));
+        } catch (java.io.IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
     public Document readTemplateFromLibraryPath(SimpleTemplateCompilerConfig config, TemplateIndexPath libraryPath, Locations locations)  {
         //Document document = compilerUtil.readDocumentFromFile(config.template);

@@ -29,6 +29,7 @@ import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.descriptors.*;
 import tools.jackson.core.JacksonException;
 import org.openprovenance.prov.template.core.InstantiateUtil;
+import org.openprovenance.prov.template.utils.TemplateExtension;
 
 //import com.google.common.base.CaseFormat;
 
@@ -217,18 +218,41 @@ public class CompilerUtil {
             IllegalArgumentException,
             InvocationTargetException,
             FileNotFoundException {
-        try {
+        if (interopFrameworkAvailable()) {
             Object interop=getInteropFramework();
             Method method = interop.getClass().getMethod("readDocumentFromFile", String.class);
             Document doc=(Document)method.invoke(interop,file);
             return org.openprovenance.prov.template.core.InstantiateUtil.withCurrentTemplateNamespace(doc, pFactory);
-        } catch (java.lang.ClassNotFoundException e) {
-            e.printStackTrace();
-            //System.out.println("could not find Interop Framework, falling back on provn");
-            return org.openprovenance.prov.template.core.InstantiateUtil.withCurrentTemplateNamespace(new ProvDeserialiser(pFactory).deserialiseDocument(new FileInputStream(file)), pFactory);
         }
+        // T44: prov-interop is not a dependency of the compiler, so it is often absent, and that is not an error:
+        // the provn reader, which is a dependency, reads the templates written in provn. Any other format needs
+        // prov-interop, and says so, instead of being handed to a provn parser.
+        if (!file.endsWith("." + TemplateExtension.PROVN)) {
+            throw new ClassNotFoundException("cannot read " + file + ": without " + INTEROP_FRAMEWORK_CLASS
+                    + " on the classpath (module prov-interop) only ." + TemplateExtension.PROVN + " templates are read");
+        }
+        try (InputStream in = new FileInputStream(file)) {
+            return org.openprovenance.prov.template.core.InstantiateUtil.withCurrentTemplateNamespace(new ProvDeserialiser(pFactory).deserialiseDocument(in), pFactory);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
+    static final String INTEROP_FRAMEWORK_CLASS = "org.openprovenance.prov.interop.InteropFramework";
 
+    private Boolean interopFrameworkAvailable;
+
+    /** Whether the interop framework is on the classpath; looked up once, and silently. */
+    protected boolean interopFrameworkAvailable() {
+        if (interopFrameworkAvailable == null) {
+            try {
+                Class.forName(INTEROP_FRAMEWORK_CLASS);
+                interopFrameworkAvailable = true;
+            } catch (ClassNotFoundException | LinkageError e) {
+                interopFrameworkAvailable = false;
+            }
+        }
+        return interopFrameworkAvailable;
     }
 
     public void writeDocument(String file, Document doc) throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -240,7 +264,7 @@ public class CompilerUtil {
 
     public Object getInteropFramework() throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
                                                IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Class<?> clazz = Class.forName("org.openprovenance.prov.interop.InteropFramework");
+        Class<?> clazz = Class.forName(INTEROP_FRAMEWORK_CLASS);
         Constructor<?> ctor = clazz.getConstructor();
         return ctor.newInstance(new Object[] { }); 
     }

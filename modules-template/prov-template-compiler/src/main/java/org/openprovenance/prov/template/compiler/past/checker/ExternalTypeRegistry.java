@@ -351,6 +351,28 @@ public class ExternalTypeRegistry {
 
 
 
+        // T41 (finding of the first application, fixed at Luc's word: "(2) type checker noise: fix in T41"): the JSON text runtime that the typed beans and
+        // the flows call. Without its methods' types the checker took each result for an Object and logged "cannot assign Object to Map" for every map of other keys.
+        externalRegistry.forClass(ClassName.get(org.openprovenance.prov.template.compiler.common.Constants.JSON_TEXT_RUNTIME_CLASS,
+                        org.openprovenance.prov.template.compiler.common.Constants.JSON_TEXT_RUNTIME_PACKAGE))
+                .method("newObject", MAP_STRING_OBJECT)
+                .method("write", STRING, MAP_STRING_OBJECT)
+                .method("toText", STRING, OBJECT)
+                .method("text", STRING, OBJECT)
+                .method("read", MAP_STRING_OBJECT, STRING)
+                .method("parse", OBJECT, STRING)
+                .method("merge", MAP_STRING_OBJECT, MAP_STRING_OBJECT, MAP_STRING_OBJECT, STRING)
+                .method("others", MAP_STRING_OBJECT, MAP_STRING_OBJECT, STRING_ARRAY)
+                .method("getString", STRING, MAP_STRING_OBJECT, STRING)
+                .method("getJson", STRING, MAP_STRING_OBJECT, STRING)
+                .method("getBoolean", BOOLEAN, MAP_STRING_OBJECT, STRING)
+                .method("getLong", LONG, MAP_STRING_OBJECT, STRING)
+                .method("getInteger", INTEGER, MAP_STRING_OBJECT, STRING)
+                .method("getDouble", DOUBLE, MAP_STRING_OBJECT, STRING)
+                .method("getFloat", FLOAT, MAP_STRING_OBJECT, STRING)
+                .method("same", _bool, OBJECT, OBJECT)
+                .register();
+
         return externalRegistry;
     }
     public static final ClassName CLASSNAME = ClassName.get( "ClassName", "past.lang");

@@ -1,0 +1,14 @@
+{
+    "t36.changing": {
+        "provn": "changing.provn"
+    },
+    "t36.inquiry": {
+        "provn": "inquiry.provn"
+    },
+    "t36.exchanging": {
+        "provn": "exchanging.provn"
+    },
+    "t36.registering": {
+        "provn": "registering.provn"
+    }
+}

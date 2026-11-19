@@ -1,0 +1,22 @@
+document
+ prefix tmpl <http://openprovenance.org/ns/tmpl#>
+ prefix var <http://openprovenance.org/var#>
+ prefix vargen <http://openprovenance.org/vargen#>
+ prefix ex <http://example.org/>
+
+ bundle vargen:b
+  entity(var:document1, [ex:name='var:name1', ex:attrs='var:attributes'])
+  activity(var:exchanging, [ex:when='var:time'])
+  agent(var:agent)
+  entity(var:document0)
+  entity(var:atype)
+  entity(var:witness)
+  entity(var:receipt)
+  used(var:exchanging, var:document0, -)
+  wasInfluencedBy(var:exchanging, var:atype)
+  wasInfluencedBy(var:exchanging, var:witness)
+  wasGeneratedBy(var:document1, var:exchanging, -)
+  wasGeneratedBy(var:receipt, var:exchanging, -)
+  wasAssociatedWith(var:exchanging, var:agent, -)
+ endBundle
+endDocument

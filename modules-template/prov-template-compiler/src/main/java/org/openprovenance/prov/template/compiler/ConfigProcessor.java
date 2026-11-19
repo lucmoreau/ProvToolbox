@@ -68,6 +68,8 @@ public class ConfigProcessor implements Constants {
     private final CompilerTableConfiguratorWithMap compilerTableConfiguratorWithMap ;
     private final CompilerTableConfiguratorForTypes compilerTableConfiguratorForTypes;
     private final CompilerBeanProcessor compilerBeanProcessor;
+    private final CompilerSubtype compilerSubtype;
+    private final CompilerFlow compilerFlow;
     private final CompilerInputOutputProcessor compilerInputOutputProcessor;
     private final CompilerTemplateInvoker compilerTemplateInvoker;
     private final CompilerBeanCompleter compilerBeanCompleter;
@@ -146,6 +148,8 @@ public class ConfigProcessor implements Constants {
         this.compilerBeanCompleter3 = new CompilerBeanCompleter3(pFactory);
         this.compilerBeanCompleter2Composite  = new CompilerBeanCompleter2Composite(pFactory);
         this.compilerBeanProcessor  = new CompilerBeanProcessor(pFactory);
+        this.compilerSubtype        = new CompilerSubtype(pFactory);
+        this.compilerFlow           = new CompilerFlow(pFactory, compilerSubtype);
         this.compilerCompositeConfigurations = new CompilerCompositeConfigurations(pFactory);
         this.compilerConfigurations = new CompilerConfigurations(pFactory);
         this.compilerDelegator =  new CompilerDelegator(pFactory);
@@ -209,6 +213,10 @@ public class ConfigProcessor implements Constants {
             final String cli_webjar_dir=cli_dir+"/src/main/resources/META-INF/resources/webjars/" + configs.name + "_cli/" + configs.version;
             final String cli_webjar_bindings_dir=cli_webjar_dir + "/bindings";
             final String cli_webjar_templates_dir=cli_webjar_dir + "/templates";
+            // T43: the classes of the templates that belong to another library are written apart, and listed
+            final boolean hasExternal=!Locations.externalPackagesOf(configs).isEmpty();
+            final String l2p_external_src_dir=hasExternal ? l2p_dir+"/src/external/java" : null;
+            final String cli_external_src_dir=hasExternal ? cli_dir+"/src/external/java" : null;
             new File(l2p_src_dir).mkdirs();
             new File(cli_src_dir).mkdirs();
             new File(l2p_test_src_dir).mkdirs();
@@ -218,6 +226,7 @@ public class ConfigProcessor implements Constants {
             new File(cli_webjar_templates_dir).mkdirs();
 
             setupPrivacy(configs, inputBaseDir, cbindingsBaseDir);
+            checkSubtypes(configs, cbindingsBaseDir);
 
             Pair<Map<String, String>, Map<String, String>> packages_shortnames_pair = findAllPackagesInConfigurations(configs, cbindingsBaseDir);
             Map<String, String> packages = packages_shortnames_pair.getLeft();
@@ -228,7 +237,13 @@ public class ConfigProcessor implements Constants {
             //List<String> templatePath= List.of(templatePathString.split(":"));
             //System.out.println("---> Using template path: " + templatePath);
 
-            Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir);
+            checkExternalPackages(configs);
+            Locations locations=new Locations(configs, packages, shortNames, templatePath, cli_src_dir, l2p_src_dir, cli_external_src_dir, l2p_external_src_dir);
+            if (hasExternal) {
+                new File(l2p_external_src_dir).mkdirs();
+                new File(cli_external_src_dir).mkdirs();
+                writeExternalPackages(root_dir, locations.getExternalPackages());
+            }
 
             if (configs.variableCheck!=null) {
                 ProvVariables pv=objectMapper.readValue(new File(addBaseDirIfRelative(configs.variableCheck, inputBaseDir)), ProvVariables.class);
@@ -239,6 +254,7 @@ public class ConfigProcessor implements Constants {
 
 
             for (TemplateCompilerConfig aconfig: configs.templates) {
+                if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
                 if (TemplateConfigurationEnum.isSimple(aconfig)) {
                     SimpleTemplateCompilerConfig config=(SimpleTemplateCompilerConfig) aconfig;
                     //config.template=addBaseDirIfRelative(config.template, inputBaseDir); it's no longer a file but a name an index
@@ -259,6 +275,7 @@ public class ConfigProcessor implements Constants {
                     boolean found=false;
                     //System.out.println("==> Found " + config);
                     for (TemplateCompilerConfig aconfig2: configs.templates) {
+                        if (TemplateConfigurationEnum.isClientSide(aconfig2)) continue; // T36 (R11): a subtype adds nothing to the server side
                         if (Objects.equals(aconfig2.fullyQualifiedName, composedTemplate)) {
                             found=true;
 
@@ -288,6 +305,7 @@ public class ConfigProcessor implements Constants {
 
             generateSQLEnd(configs, cli_src_dir);
             generateDocumentationEnd(configs, cli_src_dir);
+            generateTurtleEnd(configs, cli_src_dir);
             generatePrivacyRegister(cli_webjar_dir);
 
 
@@ -340,6 +358,9 @@ public class ConfigProcessor implements Constants {
         packages.put(configs.name, configs.root_package);
 
         for (TemplateCompilerConfig aconfig: configs.templates) {
+            // T36 (Luc, 2026-11-16: "Honour the declared package"): the typed bean, the request and the reply of a subtype are in the subtype's own package
+            if (aconfig instanceof SubtypeTemplateCompilerConfig && aconfig.package_ != null) packages.put(aconfig.fullyQualifiedName, aconfig.package_);
+            if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             shortNames.put(aconfig.fullyQualifiedName, aconfig.name);
 
             if (TemplateConfigurationEnum.isSimple(aconfig)) {
@@ -357,6 +378,7 @@ public class ConfigProcessor implements Constants {
                 boolean found=false;
 
                 for (TemplateCompilerConfig aconfig2: configs.templates) {
+                    if (TemplateConfigurationEnum.isClientSide(aconfig2)) continue; // T36 (R11): a subtype adds nothing to the server side
                     if (Objects.equals(aconfig2.fullyQualifiedName, composedTemplate)) {
                         found=true;
                         SimpleTemplateCompilerConfig sc = (SimpleTemplateCompilerConfig) aconfig2;
@@ -392,6 +414,21 @@ public class ConfigProcessor implements Constants {
      * makes it the current one, so that every bindings schema read from now on carries its effective annotations, and
      * reads every template's bindings once, so that a refusal stops generation before anything is written.
      */
+    /** T36: the generator of the catalogue's subtypes; its PAST classes are kept for tests of the emitters. */
+    public CompilerSubtype getCompilerSubtype() {
+        return compilerSubtype;
+    }
+
+    /** T36 stage 2: refuses an ill-declared {@code subtype} entry of the catalogue; nothing for a catalogue with none. */
+    public void checkSubtypes(TemplatesProjectConfiguration configs, String cbindingsBaseDir) {
+        new SubtypeChecker(compilerUtil, cbindingsBaseDir).check(configs);
+        compilerFlow.check(configs, cbindingsBaseDir);   // T36 part E: the flows, read and checked once, before anything is generated
+    }
+
+    public CompilerFlow getCompilerFlow() {
+        return compilerFlow;
+    }
+
     public PrivacyPolicy setupPrivacy(TemplatesProjectConfiguration configs, String inputBaseDir, String cbindingsBaseDir) {
         File policyFile = configs.privacy == null ? null : new File(addBaseDirIfRelative(configs.privacy, inputBaseDir));
         PrivacyPolicy policy = new PrivacyPolicy(policyFile,
@@ -399,6 +436,7 @@ public class ConfigProcessor implements Constants {
         PrivacyPolicy.setCurrent(policy);
         List<String> templates = new ArrayList<>();
         for (TemplateCompilerConfig aconfig : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (TemplateConfigurationEnum.isSimple(aconfig)) {
                 SimpleTemplateCompilerConfig config = (SimpleTemplateCompilerConfig) aconfig;
                 // composites resolve a component's bindings against inputBaseDir, simple entries against cbindingsBaseDir
@@ -408,12 +446,14 @@ public class ConfigProcessor implements Constants {
             }
         }
         for (TemplateCompilerConfig aconfig : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (TemplateConfigurationEnum.isSimple(aconfig)) {
                 compilerUtil.getBindingsSchema(addBaseDirIfRelative(((SimpleTemplateCompilerConfig) aconfig).cbindings, cbindingsBaseDir));
             }
         }
         policy.checkScopes(templates);
         for (TemplateCompilerConfig aconfig : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(aconfig)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (!TemplateConfigurationEnum.isSimple(aconfig)) {
                 CompositeTemplateCompilerConfig composite = (CompositeTemplateCompilerConfig) aconfig;
                 policy.checkComposite(composite.fullyQualifiedName, composite.consistsOf, composite.sharing);
@@ -456,7 +496,19 @@ public class ConfigProcessor implements Constants {
 
 
     public void generateJSonSchemaEnd(TemplatesProjectConfiguration configs, String cli_src_dir) {
-        if (configs.jsonschema!=null) compilerJsonSchema.generateJSonSchemaEnd(configs.jsonschema, cli_src_dir +"/../resources");
+        if (configs.jsonschema!=null) {
+            // T36 (stage 5): the schema of each subtype's typed bean, beside the templates'
+            for (SubtypeTemplateCompilerConfig st : CompilerSubtype.subtypes(configs)) {
+                compilerJsonSchema.generateSubtypeJSonSchema(st, compilerUtil.getBindingsSchema(CompilerSubtype.refined(configs, st)), "#/definitions/");
+                compilerJsonSchema.generateMessageJSonSchemas(st, compilerUtil.getBindingsSchema(CompilerSubtype.refined(configs, st)), "#/definitions/");
+            }
+            compilerJsonSchema.generateJSonSchemaEnd(configs.jsonschema, cli_src_dir +"/../resources");
+        }
+    }
+
+    /** T36 (stage 5): the Turtle file of the catalogue, when it names one. */
+    public void generateTurtleEnd(TemplatesProjectConfiguration configs, String cli_src_dir) {
+        if (configs.turtle!=null) new CompilerTurtle(compilerUtil).generateTurtle(configs, cli_src_dir +"/../resources", compilerFlow.getModels());
     }
 
     public void generateSQLEnd(TemplatesProjectConfiguration configs, String cli_src_dir) {
@@ -480,7 +532,7 @@ public class ConfigProcessor implements Constants {
     }
 
     public void generateDocumentationEnd(TemplatesProjectConfiguration configs, String cli_webjar_dir) {
-        if (configs.documentation!=null) compilerDocumentation.generateDocumentationEnd(configs,cli_webjar_dir);
+        if (configs.documentation!=null) compilerDocumentation.generateDocumentationEnd(configs,cli_webjar_dir, compilerFlow.getModels());
     }
 
     public void doGenerateProject(TemplatesProjectConfiguration configs, Locations locations, String root_dir, String cli_lib, String l2p_lib, String l2p_dir, String l2p_src_dir, String l2p_test_src_dir, String cli_test_src_dir, String cli_webjar_dir) {
@@ -514,7 +566,18 @@ public class ConfigProcessor implements Constants {
         final String openprovenance_dir= cli_src_dir + "/" + CLIENT_PACKAGE.replace('.', '/') + "/";
 
 
-        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true, compilerCommon.getFoundEscape() || compilerCommon.getFoundPrivacy()); // T31 (R16): Pseudonyms is in prov-model
+        // T36 (stage 3): the typed beans of the catalogue's subtypes and their dispatcher; nothing for a catalogue without subtype.
+        // Generated before the project's POM is written, which needs prov-model (JsonText) when there is one.
+        for (SpecificationFile typedBean : compilerSubtype.generateTypedBeans(configs, locations)) typedBean.save();
+        // T36 part D: the request and the reply of each subtype that has a value with a performative
+        for (SpecificationFile message : compilerSubtype.generateRequestReplyClasses(configs, locations)) message.save();
+        SpecificationFile subtypes = compilerSubtype.generateDispatcher(configs, locations, SUBTYPES);
+        if (subtypes != null) subtypes.save();
+        // T36 part E: the flows (checked with the subtypes)
+        for (SpecificationFile flow : compilerFlow.generateFlows(configs, locations)) flow.save();
+
+        compilerMaven.makeSubPom(configs, cli_dir, cli_lib, false, configs.jsweet, true,
+                compilerCommon.getFoundEscape() || compilerCommon.getFoundPrivacy() || compilerSubtype.foundSubtype()); // T31 (R16): Pseudonyms is in prov-model; T36: so is JsonText
         compilerMaven.makeSubPomJweet(configs, cli_dir, cli_lib, configs.jsweet);
 
 
@@ -823,6 +886,39 @@ public class ConfigProcessor implements Constants {
     }
 
 
+    /**
+     * T43: a template that is not external may not write into the package of one that is, since its classes would be written
+     * with the other library's and left out with them.
+     */
+    static void checkExternalPackages(TemplatesProjectConfiguration configs) {
+        List<String> external=Locations.externalPackagesOf(configs);
+        if (external.isEmpty()) return;
+        for (String p: external) {
+            if (configs.root_package != null && (configs.root_package.equals(p) || configs.root_package.startsWith(p + "."))) {
+                throw new IllegalArgumentException("the catalogue's root package " + configs.root_package + " is inside the package " + p + " of an external template (T43)");
+            }
+        }
+        for (TemplateCompilerConfig t: configs.templates) {
+            if (t.external || t.package_==null) continue;
+            for (String p: external) {
+                if (t.package_.equals(p) || t.package_.startsWith(p + ".")) {
+                    throw new IllegalArgumentException("template " + t.fullyQualifiedName + " is in package " + t.package_
+                            + ", which is inside the package " + p + " of an external template (T43): mark it external, or give it another package");
+                }
+            }
+        }
+    }
+
+    /** T43: one package per line, as a directory ('com/provmind/chron'), for the application to read when it packages its own jar. */
+    static void writeExternalPackages(String root_dir, List<String> packages) {
+        try {
+            java.nio.file.Files.writeString(new File(root_dir, "external-packages.txt").toPath(),
+                    packages.stream().map(p -> p.replace('.', '/') + "\n").collect(java.util.stream.Collectors.joining()));
+        } catch (java.io.IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     public Document readTemplateFromLibraryPath(SimpleTemplateCompilerConfig config, TemplateIndexPath libraryPath, Locations locations)  {
         //Document document = compilerUtil.readDocumentFromFile(config.template);
         try {
@@ -1055,7 +1151,8 @@ public class ConfigProcessor implements Constants {
             if (!inComposition) {
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();
-                compilerDocumentation.generateDocumentation(documentation, templateName, templateFullyQualifiedName, cli_webjar_html_dir, bindingsSchema, null);
+                compilerDocumentation.generateDocumentation(documentation, templateName, templateFullyQualifiedName, cli_webjar_html_dir, bindingsSchema, null,
+                        CompilerSubtype.subtypes(configs).stream().filter(st -> Objects.equals(st.refines, templateFullyQualifiedName)).collect(Collectors.toList()));
             } else {
                 final String cli_webjar_html_dir = cli_webjar_dir + "/html";
                 new File(cli_webjar_html_dir).mkdirs();

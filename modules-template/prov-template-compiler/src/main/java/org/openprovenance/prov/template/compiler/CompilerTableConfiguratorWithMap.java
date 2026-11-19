@@ -74,6 +74,7 @@ public class    CompilerTableConfiguratorWithMap {
                 );
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             final String templateNameClass = compilerUtil.templateNameClass(config.name);
             final ClassName className = ClassName.get(templateNameClass, locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON) );
 

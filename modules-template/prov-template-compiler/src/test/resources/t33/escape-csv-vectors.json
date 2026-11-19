@@ -1,0 +1,22 @@
+{
+  "description": "T33: StringEscapeUtils.escapeCsv as Apache Commons Lang 2.4 (prov-model's, the Java reference) gives it: a value is unchanged unless it holds a comma, a double quote, a carriage return or a line feed; then it is enclosed in double quotes with each double quote doubled. Run by Java (T33PythonNullTest), by the Python port and by the JSweet candy. null is null (Python None) and is not in the vectors, which are JSON strings.",
+  "vectors": [
+    { "title": "empty", "input": "", "output": "" },
+    { "title": "plain", "input": "plain", "output": "plain" },
+    { "title": "spaces and tabs are not special", "input": " a\tb ", "output": " a\tb " },
+    { "title": "a comma", "input": "a,b", "output": "\"a,b\"" },
+    { "title": "only a comma", "input": ",", "output": "\",\"" },
+    { "title": "a double quote", "input": "say \"hi\"", "output": "\"say \"\"hi\"\"\"" },
+    { "title": "only a double quote", "input": "\"", "output": "\"\"\"\"" },
+    { "title": "a line feed", "input": "line\nbreak", "output": "\"line\nbreak\"" },
+    { "title": "a carriage return", "input": "cr\rx", "output": "\"cr\rx\"" },
+    { "title": "carriage return and line feed", "input": "a\r\nb", "output": "\"a\r\nb\"" },
+    { "title": "a comma and a double quote", "input": "a, \"note\"", "output": "\"a, \"\"note\"\"\"" },
+    { "title": "a single quote is not special", "input": "it's", "output": "it's" },
+    { "title": "a semicolon is not special", "input": "a;b", "output": "a;b" },
+    { "title": "non-ASCII, plain", "input": "é ü 日本", "output": "é ü 日本" },
+    { "title": "non-ASCII with a comma", "input": "é,ü", "output": "\"é,ü\"" },
+    { "title": "already quoted", "input": "\"a\"", "output": "\"\"\"a\"\"\"" },
+    { "title": "JSON text", "input": "{\"k\":1}", "output": "\"{\"\"k\"\":1}\"" }
+  ]
+}

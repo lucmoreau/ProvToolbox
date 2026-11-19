@@ -85,6 +85,7 @@ public class CompilerBeanCompleter3 {
         // gather composee templates
         Set<String> composeeTemplates = new HashSet<>();
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (config instanceof CompositeTemplateCompilerConfig) {
                 CompositeTemplateCompilerConfig config1 = (CompositeTemplateCompilerConfig) config;
                 composeeTemplates.add(config1.consistsOf);
@@ -92,6 +93,7 @@ public class CompilerBeanCompleter3 {
         }
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
             if (config instanceof SimpleTemplateCompilerConfig) {
                 if (composeeTemplates.contains(config.fullyQualifiedName)) {
                     final String outputBeanNameClass = compilerUtil.outputsNameClass(config.name);

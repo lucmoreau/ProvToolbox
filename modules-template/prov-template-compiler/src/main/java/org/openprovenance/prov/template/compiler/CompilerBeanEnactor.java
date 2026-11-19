@@ -3,6 +3,7 @@ package org.openprovenance.prov.template.compiler;
 import org.openprovenance.prov.model.ProvFactory;
 import org.openprovenance.prov.template.compiler.common.BeanDirection;
 import org.openprovenance.prov.template.compiler.common.Constants;
+import org.openprovenance.prov.template.compiler.configuration.TemplateConfigurationEnum;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
@@ -73,6 +74,7 @@ public class CompilerBeanEnactor {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
             final ClassName className = ClassName.get(beanNameClass,locations.getBeansPackage(config.fullyQualifiedName, BeanDirection.COMMON));

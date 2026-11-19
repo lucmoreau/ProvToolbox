@@ -21,6 +21,10 @@ public class Locations {
     final public String cli_src_dir;
     final private TemplatesProjectConfiguration configs;
     final private String l2p_src_dir;
+    /** T43: where the classes of the templates that belong to another library are written (null: nothing is external). */
+    private final String cli_external_src_dir;
+    private final String l2p_external_src_dir;
+    private final List<String> externalPackages;
     private final Map<String, String> packages;
     public final String python_dir;
     public final String javascript_dir;
@@ -36,9 +40,21 @@ public class Locations {
     private final Map<String,String> cbindingsRegistrations=new HashMap<>();
 
     public Locations(TemplatesProjectConfiguration configs, Map<String, String> packages, Map<String, String> shortNames, List<String> templateLibraryPath, String cli_src_dir, String l2p_src_dir) {
+        this(configs, packages, shortNames, templateLibraryPath, cli_src_dir, l2p_src_dir, null, null);
+    }
+
+    /**
+     * @param cli_external_src_dir  where the client classes of the external templates go (T43), or null to write them with the others
+     * @param l2p_external_src_dir  the same for the classes of the backend
+     */
+    public Locations(TemplatesProjectConfiguration configs, Map<String, String> packages, Map<String, String> shortNames, List<String> templateLibraryPath, String cli_src_dir, String l2p_src_dir,
+                     String cli_external_src_dir, String l2p_external_src_dir) {
         this.configs=configs;
         this.cli_src_dir=cli_src_dir;
         this.l2p_src_dir=l2p_src_dir;
+        this.externalPackages=cli_external_src_dir==null ? List.of() : externalPackagesOf(configs);
+        this.cli_external_src_dir=cli_external_src_dir;
+        this.l2p_external_src_dir=l2p_external_src_dir;
         this.python_dir=configs.python_dir;
         this.javascript_dir=configs.javascript_dir;
         this.rust_dir=configs.rust_dir;
@@ -49,15 +65,41 @@ public class Locations {
 
 
     public String convertToDirectory(String rootDir, String aPackage) {
-        String theDirectory = rootDir + "/" + aPackage.replace('.', '/') + "/";
+        String theDirectory = routed(rootDir, aPackage) + "/" + aPackage.replace('.', '/') + "/";
         new File(theDirectory).mkdirs();
         return theDirectory;
     }
     public String convertToDirectory(String aPackage) {
-        return cli_src_dir + "/" + aPackage.replace('.', '/') + "/";
+        return routed(cli_src_dir, aPackage) + "/" + aPackage.replace('.', '/') + "/";
     }
     public String convertToBackendDirectory(String aPackage) {
-        return l2p_src_dir + "/" + aPackage.replace('.', '/') + "/";
+        return routed(l2p_src_dir, aPackage) + "/" + aPackage.replace('.', '/') + "/";
+    }
+
+    /** T43: the packages of the templates (simple or composite) that the catalogue says belong to another library, sorted. */
+    public static List<String> externalPackagesOf(TemplatesProjectConfiguration configs) {
+        return Arrays.stream(configs.templates)
+                .filter(t -> t.external && t.package_ != null)
+                .map(t -> t.package_)
+                .distinct().sorted().collect(Collectors.toList());
+    }
+
+    public List<String> getExternalPackages() {
+        return externalPackages;
+    }
+
+    /** Whether a package is one of the external templates' packages, or inside one. */
+    public boolean isExternalPackage(String aPackage) {
+        return externalPackages.stream().anyMatch(p -> aPackage.equals(p) || aPackage.startsWith(p + "."));
+    }
+
+    /** T43: the source root a package is written under: the external root for an external template's package, else the one asked for. */
+    private String routed(String rootDir, String aPackage) {
+        if (cli_external_src_dir != null && isExternalPackage(aPackage)) {
+            if (rootDir.equals(cli_src_dir)) return cli_external_src_dir;
+            if (rootDir.equals(l2p_src_dir)) return l2p_external_src_dir;
+        }
+        return rootDir;
     }
 
     public String getFilePackage(String name, String file) {
@@ -161,6 +203,7 @@ public class Locations {
             case QUERY_INVOKER:
             case BEAN_ENACTOR:
             case BEAN_PROCESSOR:
+            case SUBTYPES:
             case ENACTOR_IMPLEMENTATION1:
                 return getCommonPackage(name);
 

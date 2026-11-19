@@ -34,6 +34,25 @@ public class CompilerTest extends TestCase {
 
     ObjectMapper objectMapper = JsonMapper.builderWithJackson2Defaults().build();
 
+    /**
+     * T39: this test calls the generators directly, which register their classes with the compiler's static coordinators
+     * ({@link SpecificationFile}); a test of the same JVM that generated before it left those with classes of its own (a Python emitter
+     * then failed on a null type). It starts from the state of a fresh JVM, and leaves it so for the tests after it.
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        SpecificationFile.resetTypeCheckCoordinator();
+        SpecificationFile.resetCodeGenCoordinator();
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        SpecificationFile.resetTypeCheckCoordinator();
+        SpecificationFile.resetCodeGenCoordinator();
+        super.tearDown();
+    }
+
 
     public void testCompiler1() throws IOException {
 

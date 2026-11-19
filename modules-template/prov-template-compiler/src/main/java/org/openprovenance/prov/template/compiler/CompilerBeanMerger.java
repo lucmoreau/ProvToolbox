@@ -58,6 +58,7 @@ public class CompilerBeanMerger {
 
 
         for (TemplateCompilerConfig config : configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(config)) continue; // T36 (R11): a subtype adds nothing to the server side
 
             final String beanNameClass = compilerUtil.commonNameClass(config.name);
 

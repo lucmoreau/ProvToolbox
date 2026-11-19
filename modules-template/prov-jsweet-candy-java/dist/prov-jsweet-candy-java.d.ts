@@ -1,5 +1,75 @@
 declare namespace org.openprovenance.prov.utils {
     /**
+     * T36: JSweet candy of {@code org.openprovenance.prov.utils.JsonText} (prov-model), so that the generated client writes and
+     * reads the JSON text of an {@code @inJson} carrier in JavaScript as it does in Java. Both must give the same text for the
+     * same values: the conformance vectors of the compiler's tests ({@code t36/json-text-vectors.json}) are run against each.
+     * <p>
+     * This is the JavaScript implementation: JavaScript has one number type, so a number is written as the language writes it,
+     * which is the rule of RFC 8785 ({@code "" + d}); it is not meant to run on a JVM, where prov-model's class is used. Written
+     * with what JSweet translates: no {@code BigDecimal}, no {@code String.format}, no exceptions from number parsing. An object is a
+     * JavaScript object, so a key that reads as an array index (an integer) is written before the others, whatever its place.
+     * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
+     * @class
+     */
+    class JsonText {
+        static HEX: string;
+        static newObject(): any;
+        static write(map: any): string;
+        static toText(value: any): string;
+        /**
+         * The text of a number or a boolean as the carrier writes it, a string as itself, null as null (T36 part E: the conversion "as text" of a flow).
+         * @param {*} value
+         * @return {string}
+         */
+        static text(value: any): string;
+        /**
+         * T42: the text of a number without its exponent: the decimal point of RFC 8785's text ("1.2345e+25", "-5e-324") moved by the exponent.
+         * @param {string} text
+         * @return {string}
+         */
+        static plain(text: string): string;
+        static writeValue(sb: {
+            str: string;
+            toString: Function;
+        }, v: any): void;
+        static writeString(sb: {
+            str: string;
+            toString: Function;
+        }, s: string): void;
+        static read(text: string): any;
+        static parse(text: string): any;
+        static merge(declared: any, others: any, where: string): any;
+        static others(object: any, declared: string[]): any;
+        static notA(key: string, what: string): Error;
+        static getString(m: any, key: string): string;
+        static getJson(m: any, key: string): string;
+        static getBoolean(m: any, key: string): boolean;
+        static getLong(m: any, key: string): number;
+        static getInteger(m: any, key: string): number;
+        static getDouble(m: any, key: string): number;
+        static getFloat(m: any, key: string): number;
+        static same(actual: any, constant: any): boolean;
+    }
+    namespace JsonText {
+        class Parser {
+            s: string;
+            i: number;
+            constructor(s: string);
+            error(why: string): Error;
+            ws(): void;
+            value(): any;
+            literal(word: string): void;
+            object(): any;
+            array(): Array<any>;
+            hex(c: string): number;
+            string(): string;
+            digit(): boolean;
+            number(): any;
+        }
+    }
+}
+declare namespace org.openprovenance.prov.utils {
+    /**
      * T31 (R16): JSweet candy of {@code org.openprovenance.prov.utils.Pseudonyms} (prov-model), so that the
      * generated client checks a pseudonymised variable in JavaScript as it does in Java. Patterns are anchored
      * ({@code ^...$}), so {@code RegExp.test} matches the whole value, as Java's {@code matches()} does; the {@code u} flag

@@ -1,0 +1,9 @@
+[package]
+name = "t36_json_text_vectors"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+# T36/T42: runs json-text-vectors.json against the Rust port of JsonText (src/main/resources/rs/json_text.rs).
+# No dependency: the port is standard library only. Run: cargo test --offline -- --nocapture
+[dependencies]

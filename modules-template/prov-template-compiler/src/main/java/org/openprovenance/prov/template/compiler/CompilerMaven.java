@@ -7,6 +7,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openprovenance.prov.configuration.Configuration;
 import org.openprovenance.prov.model.ProvFactory;
+import org.openprovenance.prov.template.compiler.configuration.TemplateConfigurationEnum;
 import org.openprovenance.prov.template.compiler.configuration.Locations;
 import org.openprovenance.prov.template.compiler.configuration.SpecificationFile;
 import org.openprovenance.prov.template.compiler.configuration.TemplateCompilerConfig;
@@ -64,8 +65,6 @@ public class CompilerMaven {
         addCompilerDeclaration(model);
         addJunitDependency(model);
 
-        model.addProperty("java12.home", "/usr/local/java/jdk-12.0.1.jdk/Contents/Home/");
-
 
         try {
             new MavenXpp3Writer().write(new FileWriter(root_dir + "/pom.xml"), model);
@@ -119,6 +118,10 @@ public class CompilerMaven {
             addBuildHelperMavenPlugin(model);
         }
 
+        if (!Locations.externalPackagesOf(configs).isEmpty()) {
+            addExternalSources(model);
+        }
+
         try {
             new MavenXpp3Writer().write(new FileWriter(dir + "/pom.xml"), model);
             return true;
@@ -128,71 +131,37 @@ public class CompilerMaven {
         }
 
     }
+    /**
+     * T34: the JSweet build of a client project, on the pattern of provenance-templates-library: a standalone POM, {@code pom-jsweet.xml}, at the
+     * project's root (its base directory is the project's, so the sources are {@code src/main/java}), run from the project's POM
+     * ({@link #addJsweetCall}) as {@code mvn -f pom-jsweet.xml jsweet:jsweet}. It had been {@code jsweet/jsweet-pom.xml}, whose base directory is
+     * {@code jsweet/}, where jsweet found no source and "succeeded" with no output, run by a script that set {@code JAVA_HOME} to a JDK 12.
+     * The POM has the coordinates of the project (the bundle's webjar path and typings path are built from them), and depends on what the
+     * transpiled sources use: j4ts and the candy that supplies the rest of {@code java.util} and the toolbox's own classes.
+     */
     public boolean makeSubPomJweet(TemplatesProjectConfiguration configs, String dir, String name, boolean jsweet) {
+        if (!jsweet) return true;
         Model model = new Model();
-        model.setArtifactId(name);
-        model.setName(name);
-        model.setPackaging("jar");
-        model.setDescription(configs.description + " (" + name + ") [JSweet Compilation]");
-        Parent parent = new Parent();
-        parent.setArtifactId(configs.name);
-        parent.setGroupId(configs.group);
-        parent.setVersion(configs.version);
-        model.setParent(parent);
         model.setModelVersion("4.0.0");
+        model.setGroupId(configs.group);
+        model.setArtifactId(name);
+        model.setVersion(configs.version);
+        model.setPackaging("jar");
+        model.setName(name);
+        model.setDescription(configs.description + " (" + name + ") [JSweet Compilation]");
+        model.addProperty("project.build.sourceEncoding", "UTF-8");
 
-
-        if (jsweet) {
-            addJSweetDependency(model);
-            //addProvDependency("prov-jsweet-candy-js", model);
-            addProvDependency("prov-jsweet-candy-java", model);
-        }
-
-  
-        
-
-
-     
-
-        if (false) {
-            addJacksonDependency(model);
-        }
-
-        if (jsweet) {
-            addBuildHelperMavenPlugin(model);
-        }
+        addClientBuilderDependency("j4ts", "org.jsweet", "2.0.0", model);
+        addProvDependency("prov-jsweet-candy-java", model);
+        addJSweetDependency(model);
 
         try {
-            new File(dir + "/jsweet").mkdirs();
-            new MavenXpp3Writer().write(new FileWriter(dir + "/jsweet/jsweet-pom.xml"), model);
-
-            // get property java12.home from properties file compiler.properties
-
-            Properties properties=Configuration.getPropertiesFromClasspath(this.getClass(),"compiler.properties");
-            String java12Home=properties.getProperty("java12.home");
-
-
-            String script= """
-#!/bin/bash
-export JAVA_HOME="${java12.home}"
-
-mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
-""".replace("${java12.home}", java12Home);
-
-            // write script into file dir + "/jsweet/jsweet.sh"
-            FileWriter fw = new FileWriter(dir + "/jsweet/jsweet.sh");
-            fw.write(script);
-            fw.close();
-
-            // make the script executable
-            new File(dir + "/jsweet/jsweet.sh").setExecutable(true);
-
+            new MavenXpp3Writer().write(new FileWriter(dir + "/pom-jsweet.xml"), model);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
           /*
@@ -261,105 +230,66 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
 
          */
 
+    /**
+     * T34: runs the JSweet build of {@code pom-jsweet.xml} from antrun, at {@code generate-sources}, as provenance-templates-library does: a nested
+     * {@code mvn -f pom-jsweet.xml jsweet:jsweet} whose JVM opens the {@code jdk.compiler} packages jsweet reaches into (it fails on a recent JDK
+     * with "An API incompatibility was encountered" without), with the caller's local repository ({@code -Dmaven.repo.local}), and
+     * {@code ${jsweet.mvn.options}}, a property that is empty unless the caller sets it ({@code -Djsweet.mvn.options=-o} for an offline
+     * build). Then, at {@code package}, the bundle and its typings are copied to {@code dist}. No JDK 12, no script.
+     */
     private void addJsweetCall(Model model) {
         Plugin plugin = new Plugin();
         plugin.setArtifactId("maven-antrun-plugin");
         plugin.setGroupId("org.apache.maven.plugins");
-        plugin.setVersion("3.0.0");
+        plugin.setVersion("3.1.0");
 
-        StringBuilder configString = new StringBuilder()
-                .append("<configuration>")
-                .append("<target>")
-                .append("<available file=\"${java12.home}\" type=\"dir\" property=\"java12Exists\" />")
-                .append("</target>")
-                .append("<exportAntProperties>true</exportAntProperties>")
-                .append("</configuration>");
+        model.addProperty("jsweet.mvn.options", "");
 
-
-
-
-
-        PluginExecution pe1=new PluginExecution();
-        pe1.addGoal("run");
-        pe1.setId("check-java12-exists");
-        pe1.setPhase("generate-sources");
-
-        Xpp3Dom config = null;
-        try {
-            config = Xpp3DomBuilder.build(new StringReader(configString.toString()));
-        } catch (XmlPullParserException | IOException ex) {
-            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
+        StringBuilder opens = new StringBuilder();
+        for (String p : List.of("api", "code", "file", "model", "parser", "tree", "util")) {
+            if (opens.length() > 0) opens.append(" ");
+            opens.append("--add-opens jdk.compiler/com.sun.tools.javac.").append(p).append("=ALL-UNNAMED");
         }
-        pe1.setConfiguration(config);
 
-        PluginExecution pe2=new PluginExecution();
-        pe2.addGoal("run");
-        pe2.setId("antrun-jsweet");
-        pe2.setPhase("generate-sources");
+        PluginExecution pe = new PluginExecution();
+        pe.addGoal("run");
+        pe.setId("antrun-jsweet");
+        pe.setPhase("generate-sources");
+        pe.setConfiguration(dom("<configuration><target>"
+                + "<echo message=\"Running the JSweet build (mvn -f pom-jsweet.xml jsweet:jsweet)\" />"
+                + "<exec executable=\"mvn\" dir=\"${project.basedir}\" failonerror=\"true\">"
+                + "<env key=\"MAVEN_OPTS\" value=\"" + opens + "\" />"
+                + "<arg line=\"-f pom-jsweet.xml -Dmaven.repo.local=${settings.localRepository} ${jsweet.mvn.options} jsweet:jsweet\" />"
+                + "</exec>"
+                + "</target></configuration>"));
 
-        StringBuilder configString2 = new StringBuilder()
-                .append("<configuration>")
-                .append("<target if=\"${java12Exists}\">")
-                .append("<echo message=\"Java 12 found, doing jsweet compilation\" />")
-                .append("<exec executable=\"${project.basedir}/jsweet/jsweet.sh\">")
-                .append("</exec>")
-                .append("</target>")
-                .append("</configuration>");
-        try {
-            config = Xpp3DomBuilder.build(new StringReader(configString2.toString()));
-        } catch (XmlPullParserException | IOException ex) {
-            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
+        PluginExecution copy = new PluginExecution();
+        copy.addGoal("run");
+        copy.setId("copy-jsweet-bundle");
+        copy.setPhase("package");
+        copy.setConfiguration(dom("<configuration><target>"
+                + "<echo message=\"copying generated bundles to dist...\" />"
+                + "<copy file=\"${project.build.directory}/js/bundle.js\" tofile=\"dist/${project.artifactId}.js\" verbose=\"true\" failonerror=\"false\" />"
+                + "<copy file=\"${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts\" tofile=\"dist/${project.artifactId}.d.ts\" verbose=\"true\" failonerror=\"false\" />"
+                + "</target></configuration>"));
+
+        plugin.addExecution(pe);
+        plugin.addExecution(copy);
+
+        Build b = model.getBuild();
+        if (b == null) {
+            b = new Build();
+            model.setBuild(b);
         }
-        pe2.setConfiguration(config);
-
-        PluginExecution pe3=new PluginExecution();
-        pe3.addGoal("run");
-        pe3.setId("antrun.no.jsweet");
-        pe3.setPhase("generate-sources");
-
-        StringBuilder configString3 = new StringBuilder()
-                .append("<configuration>")
-                .append("<target unless=\"${java12Exists}\">")
-                .append("<echo message=\"Java 12 not found, skipping jsweet compilation, no npm test\" />")
-                .append("</target>")
-                .append("</configuration>");
-
-        try {
-            config = Xpp3DomBuilder.build(new StringReader(configString3.toString()));
-        } catch (XmlPullParserException | IOException ex) {
-            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
-        }
-        pe3.setConfiguration(config);
-
-        PluginExecution pe4=new PluginExecution();
-        pe4.addGoal("run");
-        pe4.setPhase("package");
-
-        StringBuilder configString4 = new StringBuilder()
-                .append("<configuration>")
-                .append("<target>")
-                .append("<echo message=\"copying generated bundles to dist...\" />")
-                .append("<copy file=\"${project.build.directory}/resources/META-INF/resources/webjars/${project.artifactId}/${project.version}/bundle.js\" tofile=\"dist/${project.artifactId}.js\" verbose=\"true\" failonerror=\"false\" />")
-                .append("<copy file=\"${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}/bundle.d.ts\" tofile=\"dist/${project.artifactId}.d.ts\" verbose=\"true\" failonerror=\"false\" />")
-                .append("</target>")
-                .append("</configuration>");
-
-        try {
-            config = Xpp3DomBuilder.build(new StringReader(configString4.toString()));
-        } catch (XmlPullParserException | IOException ex) {
-            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
-        }
-        pe4.setConfiguration(config);
-
-        plugin.addExecution(pe1);
-        plugin.addExecution(pe2);
-        plugin.addExecution(pe3);
-        plugin.addExecution(pe4);
-
-        Build b=new Build();
         b.addPlugin(plugin);
-        model.setBuild(b);
+    }
 
+    private static Xpp3Dom dom(String xml) {
+        try {
+            return Xpp3DomBuilder.build(new StringReader(xml));
+        } catch (XmlPullParserException | IOException ex) {
+            throw new RuntimeException("Issue creating a plugin configuration", ex);
+        }
     }
 
     public String getProvPackageId() {
@@ -401,46 +331,74 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
         model.addDependency(dep);
     }
 
+    /**
+     * The jsweet-maven-plugin of {@code pom-jsweet.xml}, configured as provenance-templates-library does, but for one thing: the project's own
+     * sources ({@code compileSourceRootsOverride}), one bundle ({@code target/js/bundle.js}) and its typings
+     * ({@code target/resources/src/typings/<artifact>/<version>/bundle.d.ts}). The plugin's configuration, not an execution's, so that
+     * {@code mvn jsweet:jsweet} reads it. The module is {@code none}, not {@code commonjs}: the bundle is a script whose namespaces are global, as
+     * the candy's are. With CommonJS the client's own {@code org} is a module's, which hides the candy's {@code org.openprovenance} from TypeScript
+     * ("Property 'openprovenance' does not exist on type 'typeof org'"): the library's catalogues, under {@code org.openprovenance}, do not meet it, and
+     * a client whose builders call {@code StringEscapeUtils} (the candy's) under another root package does.
+     */
     public void addJSweetDependency(Model model) {
         Plugin plugin = new Plugin();
         plugin.setArtifactId("jsweet-maven-plugin");
         plugin.setGroupId("org.jsweet");
         plugin.setVersion("3.1.0");
+        plugin.setConfiguration(dom("<configuration>"
+                + "<compileSourceRootsOverride>${project.basedir}/src/main/java</compileSourceRootsOverride>"
+                + "<verbose>false</verbose>"
+                + "<outDir>${project.build.directory}/js</outDir>"
+                + "<tsOut>${project.build.directory}/ts</tsOut>"
+                + "<candiesJsOut>${project.build.directory}/webapp/candies</candiesJsOut>"
+                + "<excludes><exclude>**/node_modules/**</exclude><exclude>**/node/**</exclude></excludes>"
+                + "<targetVersion>ES6</targetVersion>"
+                + "<module>none</module>"
+                + "<bundle>true</bundle>"
+                + "<declaration>true</declaration>"
+                + "<dtsOut>${project.build.directory}/resources/src/typings/${project.artifactId}/${project.version}</dtsOut>"
+                + "</configuration>"));
 
-        StringBuilder configString = new StringBuilder()
-                .append("<configuration>")
-                .append("<verbose>false</verbose>")
-                .append("<outDir>target/js</outDir>")
-                .append("<tsOut>target/ts</tsOut>")
-                .append("<candiesJsOut>webapp/candies</candiesJsOut>")
-                .append("<targetVersion>ES6</targetVersion>")
-                .append("<module>none</module>")
-                .append("<moduleResolution>classic</moduleResolution>")
-                .append("</configuration>");
-
-        Xpp3Dom config = null;
-        try {
-            config = Xpp3DomBuilder.build(new StringReader(configString.toString()));
-        } catch (XmlPullParserException | IOException ex) {
-            throw new RuntimeException("Issue creating config for enforcer plugin", ex);
-        }
-        plugin.setConfiguration(config);
-
-        PluginExecution pe1=new PluginExecution();
-        pe1.addGoal("jsweet");
-        pe1.setId("generate-js");
-        pe1.setPhase("generate-sources");
-
-        PluginExecution pe2=new PluginExecution();
-        pe2.addGoal("clean");
-        pe2.setId("clean");
-        pe2.setPhase("clean");
-        plugin.addExecution(pe1);
-        plugin.addExecution(pe2);
-
-        Build b=new Build();
+        Build b = new Build();
         b.addPlugin(plugin);
         model.setBuild(b);
+    }
+
+    /**
+     * T43: the classes of the external templates are written under {@code src/external/java}; the module compiles them with its own,
+     * as it did when they were all in {@code src/main/java}. An application that does not want them leaves that root out, and reads
+     * {@code external-packages.txt} to keep them out of the jar it builds: here the backend compiles against this module's jar, so
+     * this module's jar keeps them.
+     */
+    public void addExternalSources(Model model) {
+        Build b = model.getBuild();
+        if (b == null) {
+            b = new Build();
+            model.setBuild(b);
+        }
+        Plugin plugin = null;
+        for (Plugin p : b.getPlugins()) {
+            if ("build-helper-maven-plugin".equals(p.getArtifactId())) plugin = p;
+        }
+        if (plugin == null) {
+            plugin = new Plugin();
+            plugin.setGroupId("org.codehaus.mojo");
+            plugin.setArtifactId("build-helper-maven-plugin");
+            plugin.setVersion("3.0.0");
+            b.addPlugin(plugin);
+        }
+        Xpp3Dom configuration = new Xpp3Dom("configuration");
+        Xpp3Dom sources = new Xpp3Dom("sources");
+        Xpp3Dom source = new Xpp3Dom("source");
+        source.setValue("${project.basedir}/src/external/java");
+        sources.addChild(source);
+        configuration.addChild(sources);
+        PluginExecution pe = new PluginExecution();
+        pe.setId("add-external-sources");
+        pe.setPhase("generate-sources");
+        pe.addGoal("add-source");
+        pe.setConfiguration(configuration);
+        plugin.addExecution(pe);
     }
 
     public void addBuildHelperMavenPlugin(Model model) {
@@ -567,6 +525,7 @@ mvn -f jsweet/jsweet-pom.xml jsweet:jsweet
                         METHOD_CALL(INTEROP_FRAMEWORK, "getDefaultFactory", List.of())));
 
         for (TemplateCompilerConfig template: configs.templates) {
+            if (TemplateConfigurationEnum.isClientSide(template)) continue; // T36 (R11): a subtype adds nothing to the server side
             String bn=compilerUtil.templateNameClass(template.name);
             ClassName templateClass = ClassName.get(bn, template.package_);
 

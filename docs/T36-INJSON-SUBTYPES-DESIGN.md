@@ -236,6 +236,7 @@ client project only when the catalogue has a subtype.
   carry the same text.
 - A table of values with the text each must give is kept once and run by every language's port, as T31's conformance
   vectors are.
+- **T42 (2026-11-19): `text` has no exponent.** `write` keeps RFC 8785's number text (R5); `text`, the conversion "as text" of a flow (E4), writes a number in plain digits: `1e+21` is `1000000000000000000000` and `1e-7` is `0.0000001`; the other numbers are as `write` gives them. `JsonText.plain` (Java), `_plain` (Python) and `plain` (candy) do it on the text, by moving the decimal point by the exponent.
 
 ### 5.5 The languages
 

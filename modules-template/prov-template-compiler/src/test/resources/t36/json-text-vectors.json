@@ -1,5 +1,5 @@
 {
-  "description": "T36: conformance vectors of the JSON text runtime (Java: org.openprovenance.prov.utils.JsonText). Every port (Java, the jsweet candy, Python) reads each 'input' as JSON, with read(), and writes it back with write(): the answer must be exactly 'output'. A 'refused' input must be refused by read(). The members of an object are written in the order they were read; numbers follow RFC 8785; no integer beyond 2^53 is used, since JavaScript cannot tell it from its neighbours. A 'text' vector: 'input' is read as one JSON value with parse(), and text() of it must be 'result' (null stays null), or be refused.",
+  "description": "T36: conformance vectors of the JSON text runtime (Java: org.openprovenance.prov.utils.JsonText). Every port (Java, the jsweet candy, Python) reads each 'input' as JSON, with read(), and writes it back with write(): the answer must be exactly 'output'. A 'refused' input must be refused by read(). The members of an object are written in the order they were read; numbers follow RFC 8785; no integer beyond 2^53 is used, since JavaScript cannot tell it from its neighbours. A 'text' vector: 'input' is read as one JSON value with parse(), and text() of it must be 'result' (null stays null), or be refused. T42: text() writes a number in plain digits, never with an exponent (1e21 is 1000000000000000000000, 1e-7 is 0.0000001), where write() keeps RFC 8785's 1e+21 and 1e-7.",
   "canonical": [
     {"title": "empty object", "input": "{}", "output": "{}"},
     {"title": "blank text is the empty object", "input": "", "output": "{}"},
@@ -71,6 +71,14 @@
     {"title": "a double keeps its digits", "input": "2.5", "result": "2.5"},
     {"title": "a double has no trailing zero (2.50 is 2.5: the limit of a price as a double, until a decimal type)", "input": "2.50", "result": "2.5"},
     {"title": "a negative double", "input": "-1.25", "result": "-1.25"},
+    {"title": "T42: a large double is written in full, not with an exponent (canonical writes 1e+21)", "input": "1e21", "result": "1000000000000000000000"},
+    {"title": "T42: a mantissa and an exponent are written in full", "input": "1.2345e25", "result": "12345000000000000000000000"},
+    {"title": "T42: the largest double, in full", "input": "1.7976931348623157e308", "result": "179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"},
+    {"title": "T42: a small double is written in full (canonical writes 1e-7)", "input": "1e-7", "result": "0.0000001"},
+    {"title": "T42: a small negative double with a mantissa", "input": "-1.5e-7", "result": "-0.00000015"},
+    {"title": "T42: a very small double, in full (299 zeros)", "input": "1e-300", "result": "0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"},
+    {"title": "T42: a number canonical writes without an exponent is unchanged (the smallest: 1e-6)", "input": "1e-6", "result": "0.000001"},
+    {"title": "T42: and the largest: 1.5e20, the last magnitude canonical writes in full", "input": "1.5e20", "result": "150000000000000000000"},
     {"title": "true", "input": "true", "result": "true"},
     {"title": "false", "input": "false", "result": "false"},
     {"title": "a string is itself", "input": "\"abc\"", "result": "abc"},

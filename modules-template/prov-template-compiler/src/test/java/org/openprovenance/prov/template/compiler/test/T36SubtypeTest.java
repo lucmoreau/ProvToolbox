@@ -491,7 +491,7 @@ public class T36SubtypeTest extends T36Fixture {
             return;
         }
         assertEquals(r[1], "0", r[0]);
-        assertTrue(r[1], r[1].contains("vectors: 71 run, 0 failed"));
+        assertTrue(r[1], r[1].contains("vectors: 79 run, 0 failed"));
     }
 
     public void testTheJsweetCandyConformsToTheVectors() throws Exception {
@@ -502,7 +502,7 @@ public class T36SubtypeTest extends T36Fixture {
             return;
         }
         assertEquals(r[1], "0", r[0]);
-        assertTrue(r[1], r[1].contains("vectors: 71 run, 0 failed"));
+        assertTrue(r[1], r[1].contains("vectors: 79 run, 0 failed"));
     }
 
     static void FileUtils_deleteQuietly(Path p) {

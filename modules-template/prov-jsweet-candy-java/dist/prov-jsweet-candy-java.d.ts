@@ -21,6 +21,12 @@ declare namespace org.openprovenance.prov.utils {
          * @return {string}
          */
         static text(value: any): string;
+        /**
+         * T42: the text of a number without its exponent: the decimal point of RFC 8785's text ("1.2345e+25", "-5e-324") moved by the exponent.
+         * @param {string} text
+         * @return {string}
+         */
+        static plain(text: string): string;
         static writeValue(sb: {
             str: string;
             toString: Function;

@@ -42,9 +42,50 @@ var org;
                             return null;
                         if (typeof value === 'string')
                             return value;
-                        if ((typeof value === 'number') || (typeof value === 'boolean'))
+                        if (typeof value === 'boolean')
                             return JsonText.toText(value);
+                        if (typeof value === 'number')
+                            return JsonText.plain(JsonText.toText(value));
                         throw Object.defineProperty(new Error("T36: a value of that kind has no text"), '__classes', { configurable: true, value: ['java.lang.Throwable', 'java.lang.Object', 'java.lang.RuntimeException', 'java.lang.IllegalArgumentException', 'java.lang.Exception'] });
+                    }
+                    /**
+                     * T42: the text of a number without its exponent: the decimal point of RFC 8785's text ("1.2345e+25", "-5e-324") moved by the exponent.
+                     * @param {string} text
+                     * @return {string}
+                     */
+                    static plain(text) {
+                        const e = text.indexOf('e');
+                        if (e < 0)
+                            return text;
+                        let mantissa = text.substring(0, e);
+                        const exponent = text.substring(e + 1);
+                        const exp = parseInt((c => c.charCodeAt == null ? c : c.charCodeAt(0))(exponent.charAt(0)) == '+'.charCodeAt(0) ? exponent.substring(1) : exponent);
+                        const negative = (c => c.charCodeAt == null ? c : c.charCodeAt(0))(mantissa.charAt(0)) == '-'.charCodeAt(0);
+                        if (negative)
+                            mantissa = mantissa.substring(1);
+                        const dot = mantissa.indexOf('.');
+                        const digits = dot < 0 ? mantissa : mantissa.substring(0, dot) + mantissa.substring(dot + 1);
+                        const point = (dot < 0 ? mantissa.length : dot) + exp;
+                        const sb = { str: "", toString: function () { return this.str; } };
+                        if (negative) /* append */
+                            (sb => { sb.str += "-"; return sb; })(sb);
+                        if (point >= digits.length) {
+                            /* append */ (sb => { sb.str += digits; return sb; })(sb);
+                            for (let i = digits.length; i < point; i++) { /* append */
+                                (sb => { sb.str += "0"; return sb; })(sb);
+                            }
+                        }
+                        else if (point > 0) {
+                            /* append */ (sb => { sb.str += digits.substring(point); return sb; })(/* append */ (sb => { sb.str += "."; return sb; })(/* append */ (sb => { sb.str += digits.substring(0, point); return sb; })(sb)));
+                        }
+                        else {
+                            /* append */ (sb => { sb.str += "0."; return sb; })(sb);
+                            for (let i = 0; i < -point; i++) { /* append */
+                                (sb => { sb.str += "0"; return sb; })(sb);
+                            }
+                            /* append */ (sb => { sb.str += digits; return sb; })(sb);
+                        }
+                        return /* toString */ sb.str;
                     }
                     static writeValue(sb, v) {
                         if (v == null) {
@@ -103,11 +144,11 @@ var org;
                         }
                     }
                     static writeString(sb, s) {
-                        /* append */ (sb => { sb.str += '"'; return sb; })(sb);
+                        /* append */ (sb => { sb.str += '\"'; return sb; })(sb);
                         for (let i = 0; i < s.length; i++) {
                             {
                                 const c = s.charAt(i);
-                                if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '"'.charCodeAt(0)) {
+                                if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '\"'.charCodeAt(0)) {
                                     /* append */ (sb => { sb.str += "\\\""; return sb; })(sb);
                                 }
                                 else if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '\\'.charCodeAt(0)) {
@@ -137,7 +178,7 @@ var org;
                             }
                             ;
                         }
-                        /* append */ (sb => { sb.str += '"'; return sb; })(sb);
+                        /* append */ (sb => { sb.str += '\"'; return sb; })(sb);
                     }
                     static read(text) {
                         if (text == null || text.trim().length === 0)
@@ -293,7 +334,7 @@ var org;
                                 return this.object();
                             if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '['.charCodeAt(0))
                                 return this.array();
-                            if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '"'.charCodeAt(0))
+                            if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '\"'.charCodeAt(0))
                                 return this.string();
                             if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == 't'.charCodeAt(0)) {
                                 this.literal("true");
@@ -327,12 +368,12 @@ var org;
                             while ((true)) {
                                 {
                                     this.ws();
-                                    if (this.i >= this.s.length || (c => c.charCodeAt == null ? c : c.charCodeAt(0))(this.s.charAt(this.i)) != '"'.charCodeAt(0))
+                                    if (this.i >= this.s.length || (c => c.charCodeAt == null ? c : c.charCodeAt(0))(this.s.charAt(this.i)) != '\"'.charCodeAt(0))
                                         throw this.error("expected a key");
                                     const k = this.string();
                                     this.ws();
                                     if (this.i >= this.s.length || (c => c.charCodeAt == null ? c : c.charCodeAt(0))(this.s.charAt(this.i)) != ':'.charCodeAt(0))
-                                        throw this.error("expected ':'");
+                                        throw this.error("expected \':\'");
                                     this.i++;
                                     this.ws();
                                     /* put */ (m[k] = this.value());
@@ -344,7 +385,7 @@ var org;
                                     if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '}'.charCodeAt(0))
                                         return m;
                                     if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) != ','.charCodeAt(0))
-                                        throw this.error("expected ',' or '}'");
+                                        throw this.error("expected \',\' or \'}\'");
                                 }
                             }
                             ;
@@ -369,7 +410,7 @@ var org;
                                     if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == ']'.charCodeAt(0))
                                         return l;
                                     if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) != ','.charCodeAt(0))
-                                        throw this.error("expected ',' or ']'");
+                                        throw this.error("expected \',\' or \']\'");
                                 }
                             }
                             ;
@@ -389,7 +430,7 @@ var org;
                                         throw this.error("unterminated string");
                                     const c = this.s.charAt(this.i);
                                     this.i++;
-                                    if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '"'.charCodeAt(0))
+                                    if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) == '\"'.charCodeAt(0))
                                         return /* toString */ sb.str;
                                     if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(c) < 32)
                                         throw this.error("control character in string");
@@ -401,8 +442,8 @@ var org;
                                         throw this.error("unterminated escape");
                                     const e = this.s.charAt(this.i);
                                     this.i++;
-                                    if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(e) == '"'.charCodeAt(0)) /* append */
-                                        (sb => { sb.str += '"'; return sb; })(sb);
+                                    if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(e) == '\"'.charCodeAt(0)) /* append */
+                                        (sb => { sb.str += '\"'; return sb; })(sb);
                                     else if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(e) == '\\'.charCodeAt(0)) /* append */
                                         (sb => { sb.str += '\\'; return sb; })(sb);
                                     else if ((c => c.charCodeAt == null ? c : c.charCodeAt(0))(e) == '/'.charCodeAt(0)) /* append */

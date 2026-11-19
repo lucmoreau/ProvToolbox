@@ -53,12 +53,46 @@ public final class JsonText {
      * The text of a value, for the conversion "as text" of a flow (T36 part E): a number or a boolean as the carrier writes it
      * ({@code 5.0} is {@code 5}, {@code 2.50} is {@code 2.5}: a double has no trailing zeros), a string as itself, and {@code null} as
      * {@code null} (not the text {@code null}, which {@link #toText} writes). Anything else has no text.
+     * <p>T42: a number is written in plain digits, never with an exponent: where {@link #toText} gives RFC 8785's {@code 1e+21} or
+     * {@code 1e-7} (a magnitude from 1e21, or under 1e-6), this gives {@code 1000000000000000000000} or {@code 0.0000001}. Every other
+     * number is the same text as {@link #toText} gives.
      */
     public static String text(Object value) {
         if (value == null) return null;
         if (value instanceof String) return (String) value;
+        if (value instanceof Double || value instanceof Float) return plain(toText(value));
         if (value instanceof Number || value instanceof Boolean) return toText(value);
         throw new IllegalArgumentException("T36: a value of that kind has no text");
+    }
+
+    /**
+     * T42: the text of a number without its exponent: the decimal point of RFC 8785's text ({@code 1.2345e+25}, {@code -5e-324}) moved by
+     * the exponent. Text with no exponent is returned as it is. The same steps, on strings, as the other ports.
+     */
+    static String plain(String text) {
+        int e = text.indexOf('e');
+        if (e < 0) return text;
+        String mantissa = text.substring(0, e);
+        String exponent = text.substring(e + 1);
+        int exp = Integer.parseInt(exponent.startsWith("+") ? exponent.substring(1) : exponent);
+        boolean negative = mantissa.startsWith("-");
+        if (negative) mantissa = mantissa.substring(1);
+        int dot = mantissa.indexOf('.');
+        String digits = dot < 0 ? mantissa : mantissa.substring(0, dot) + mantissa.substring(dot + 1);
+        int point = (dot < 0 ? mantissa.length() : dot) + exp;      // where the decimal point falls in the digits
+        StringBuilder sb = new StringBuilder();
+        if (negative) sb.append('-');
+        if (point >= digits.length()) {
+            sb.append(digits);
+            for (int i = digits.length(); i < point; i++) sb.append('0');
+        } else if (point > 0) {
+            sb.append(digits, 0, point).append('.').append(digits, point, digits.length());
+        } else {
+            sb.append("0.");
+            for (int i = 0; i < -point; i++) sb.append('0');
+            sb.append(digits);
+        }
+        return sb.toString();
     }
 
     private static void writeValue(StringBuilder sb, Object v) {

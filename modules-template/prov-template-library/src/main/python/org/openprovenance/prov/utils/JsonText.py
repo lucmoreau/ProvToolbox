@@ -80,9 +80,31 @@ class JsonText:
             return None
         if isinstance(value, str):
             return value
-        if isinstance(value, (bool, int, float)):
+        if isinstance(value, float):
+            return JsonText._plain(JsonText.toText(value))
+        if isinstance(value, (bool, int)):
             return JsonText.toText(value)
         raise _refused("a value of that kind has no text")
+
+    @staticmethod
+    def _plain(text):
+        """T42: a number's text without its exponent: the decimal point of RFC 8785's text ('1.2345e+25', '-5e-324') moved by the exponent."""
+        e = text.find("e")
+        if e < 0:
+            return text
+        mantissa, exp = text[:e], int(text[e + 1:])
+        negative = mantissa.startswith("-")
+        if negative:
+            mantissa = mantissa[1:]
+        dot = mantissa.find(".")
+        digits = mantissa if dot < 0 else mantissa[:dot] + mantissa[dot + 1:]
+        point = (len(mantissa) if dot < 0 else dot) + exp           # where the decimal point falls in the digits
+        sign = "-" if negative else ""
+        if point >= len(digits):
+            return sign + digits + "0" * (point - len(digits))
+        if point > 0:
+            return sign + digits[:point] + "." + digits[point:]
+        return sign + "0." + "0" * (-point) + digits
 
     @staticmethod
     def _write_value(out, v):

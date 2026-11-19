@@ -40,8 +40,36 @@ public class JsonText {
     public static String text(Object value) {
         if (value == null) return null;
         if (value instanceof String) return (String) value;
-        if (value instanceof Number || value instanceof Boolean) return toText(value);
+        if (value instanceof Boolean) return toText(value);
+        if (value instanceof Number) return plain(toText(value));      // T42: no exponent
         throw new IllegalArgumentException("T36: a value of that kind has no text");
+    }
+
+    /** T42: the text of a number without its exponent: the decimal point of RFC 8785's text ("1.2345e+25", "-5e-324") moved by the exponent. */
+    static String plain(String text) {
+        int e = text.indexOf('e');
+        if (e < 0) return text;
+        String mantissa = text.substring(0, e);
+        String exponent = text.substring(e + 1);
+        int exp = Integer.parseInt(exponent.charAt(0) == '+' ? exponent.substring(1) : exponent);
+        boolean negative = mantissa.charAt(0) == '-';
+        if (negative) mantissa = mantissa.substring(1);
+        int dot = mantissa.indexOf('.');
+        String digits = dot < 0 ? mantissa : mantissa.substring(0, dot) + mantissa.substring(dot + 1);
+        int point = (dot < 0 ? mantissa.length() : dot) + exp;      // where the decimal point falls in the digits
+        StringBuilder sb = new StringBuilder();
+        if (negative) sb.append("-");
+        if (point >= digits.length()) {
+            sb.append(digits);
+            for (int i = digits.length(); i < point; i++) sb.append("0");
+        } else if (point > 0) {
+            sb.append(digits.substring(0, point)).append(".").append(digits.substring(point));
+        } else {
+            sb.append("0.");
+            for (int i = 0; i < -point; i++) sb.append("0");
+            sb.append(digits);
+        }
+        return sb.toString();
     }
 
     @SuppressWarnings("unchecked")

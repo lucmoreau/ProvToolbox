@@ -1555,4 +1555,102 @@ public class RustEmitterTest {
         assertTrue("Assignment should emit the parameter directly without Some() wrapping",
                 out.contains("out.transforming = transforming"));
     }
+
+    // =========================================================================
+    // Group 26 — T46: what the subtypes' conversions and the flows need
+    // =========================================================================
+
+    /** A static call of the JSON text runtime: arguments borrowed, the Result unwrapped, its class imported. */
+    @Test
+    public void jsonTextStaticCall_bordersItsArgumentsAndUnwrapsTheResult() {
+        ClassName jsonText = ClassName.get("JsonText", "org.openprovenance.prov.utils");
+        Definition def = new Definition(ClassName.STRING, local("text"), MethodCall.METHOD_CALL(jsonText, "write", List.of(local("map"))));
+        String out = emit(new Class("C").MODIFIERS(Modifier.PUBLIC).METHODS(publicMethod("m", def)));
+        assertTrue(out, out.contains("JsonText::write(&map).unwrap()"));
+        assertTrue(out, out.contains("use crate::json_text::JsonText;"));
+    }
+
+    /** throw new X(message) is a panic with the message. */
+    @Test
+    public void throwNewException_isAPanicWithTheMessage() {
+        ClassName iae = ClassName.get("IllegalArgumentException", "past.lang");
+        iae = (ClassName) iae;
+        ThrowStatement t = ThrowStatement.THROW(MethodCall.CONSTRUCTOR_CALL(iae, List.of(Constant.CONSTANT("T36: the value {x} is absent"))));
+        t.expression.inferredType = iae;
+        String out = emit(new Class("C").MODIFIERS(Modifier.PUBLIC).METHODS(publicMethod("m", t)));
+        assertTrue(out, out.contains("panic!(\"T36: the value {{x}} is absent\");"));
+    }
+
+    /** A parameter that is assigned only inside an if is declared mut. */
+    @Test
+    public void parameterAssignedOnlyInAnIf_isMut() {
+        MethodCall field = new MethodCall(local("asked"), "outcome");
+        IfStatement ifs = IfStatement.IF(Constant.CONSTANT(true),
+                List.of(new Assignment(field, Constant.CONSTANT("accepted"))), List.of(new Assignment(field, Constant.CONSTANT("failed"))));
+        Method m = new Method("answer").MODIFIERS(Modifier.PUBLIC, Modifier.STATIC).PARAMETER(ClassName.get("Asked", "p"), "asked").RETURNS(ClassName.VOID).BODY(ifs);
+        String out = emit(new Class("C").MODIFIERS(Modifier.PUBLIC).METHODS(m));
+        assertTrue(out, out.contains("(mut asked: Asked)"));
+    }
+
+    /** A method that returns null on some path returns an Option and wraps its other returns. */
+    @Test
+    public void methodThatReturnsNull_returnsAnOption() {
+        Method m = new Method("which").MODIFIERS(Modifier.PUBLIC, Modifier.STATIC).RETURNS(ClassName.STRING)
+                .BODY(IfStatement.IF(Constant.CONSTANT(true), List.of(Return.RETURN(Constant.CONSTANT("a"))), List.of()))
+                .BODY(Return.RETURN(Constant.getNull()));
+        String out = emit(new Class("C").MODIFIERS(Modifier.PUBLIC).METHODS(m));
+        assertTrue(out, out.contains("-> Option<String>"));
+        assertTrue(out, out.contains("return Some(\"a\".to_string());") || out.contains("return Some(\"a\");"));
+        assertTrue(out, out.contains("None"));
+    }
+
+    /** A constant String is a &str. */
+    @Test
+    public void constantString_isAStr() {
+        Class c = new Class("C").MODIFIERS(Modifier.PUBLIC)
+                .FIELDS(Field.FIELD("refines", ClassName.STRING).MODIFIERS(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL).INITIALIZER(Constant.CONSTANT("t31.Approval")));
+        String out = emit(c);
+        assertTrue(out, out.contains("pub const REFINES: &str = \"t31.Approval\";"));
+    }
+
+    /** into is copy_into: x.into(y) resolves to std's Into when x is a value. */
+    @Test
+    public void methodCalledInto_isCopyInto() {
+        Method m = new Method("into").MODIFIERS(Modifier.PUBLIC).PARAMETER(ClassName.get("T", "p"), "typed").RETURNS(ClassName.get("T", "p")).BODY(Return.RETURN(local("typed")));
+        String out = emit(new Class("C").MODIFIERS(Modifier.PUBLIC).METHODS(m));
+        assertTrue(out, out.contains("pub fn copy_into("));
+        assertFalse(out, out.contains("fn into("));
+    }
+
+    /** The Rust type a field or a method returns can be given. */
+    @Test
+    public void rustFieldTypeAndRustReturnType_giveTheRustTypes() {
+        Field f = Field.FIELD("extraOther", ClassName.MAP_STRING_OBJECT).MODIFIERS(Modifier.PUBLIC)
+                .ANNOTATION(new org.openprovenance.prov.template.compiler.past.annotations.RustFieldType("Object", "crate::json_text_serde", "crate::json_text::Object"));
+        String out = emit(new Class("C").MODIFIERS(Modifier.PUBLIC).FIELDS(f));
+        assertTrue(out, out.contains("pub extra_other: Option<Object>,"));
+        assertTrue(out, out.contains("#[serde(with = \"crate::json_text_serde\")]"));
+        assertTrue("it keeps its derives: " + out, out.contains("#[derive(Debug, Clone, Serialize, Deserialize)]"));
+
+        Method rule = new Method("others").MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT).RETURNS(ClassName.MAP_STRING_OBJECT);
+        rule.annotation.add(new org.openprovenance.prov.template.compiler.past.annotations.RustReturnType("Object", "crate::json_text::Object"));
+        Class intf = new Class("Rules").MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT).METHODS(rule);
+        String trait = emit(intf);
+        assertTrue(trait, trait.contains("fn others(&self) -> Object;"));
+    }
+
+    // T47: a role accessor of a primitive field (a node): the getter returns the Option, the setter is &mut self and writes self.field
+
+    @Test
+    public void roleAccessorOfAPrimitiveField_returnsTheOptionAndTheSetterWritesTheField() {
+        Field f = Field.FIELD("effect1", ClassName._int).MODIFIERS(Modifier.PUBLIC);
+        Method getter = new Method("getEffect").MODIFIERS(Modifier.PUBLIC).RETURNS(ClassName._int).BODY(Return.RETURN(field("effect1")));
+        Method setter = new Method("setEffect").MODIFIERS(Modifier.PUBLIC).RETURNS(ClassName.VOID).PARAMETER(ClassName._int, "value")
+                .BODY(new Assignment(field("effect1"), local("value")));
+        String out = emit(new Class("C").MODIFIERS(Modifier.PUBLIC).FIELDS(f).METHODS(getter, setter));
+        assertTrue(out, out.contains("pub fn get_effect(&self) -> Option<i32> {"));
+        assertTrue(out, out.contains("self.effect1\n"));
+        assertTrue(out, out.contains("pub fn set_effect(&mut self, value: i32) {"));
+        assertTrue(out, out.contains("self.effect1 = Some(value);"));
+    }
 }

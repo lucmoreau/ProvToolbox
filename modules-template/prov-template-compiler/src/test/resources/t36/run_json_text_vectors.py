@@ -74,5 +74,17 @@ for e in vectors["text"]:
     if got != e["result"]:
         fail(e["title"], "got " + repr(got) + ", expected " + repr(e["result"]))
 
+import struct  # noqa: E402
+
+for e in vectors["numbers"]:
+    run += 1
+    d = struct.unpack(">d", struct.pack(">Q", int(e["bits"], 16)))[0]
+    got = JsonText.toText(d)
+    if got != e["canonical"]:
+        fail(e["title"], "wrote " + got + ", expected " + e["canonical"])
+    got = JsonText.text(d)
+    if got != e["text"]:
+        fail(e["title"], "text " + got + ", expected " + e["text"])
+
 print("vectors: %d run, %d failed" % (run, failed))
 sys.exit(1 if failed else 0)

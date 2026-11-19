@@ -1,5 +1,7 @@
 # T36 — `@inJson` values and template subtypes: design
 
+> **Experimental.** The functionality this document designs (`@inJson`, `@performative`, subtypes, requests and replies, flows; T36 and T41) is experimental: it has been used by one application, and its syntax, its generated classes and this document may change without notice.
+
 Status: **rulings R1–R11 given 2026-11-16 (§8); stages 1–6 built (see `TODO.md`, T36, for what is committed and what is not)**; checked against the code the same day (§11). Ticket: `TODO.md`, T36.
 **Part D (§12), the request and the reply classes: proposed 2026-11-16; R12 to R16 ruled by Luc 2026-11-16 (§12.8); built as stage 7 (committed on the T36 branch).**
 Grounded in `development2_0` at 0a8d9f4b1. The rulings asked of Luc are numbered R1–R11 in §8 (R11 added by the check); each says what is proposed and, where there is a real
@@ -531,6 +533,8 @@ word. It does not check that a reply follows a request. And the reply is not one
 refusal or a failure is said by a value inside it (`outcome`, in the first application), which the compiler treats as
 any other value.
 
+> **Superseded for Rust (T46, 2026-11-19):** the conversions, the request and reply's methods and the dispatcher are now in Rust (`TODO.md`, T46: the emitter's static-call mapping, `Option` fields, `RustFieldType`, the runtime `json_text.rs`). The text below is what R4 decided and what was found then. The flows are still not in Rust.
+
 ### 12.4 The two classes
 
 For a subtype, the request class is generated when the subtype has at least one request value, and the reply class
@@ -856,6 +860,8 @@ At compile time, naming the flow and the value, generation stops when:
 - **JSON schema.** None: a flow has no record; the schema describes records.
 - **Specification.** The kind of entry, the six kinds and the rule, as parts C and D did.
 
+> **Superseded for Rust (T46, 2026-11-19):** the flow and its rules are in Rust (the rules interface is a trait, a flow's methods are functions of a struct); `TODO.md`, T46. E6 below is what was ruled then.
+
 ### 13.6 The languages
 
 Java, Python and JavaScript, as for the typed beans (T33 spoils the Python test for an absent map; T34 stops the
@@ -870,6 +876,8 @@ class is compiled and run against stand-ins of the application's rules: the back
 beside the test, field for field; each guard refuses a mismatch; a changed request value changes exactly the values that came
 from it (the test of the real case, `FlowCheck`: 2 of 13 differ); each kind of comment is beside its assignment; each refusal
 of §13.4. The same catalogue without the flow generates the same tree: a catalogue with no `flow` entry is unchanged.
+
+> **Added by T45 (2026-11-19):** a seventh kind, `SPREAD`, `{"spread": userValue}` on the map of other keys of a carrier: the members of a JSON object the person gave become the other keys (`TODO.md`, T45).
 
 ### 13.8 Rulings asked
 

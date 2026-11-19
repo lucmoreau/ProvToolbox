@@ -14,6 +14,7 @@ import java.util.Map;
  * which is the rule of RFC 8785 ({@code "" + d}); it is not meant to run on a JVM, where prov-model's class is used. Written
  * with what JSweet translates: no {@code BigDecimal}, no {@code String.format}, no exceptions from number parsing. An object is a
  * JavaScript object, so a key that reads as an array index (an integer) is written before the others, whatever its place.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class JsonText {
 

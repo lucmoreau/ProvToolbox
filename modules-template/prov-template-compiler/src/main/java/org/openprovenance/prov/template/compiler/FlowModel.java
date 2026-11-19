@@ -19,12 +19,16 @@ import static org.openprovenance.prov.template.compiler.ConfigProcessor.descript
  * refuses a declaration that does not account for every input exactly once (§13.2, §13.4); what it returns is the list of
  * {@link Item}s, one per assignment, each with its kind and its origin, which {@link CompilerFlow} writes as PAST, the documentation
  * writes as a table and the Turtle writes as terms: the table says what the code does because both read the same list.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class FlowModel {
 
-    /** The six kinds of assignment (§13.1), and a value left unset on purpose. */
+    /**
+     * The six kinds of assignment (§13.1), and a value left unset on purpose; and, since T45, SPREAD: the members of a JSON object the person
+     * gave (a user value that holds JSON text) become the other keys of a carrier.
+     */
     public enum Kind {
-        AS_ASKED("AS ASKED", "asked"), CHAINED("CHAINED", "chained"), CARRIED("CARRIED OVER", "carried over"), CONSTANT("CONSTANT", "constant"),
+        AS_ASKED("AS ASKED", "asked"), SPREAD("SPREAD", "spread"), CHAINED("CHAINED", "chained"), CARRIED("CARRIED OVER", "carried over"), CONSTANT("CONSTANT", "constant"),
         SUPPLIED("SUPPLIED", "supplied"), AS_MADE("AS MADE", "as made"), ABSENT("ABSENT", "absent");
 
         public final String label;
@@ -140,6 +144,8 @@ public class FlowModel {
             switch (kind) {
                 case AS_ASKED:
                     return ("request".equals(from) ? "the request's " : "the user bean's ") + source + (as == null ? "" : ", as " + as);
+                case SPREAD:
+                    return "the members of the JSON object in the user bean's " + source + ": the other keys";
                 case CHAINED:
                     return "the " + thing + " as it stood: " + madeBy + " of the record that made it";
                 case CARRIED:
@@ -854,6 +860,22 @@ public class FlowModel {
             if (s == null) throw refusal(place + ".carried names no stood thing: " + c.substring(0, dot) + " (" + curRec.stood.keySet() + ")");
             return carriedItem(s, f, c.substring(dot + 1));
         }
+        if (keys.equals(Set.of("spread"))) {
+            // T45: the JSON object a person gave, as the other keys of a carrier
+            if (!f.isOtherKeys()) throw refusal(place + ".spread fills the map of other keys of a carrier: " + target + " is not one");
+            String user = string(d.get("spread"), place + ".spread");
+            Field u = userFields.get(user);
+            if (u == null || u.isOtherKeys() || u.isNode() || "reply".equals(u.performative)) {
+                throw refusal(place + ".spread names " + user + ", which is no request value or own value of the user bean (" + new ArrayList<>(requestValues) + ownValues + ")");
+            }
+            if (!"json".equals(u.declared) && !"xsd:string".equals(u.declared)) {
+                throw refusal(place + ".spread: the user value " + user + " (" + u.declared + ") holds no JSON text: it is a json or a string value");
+            }
+            Item i = new Item(curRec.stepKey(), target, f, Kind.SPREAD);
+            i.source = user;
+            i.from = "user";
+            return i;
+        }
         if (keys.equals(Set.of("constant"))) {
             Item i = new Item(curRec.stepKey(), target, f, Kind.CONSTANT);
             i.constant = constant(f, d.get("constant"), place);
@@ -864,7 +886,7 @@ public class FlowModel {
             i.rule = rule(string(d.get("supplied"), place + ".supplied"), curRec.stepKey(), f, place);
             return i;
         }
-        throw refusal(place + " is \"asked\", \"absent\", or one of {\"asked\": value, \"as\": \"text\"}, {\"carried\": \"thing.value\"}, {\"constant\": value}, {\"supplied\": rule}");
+        throw refusal(place + " is \"asked\", \"absent\", or one of {\"asked\": value, \"as\": \"text\"}, {\"carried\": \"thing.value\"}, {\"constant\": value}, {\"supplied\": rule}, or, for a map of other keys, {\"spread\": \"userValue\"}");
     }
 
     private Item askedItem(String target, Field f, String user, String as, String place) {

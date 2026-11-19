@@ -21,6 +21,7 @@ import java.util.Objects;
  * <p>
  * Objects are read as {@link LinkedHashMap}, lists as {@link ArrayList}; an integer without fraction or exponent that fits a
  * {@code long} is read as a {@link Long}, any other number as a {@link Double}.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public final class JsonText {
 
@@ -162,14 +163,42 @@ public final class JsonText {
     static String number(double d) {
         if (Double.isNaN(d) || Double.isInfinite(d)) throw new IllegalArgumentException("T36: not a JSON number: " + d);
         if (d == 0) return "0";
-        return es(d < 0, Double.toString(Math.abs(d)));
+        double abs = Math.abs(d);
+        return es(d < 0, oneDigit(abs, Double.toString(abs), x -> x.doubleValue() == abs));
     }
 
     /** The same rule for a float: the shortest digits that read back as that float. */
     static String number(float f) {
         if (Float.isNaN(f) || Float.isInfinite(f)) throw new IllegalArgumentException("T36: not a JSON number: " + f);
         if (f == 0) return "0";
-        return es(f < 0, Float.toString(Math.abs(f)));
+        float abs = Math.abs(f);
+        return es(f < 0, oneDigit(abs, Float.toString(abs), x -> x.floatValue() == abs));
+    }
+
+    /**
+     * T42 (found with the differential test of the ports): Java's {@code toString} is never shorter than two digits, and when one
+     * would do it takes the closest two-digit decimal, so the smallest subnormals read {@code 4.9E-324} where ECMAScript, RFC 8785 and the
+     * other ports read {@code 5E-324}. When Java gives two digits, the one-digit decimals on either side of the exact value are tried;
+     * of those that read back as the number, the closest to it (an exact tie to the even one) is the shortest text, as ECMAScript says.
+     * Anything else is Java's text.
+     */
+    private static String oneDigit(double exact, String javaText, java.util.function.Predicate<BigDecimal> readsBack) {
+        BigDecimal bd = new BigDecimal(javaText).stripTrailingZeros();
+        if (bd.precision() != 2) return javaText;
+        BigDecimal value = new BigDecimal(exact);
+        BigDecimal best = null;
+        BigDecimal bestDistance = null;
+        for (java.math.RoundingMode mode : new java.math.RoundingMode[] { java.math.RoundingMode.FLOOR, java.math.RoundingMode.CEILING }) {
+            BigDecimal candidate = value.round(new java.math.MathContext(1, mode));
+            if (!readsBack.test(candidate)) continue;
+            BigDecimal distance = candidate.subtract(value).abs();
+            int c = best == null ? -1 : distance.compareTo(bestDistance);
+            if (c < 0 || (c == 0 && candidate.unscaledValue().testBit(0) == false)) {   // closer, or an exact tie and this one is even
+                best = candidate;
+                bestDistance = distance;
+            }
+        }
+        return best == null ? javaText : best.toString();
     }
 
     /** @param shortest Java's shortest decimal text of a positive number (JDK 19 on: the shortest that reads back). */

@@ -33,10 +33,11 @@ import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
 
 /**
  * T36 part E (design §13): the flow of a {@code flow} entry, as PAST, so the existing emitters write it in Java, Python and
- * JavaScript (not Rust: E6). One class with the methods {@code ask}, {@code record}, {@code answer}, {@code refused} and
+ * JavaScript and Rust (T46; E6 had left Rust out). One class with the methods {@code ask}, {@code record}, {@code answer}, {@code refused} and
  * {@code failed}, one assignment per origin each preceded by a comment naming its kind, and one interface of rules, a method per
  * supplied value, which the application implements. Everything it says it reads from {@link FlowModel}, the list the documentation
  * and the Turtle read too.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class CompilerFlow {
 
@@ -163,6 +164,10 @@ public class CompilerFlow {
             Method method = METHOD(r.name).MODIFIERS(Modifier.PUBLIC, Modifier.ABSTRACT).RETURNS(r.returns)
                     .COMMENT("The rule for $N, in the step $N.\n", r.target, r.step);
             for (Map.Entry<String, TypeName> p : ruleParameters(locations, m, r.step).entrySet()) method.PARAMETER(p.getValue(), p.getKey());
+            // a rule that gives the open keys of a carrier returns the runtime's Object in Rust, as the typed bean's field is (T46)
+            if (String.valueOf(r.returns).equals(String.valueOf(org.openprovenance.prov.template.compiler.past.type.ClassName.MAP_STRING_OBJECT))) {
+                method.annotation.add(new org.openprovenance.prov.template.compiler.past.annotations.RustReturnType("Object", "crate::json_text::Object"));
+            }
             intfce.METHOD(method);
         }
         generated.add(intfce);
@@ -228,8 +233,9 @@ public class CompilerFlow {
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packge, locations, where);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, where, compilerUtil);
         Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, where);
-        // Rust (E6): none. The flow calls the runtime class, for which the Rust emitter has no mapping (R4)
-        return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, emptyGenerator);
+        // Rust (T46): the flow and its rules, with the runtime written beside them
+        Supplier<Boolean> rustGenerator = () -> { CompilerSubtype.writeRustRuntime(locations); return generateRust(pastClass, packge, locations, where); };
+        return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
     }
 
     private static Expression field(String variable, String name) {
@@ -363,6 +369,10 @@ public class CompilerFlow {
             switch (i.kind) {
                 case AS_ASKED:
                     method.BODY(ASSIGNMENT(target, text(field(ASKED, i.source), i.as)));
+                    break;
+                case SPREAD:
+                    // T45: the object the person gave, read from the text of the user bean's value (absent or blank: no other key)
+                    method.BODY(ASSIGNMENT(target, METHOD_CALL(JSON_TEXT, "read", List.of(field(ASKED, i.source)))));
                     break;
                 case CHAINED:
                     method.BODY(ASSIGNMENT(target, field(i.thing + MADE_SUFFIX, i.madeBy)));

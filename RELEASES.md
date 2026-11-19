@@ -4,6 +4,18 @@ See also GitHub releases https://github.com/lucmoreau/ProvToolbox/releases
 * prov-template-compiler: Fixed issue with log2prov (T32)
 * prov-template-compiler: support for @transient and @pseudonym annotations (T31) to avoid persistence of private information in provenance.
 * prov-template: reconstructing time ignore time for some PROV statements
+* prov-template: the bindings JSON schema names every member the compiler reads; 222 of 222 real bindings validate (T37)
+* prov-template-compiler: the Python emitter writes super().__init__(...) for a constructor call (T38)
+* prov-template-compiler: CompilerTest resets the static coordinators, so the tests pass in any order (T39)
+* prov-template-compiler: a catalogue's root JSON schema accepts the isA of every template and subtype (T40)
+* prov-model, prov-template-compiler: JsonText writes RFC 8785 numbers in all four ports; text() in plain digits (T42)
+* prov-template-compiler: a catalogue entry marked external has its classes written apart, not compiled (T43)
+* prov-template-compiler: no ClassNotFoundException logged when prov-interop is absent; provn is still read (T44)
+* prov-template-compiler: a flow can spread a JSON text's members as a carrier's other keys (T45)
+* prov-template-compiler: Rust for subtypes, requests, replies, the dispatcher and flows, with a Rust JsonText (T46)
+* prov-template-compiler: Rust role accessors (getEffect...) compile; the first application's Rust output builds (T47)
+* prov-template-compiler: a client's JSweet build is pom-jsweet.xml run by antrun with --add-opens: it transpiles (T34)
+* prov-template-compiler: the Python emitter writes null as None and compares with is None; escapeCsv ported (T33)
 
 
 `2.5.0`

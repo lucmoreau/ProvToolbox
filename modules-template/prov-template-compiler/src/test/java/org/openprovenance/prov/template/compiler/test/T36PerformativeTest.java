@@ -65,6 +65,34 @@ public class T36PerformativeTest extends T36Fixture {
         return subtype("plain", "{\"approver_name\":\"Other\"}", "{}");
     }
 
+    /**
+     * T46: the Rust request, reply and dispatcher of the subtypes compile with the typed beans and do what the Java ones do
+     * ({@link #testTheRequestAndTheReplyCopyTheirValuesAndNoOther}, T36SubtypeTest's dispatcher test), run by cargo.
+     */
+    public void testTheRustRequestReplyAndDispatcherDoWhatTheJavaOnesDo() throws Exception {
+        generate("perfrust", false, List.of(), List.of(reprice(), plain()), c -> c.put("rust_dir", OUT + "perfrust/libs/rust"));
+        Path rustDir = Path.of(OUT + "perfrust/libs/rust");
+        for (String f : List.of("reprice_request.rs", "reprice_reply.rs", "plain_request.rs", "plain_reply.rs", "subtypes.rs", "reprice_inputs.rs", "plain_inputs.rs")) {
+            try (Stream<Path> w = Files.walk(rustDir)) {
+                assertTrue(f + " is generated", w.anyMatch(p -> p.getFileName().toString().equals(f)));
+            }
+        }
+        String request = Files.readString(rustDir.resolve("org/example/t36/approval/client/integrator/reprice_request.rs"));
+        for (String f : List.of("pub order_note: Option<String>", "pub price_before: Option<f64>", "pub unit_code: Option<String>", "pub memo: Option<String>",
+                "pub extra_other: Option<Object>", "pub fn copy_into(&self, mut typed: RepriceInputs) -> RepriceInputs", "pub fn of(typed: RepriceInputs) -> RepriceRequest")) {
+            assertTrue(f + " in " + request, request.contains(f));
+        }
+        assertTrue("it derives, as the other beans do: " + request, request.contains("#[derive(Debug, Clone, Serialize, Deserialize)]"));
+        assertFalse("no map of other keys of the carrier the service also writes in", request.contains("customer_hash_other"));
+        String[] r = cargoTestGenerated(rustDir, "t36-rust-perf", RES.replace("t31/", "t36/") + "rust-bean/convert_request_reply.rs");
+        if (r == null) {
+            System.out.println("[T36] cargo is not installed: the Rust request, reply and dispatcher are not compiled and run");
+            return;
+        }
+        assertEquals(r[1], "0", r[0]);
+        assertTrue(r[1], r[1].contains("test result: ok. 5 passed"));
+    }
+
     // ---- the refusals (design §12.3) ------------------------------------------------------------------------------------
 
     TemplateBindingsSchema read(JsonNode bindings) throws Exception {
@@ -450,38 +478,6 @@ public class T36PerformativeTest extends T36Fixture {
         }
         assertFalse("a wrong answer: " + r[1], r[1].contains("FAIL "));
         assertEquals(r[1], "0", r[0]);
-    }
-
-    /** Rust: the fields and no method. The emitter writes the copy of one bean's field into another's as {@code Some(x.to_string())} or {@code Some(x)}, which does not compile for an Option field (checked with cargo on the generated file, by hand), and it is not extended here. */
-    public void testTheRustClassesHaveTheFieldsAndNoMethods() throws Exception {
-        ObjectNode c = catalogue("perfr", false, List.of(), List.of(reprice(), plain()));
-        c.put("rust_dir", OUT + "perfr/libs/rust");
-        String dir = OUT + "perfr/";
-        File catalogueFile = new File(dir + "catalogue.json");
-        om.writerWithDefaultPrettyPrinter().writeValue(catalogueFile, c);
-        try (PrintStream log = new PrintStream(new FileOutputStream(dir + "generation.log"), true, StandardCharsets.UTF_8)) {
-            PrintStream out = System.out, err = System.err;
-            System.setOut(log);
-            System.setErr(log);
-            try {
-                new ConfigProcessor(pf).processTemplateGenerationConfig(catalogueFile.getPath(), ".", ".", ".", List.of(RES), pf);
-            } finally {
-                System.setOut(out);
-                System.setErr(err);
-            }
-        }
-        String request = Files.readString(Path.of(dir + "libs/rust/org/example/t36/approval/client/integrator/reprice_request.rs"));
-        String reply = Files.readString(Path.of(dir + "libs/rust/org/example/t36/approval/client/integrator/reprice_reply.rs"));
-        for (String f : List.of("pub order_note: Option<String>", "pub price_before: Option<f64>", "pub unit_code: Option<String>", "pub memo: Option<String>")) {
-            assertTrue(f + " in " + request, request.contains(f));
-        }
-        assertTrue(reply, reply.contains("pub approver_ref: Option<String>") && reply.contains("pub line_count: Option<i32>"));
-        for (String rs : List.of(request, reply)) {
-            assertFalse("no method: " + rs, rs.contains("fn into") || rs.contains("fn of"));
-            assertTrue("it derives, as the other beans do: " + rs, rs.contains("#[derive(Debug, Clone, Serialize, Deserialize)]"));
-            assertTrue("says why: " + rs, rs.contains("are not in Rust"));
-        }
-        assertFalse("no map of other keys in Rust", request.contains("extra_other"));
     }
 
     /** The emitted text of a generated class, by its name. */

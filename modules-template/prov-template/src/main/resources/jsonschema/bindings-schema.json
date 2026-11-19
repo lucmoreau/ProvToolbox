@@ -18,7 +18,7 @@
         "XsdType": {
             "$id": "#/definitions/XsdType",
             "type": "string",
-            "enum": ["xsd:string", "xsd:int", "xsd:float", "xsd:boolean", "xsd:dateTime"]
+            "enum": ["xsd:string", "xsd:int", "xsd:long", "xsd:float", "xsd:double", "xsd:boolean", "xsd:dateTime", "xsd:date", "json"]
         },
 
         "lang_string": {
@@ -102,9 +102,48 @@
                 },
                 "@output": {
                     "type": "string",
-                    "enum": ["true", "false"]
+                    "enum": ["true", "optional", "false"]
                 },
                 "@sql.table": {
+                    "type": "string"
+                },
+                "@sql.type": {
+                    "description": "The SQL type of the column that holds the value.",
+                    "type": "string"
+                },
+                "@escape": {
+                    "description": "true: the value is escaped (a text that may hold the CSV separator); read as a text.",
+                    "oneOf": [ { "type": "boolean" }, { "type": "string" } ]
+                },
+                "@role": {
+                    "description": "The role of this node in the template, for uniform accessors: getCause, getEffect, getGeneral and the same with 2.",
+                    "type": "string",
+                    "enum": ["cause", "effect", "general", "cause2", "effect2", "general2"]
+                },
+                "@semantic.type": {
+                    "description": "Marks the node as a semantic type of the template (the compiler reads it as a text, \"true\").",
+                    "oneOf": [ { "type": "boolean" }, { "type": "string" } ]
+                },
+                "@sql.new.inputs": {
+                    "description": "For the SQL function of the template: the inputs the function adds, name to SQL type.",
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                },
+                "@sql.also.outputs": {
+                    "description": "For the SQL function of the template: the outputs the function also returns, name to SQL type.",
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                },
+                "@unique": {
+                    "description": "true: the column of the value is unique.",
+                    "type": "boolean"
+                },
+                "@transient": {
+                    "description": "The value is never persisted, or kept only where this method says: true for the default method, or a method name.",
+                    "oneOf": [ { "type": "boolean" }, { "type": "string" } ]
+                },
+                "@pseudonym": {
+                    "description": "The value arrives pseudonymised, in the form of this method (a name; unprefixed means pt:).",
                     "type": "string"
                 }
             },
@@ -124,17 +163,8 @@
                     "type": "string"
                 },
                 "@examplar": {
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "integer"
-                        },
-                        {
-                            "type": "number"
-                        }
-                    ]
+                    "description": "An example value: a text, a number (integer or not) or a boolean.",
+                    "anyOf": [ { "type": "string" }, { "type": "number" }, { "type": "boolean" } ]
                 },
                 "@input" : {
                     "type": "string",
@@ -142,23 +172,45 @@
                 },
                 "@output" : {
                     "type": "string",
-                    "enum": ["true", "false"]
+                    "enum": ["true", "optional", "false"]
+                },
+                "@escape": {
+                    "description": "true: the value is escaped (a text that may hold the CSV separator); read as a text.",
+                    "oneOf": [ { "type": "boolean" }, { "type": "string" } ]
+                },
+                "@unique": {
+                    "description": "true: the column of the value is unique.",
+                    "type": "boolean"
+                },
+                "@transient": {
+                    "description": "The value is never persisted, or kept only where this method says: true for the default method, or a method name.",
+                    "oneOf": [ { "type": "boolean" }, { "type": "string" } ]
+                },
+                "@pseudonym": {
+                    "description": "The value arrives pseudonymised, in the form of this method (a name; unprefixed means pt:).",
+                    "type": "string"
+                },
+                "@sql.foreign": {
+                    "description": "The column refers to another table: type, attribute and item.",
+                    "type": "object",
+                    "properties": { "type": { "type": "string" }, "attribute": { "type": "string" }, "item": { "type": "string" } },
+                    "additionalProperties": false
                 },
                 "@sql.type" : {
                     "type": "string"
                 },
                 "@inJson" : {
-                    "description": "T36: the text variable (a carrier) this value is encoded in, as a key of its JSON object; it is no bean field and no column",
+                    "description": "EXPERIMENTAL (T36, may change without notice). T36: the text variable (a carrier) this value is encoded in, as a key of its JSON object; it is no bean field and no column",
                     "type": "string",
                     "minLength": 1
                 },
                 "@inJson.key" : {
-                    "description": "T36: the key in the carrier, when it differs from the variable's name",
+                    "description": "EXPERIMENTAL (T36, may change without notice). T36: the key in the carrier, when it differs from the variable's name",
                     "type": "string",
                     "minLength": 1
                 },
                 "@performative" : {
-                    "description": "T36 part D: whose content the value is: the caller's (request) or the service's (reply). Absent: the service's own. A subtype gets a request and a reply class from it.",
+                    "description": "EXPERIMENTAL (T36, may change without notice). T36 part D: whose content the value is: the caller's (request) or the service's (reply). Absent: the service's own. A subtype gets a request and a reply class from it.",
                     "type": "string",
                     "enum": ["request", "reply"]
                 }
@@ -185,6 +237,10 @@
             "type":  ["string", "null"]
         },
         "@documentation": {
+            "type":  ["string", "null"]
+        },
+        "@return": {
+            "description": "What the template compiler's generated logger method returns, as a text: the javadoc line of its @return. Absent: not documented.",
             "type":  ["string", "null"]
         }
     },

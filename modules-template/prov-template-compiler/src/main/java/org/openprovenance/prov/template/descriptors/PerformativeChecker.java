@@ -9,6 +9,7 @@ import java.util.Set;
  * schema is loaded, after the {@code @inJson} values are split out (so it can tell a carrier). Every refusal names the
  * bindings file, the template and the variable. The annotation is kept on the descriptor: only part D's generator and the
  * descriptions read it, so no existing generator changes.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class PerformativeChecker {
 

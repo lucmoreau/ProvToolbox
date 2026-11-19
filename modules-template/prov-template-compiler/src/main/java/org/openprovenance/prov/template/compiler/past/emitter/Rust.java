@@ -138,6 +138,10 @@ public class Rust implements Emitter<StringBuilder> {
     private boolean currentEmittingTraitDefaultBody = false; // True when inside a trait's default method body
     private String currentMethodFirstParamName = null;      // Raw name of the first param when MutableFirstParam
     private Set<String> currentMethodRefParamNames = new HashSet<>(); // Raw names of &T ref params in current MutableFirstParam method
+    /** True while emitting a method that returns null on some path (T46): it returns an Option, and its other returns are wrapped in Some(...). */
+    private boolean currentMethodReturnsNullable = false;
+    /** True while emitting a getter whose body returns a field of self that is an Option<T>: it returns the Option (T47). */
+    private boolean currentMethodReturnsSelfOptionValue = false;
     private TypeName currentMethodReturnType = null;         // Declared return type of the current method (for convertWithType in RETURN handler)
     /**
      * "TraitName.methodName" pairs for all methods carrying MutableFirstParam — shared across
@@ -330,7 +334,12 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Collect imports for types used in field declarations, method parameters, and return types
         for (Field field : clazz.fields) {
-            addTypeImport(field.type);
+            RustFieldType given = rustFieldType(field);
+            if (given != null) {
+                imports.addAll(given.imports);
+            } else {
+                addTypeImport(field.type);
+            }
         }
         for (Method method : clazz.methods) {
             if (method.parameters != null) {
@@ -357,6 +366,7 @@ public class Rust implements Emitter<StringBuilder> {
         // Vec<Box<dyn Any>>, because those types do not implement Clone or Debug.
         boolean hasDynField = clazz.fields.stream()
                 .filter(f -> !f.modifiers.contains(Modifier.STATIC))
+                .filter(f -> rustFieldType(f) == null)
                 .anyMatch(f -> isKnownTrait(f.type) || hasObjectTypeArgument(f.type));
         // Classes with a concrete superclass contain an inner_parent field whose type
         // may not implement Clone/Debug (e.g. BeanHistory contains Box<dyn Any> fields).
@@ -410,7 +420,9 @@ public class Rust implements Emitter<StringBuilder> {
                 continue;
             }
             // Trait types cannot be stored by value in a struct — use Box<dyn Trait>
-            String rustType = isKnownTrait(field.type)
+            RustFieldType givenType = rustFieldType(field);
+            String rustType = givenType != null ? givenType.rustType
+                    : isKnownTrait(field.type)
                     ? "Box<dyn " + convertTypeToRust(field.type) + ">"
                     : convertTypeToRust(field.type);
             if (field.initialiser == null) {
@@ -418,6 +430,9 @@ public class Rust implements Emitter<StringBuilder> {
                 if (!noSerialization) {
                     sb.append(INDENT).append("#[serde(skip_serializing_if = \"Option::is_none\")]\n");
                 }
+            }
+            if (givenType != null && givenType.serdeWith != null && !noSerialization) {
+                sb.append(INDENT).append("#[serde(with = \"").append(givenType.serdeWith).append("\")]\n");
             }
             String sanitizedName = sanitizeName(toSnakeCase(field.name));
             if (!sanitizedName.equals(field.name) && !noSerialization) {
@@ -833,6 +848,9 @@ public class Rust implements Emitter<StringBuilder> {
             } else if (hasPhantomTypeVariable(method)) {
                 // Phantom T erased: return Box<dyn Any> to keep the trait dyn-compatible.
                 sb.append(" -> Box<dyn std::any::Any>");
+            } else if (rustReturnType(method) != null) {
+                imports.addAll(rustReturnType(method).imports);
+                sb.append(" -> ").append(rustReturnType(method).rustType);
             } else {
                 sb.append(" -> ").append(convertTypeToRust(method.returnType));
             }
@@ -1567,6 +1585,22 @@ public class Rust implements Emitter<StringBuilder> {
         return null;
     }
 
+    /** The Rust type a method returns when a {@link RustReturnType} annotation gives it, or null. */
+    private static RustReturnType rustReturnType(Method m) {
+        for (PastAnnotation a : m.annotation) {
+            if (a instanceof RustReturnType) return (RustReturnType) a;
+        }
+        return null;
+    }
+
+    /** The Rust type a field is given by a {@link RustFieldType} annotation, or null. */
+    private static RustFieldType rustFieldType(Field f) {
+        for (PastAnnotation a : f.annotation) {
+            if (a instanceof RustFieldType) return (RustFieldType) a;
+        }
+        return null;
+    }
+
     private void emitStaticFields(List<Field> fields, StringBuilder sb) {
         for (Field field : fields) {
             if (field.modifiers.contains(Modifier.STATIC)) {
@@ -1574,8 +1608,10 @@ public class Rust implements Emitter<StringBuilder> {
 
                 if (field.modifiers.contains(Modifier.FINAL) && field.initialiser != null) {
                     // Use const for compile-time constants
+                    // a constant String is a &str: a String cannot be built in a const
+                    String constType = isStringType(field.type) ? "&str" : convertTypeToRust(field.type);
                     sb.append(INDENT).append("pub const ").append(fieldName)
-                            .append(": ").append(convertTypeToRust(field.type))
+                            .append(": ").append(constType)
                             .append(" = ").append(convert(field.initialiser)).append(";\n");
                 } else {
                     // Use lazy_static for runtime initialization
@@ -1609,7 +1645,7 @@ public class Rust implements Emitter<StringBuilder> {
 
         // Function signature — use registry alt name for overloaded methods if available
         String methodAltName = findAltNameForDeclaration(method);
-        String methodName = (methodAltName != null) ? methodAltName : method.name;
+        String methodName = rustMethodName((methodAltName != null) ? methodAltName : method.name);
         String sanitizeName = sanitizeName(toSnakeCase(methodName));
         sb.append("fn ").append(sanitizeName);
 
@@ -1643,6 +1679,8 @@ public class Rust implements Emitter<StringBuilder> {
         // Self parameter for instance methods
         currentMethodConsumesSelf = consumesSelf(method);
         currentMethodReturnType = method.returnType;
+        currentMethodReturnsNullable = returnsNull(method);
+        currentMethodReturnsSelfOptionValue = false;
         currentMethodFirstParamName = null;
         currentMethodRefParamNames = new HashSet<>();
         if (!method.modifiers.contains(Modifier.STATIC)) {
@@ -1718,11 +1756,17 @@ public class Rust implements Emitter<StringBuilder> {
                 // These references are borrowed from &self so no Clone is needed.
                 boolean returnsTraitFieldRef = false;
                 boolean returnsOptionFieldRef = false;
+                currentMethodReturnsSelfOptionValue = false;
                 if (!currentMethodConsumesSelf && method.body != null && !method.body.isEmpty()) {
                     Statement lastStmt = method.body.get(method.body.size() - 1);
                     if (lastStmt instanceof Return) {
                         Expression retExpr = ((Return) lastStmt).expression;
-                        if (isSelfOptionFieldAccess(retExpr)) {
+                        if (retExpr instanceof Variable && ((Variable) retExpr).field == Variable.VariableKind.FIELD_VARIABLE
+                                && isOptionField(((Variable) retExpr).name)
+                                && !isKnownTrait(method.returnType) && !isList(method.returnType) && !isMap(method.returnType)) {
+                            // a getter of a field that is an Option<T> (a role accessor, T47): it returns the Option, as Java's null is None
+                            currentMethodReturnsSelfOptionValue = true;
+                        } else if (isSelfOptionFieldAccess(retExpr)) {
                             MethodCall mc = (MethodCall) retExpr;
                             TypeName fieldType = getFieldType(mc.methodName);
                             if (fieldType != null && isKnownTrait(fieldType)) {
@@ -1759,6 +1803,13 @@ public class Rust implements Emitter<StringBuilder> {
                     // Phantom T (e.g. from Class<T> → &'static str): erase T and use Box<dyn Any>
                     // so the impl matches the dyn-compatible trait declaration.
                     sb.append(" -> Box<dyn std::any::Any>");
+                } else if (rustReturnType(method) != null) {
+                    imports.addAll(rustReturnType(method).imports);
+                    sb.append(" -> ").append(rustReturnType(method).rustType);
+                } else if (currentMethodReturnsSelfOptionValue) {
+                    sb.append(" -> Option<").append(convertTypeToRust(method.returnType)).append(">");
+                } else if (currentMethodReturnsNullable) {
+                    sb.append(" -> Option<").append(convertTypeToRust(method.returnType)).append(">");
                 } else {
                     sb.append(" -> ").append(convertTypeToRust(method.returnType));
                 }
@@ -2082,6 +2133,14 @@ public class Rust implements Emitter<StringBuilder> {
                 }
                 break;
             }
+            case IF_STATEMENT: {
+                // an assignment in either branch (T46: a flow's answer sets the outcome in an if)
+                if (stmt instanceof IfStatement) {
+                    return stmtListMutatesParam(paramName, ((IfStatement) stmt).thenBlock)
+                            || stmtListMutatesParam(paramName, ((IfStatement) stmt).elseBlock);
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -2092,6 +2151,10 @@ public class Rust implements Emitter<StringBuilder> {
         // Direct assignment to a self field also mutates self
         if (stmt.statementKind == Statement.StatementKind.ASSIGNMENT) {
             Assignment a = (Assignment) stmt;
+            if (a.leftHandExpression instanceof Variable
+                    && ((Variable) a.leftHandExpression).field == Variable.VariableKind.FIELD_VARIABLE) {
+                return true;   // a bare field variable is a field of self (a role mutator, T47)
+            }
             if (a.leftHandExpression instanceof MethodCall) {
                 MethodCall lhs = (MethodCall) a.leftHandExpression;
                 if (lhs.operatorKind == MethodCall.MethodCallKind.OBJECT_ACCESSOR
@@ -2193,6 +2256,35 @@ public class Rust implements Emitter<StringBuilder> {
         return false;
     }
 
+    /**
+     * The name of a method in Rust. A method called {@code into} cannot be called as {@code x.into(y)} when its receiver is a value:
+     * {@code std::convert::Into::into} is chosen first. It is {@code copy_into} (T46: the {@code into} of the request and reply classes).
+     */
+    static String rustMethodName(String name) {
+        return "into".equals(name) ? "copyInto" : name;
+    }
+
+    /** True when some path of the method returns the null constant and the return type is not a primitive: Java's null, in Rust an Option (T46). */
+    private boolean returnsNull(Method method) {
+        if (method.returnType == null || isVoidType(method.returnType) || isPrimitiveType(method.returnType)) return false;
+        if (!(method.returnType instanceof ClassName)) return false;
+        return containsNullReturn(method.body);
+    }
+
+    private boolean containsNullReturn(List<Statement> statements) {
+        if (statements == null) return false;
+        for (Statement st : statements) {
+            if (st instanceof Return) {
+                Expression e = ((Return) st).expression;
+                if (e instanceof Constant && ((Constant) e).constantType == Constant.ConstantType.NULL) return true;
+            } else if (st instanceof IfStatement) {
+                IfStatement is = (IfStatement) st;
+                if (containsNullReturn(is.thenBlock) || containsNullReturn(is.elseBlock)) return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isVoidType(TypeName returnType) {
         if (returnType instanceof ClassName) {
             ClassName cn = (ClassName) returnType;
@@ -2238,10 +2330,30 @@ public class Rust implements Emitter<StringBuilder> {
                         && ((MethodCall) assignment.value).className != null
                         && (isList(((MethodCall) assignment.value).className)
                                 || isMap(((MethodCall) assignment.value).className));
-                boolean needsSomeWrap = isNonSelfFieldAccess(assignment.leftHandExpression)
+                // a bare field variable of self that is an Option<T> takes a value as Some(value) (a role mutator, T47)
+                boolean selfOptionFieldVariable = assignment.leftHandExpression instanceof Variable
+                        && ((Variable) assignment.leftHandExpression).field == Variable.VariableKind.FIELD_VARIABLE
+                        && isOptionField(((Variable) assignment.leftHandExpression).name);
+                boolean needsSomeWrap = (isNonSelfFieldAccess(assignment.leftHandExpression) || selfOptionFieldVariable)
                         && !expressionProducesOption(assignment.value)
-                        && !rhsIsCollectionConstructor;
+                        && !rhsIsCollectionConstructor
+                        // a field with an initialiser is a T, not an Option<T> (T46: the other keys of a carrier)
+                        && !(isLocalFieldAccess(assignment.leftHandExpression) && !isLocalFieldAccessProducingOption(assignment.leftHandExpression));
                 String rhs = convert(assignment.value);
+                // an Option field of a bean copied into a field of another bean: a copy, as the value read from may be used again (T46: a flow)
+                if (isNonSelfFieldAccess(assignment.leftHandExpression) && isLocalFieldAccessProducingOption(assignment.value)
+                        && (assignment.value.inferredType == null || !isPrimitiveType(assignment.value.inferredType))
+                        && !rhs.endsWith(".clone()")) {
+                    rhs = rhs + ".clone()";
+                }
+                // an Option field of self copied into a field of another bean: a copy, as self is borrowed
+                if (isNonSelfFieldAccess(assignment.leftHandExpression) && isSelfOptionFieldRef(assignment.value)) {
+                    if (!rhs.endsWith(".clone()")) rhs = rhs + ".clone()";
+                    // into a field that is a T and not an Option<T> (it has an initialiser): the value the Option holds
+                    if (isLocalFieldAccess(assignment.leftHandExpression) && !isLocalFieldAccessProducingOption(assignment.leftHandExpression)) {
+                        rhs = rhs + ".unwrap()";
+                    }
+                }
                 // If assigning to a trait-type self field in a regular method body, wrap in Box::new
                 // (the constructor emitter handles this separately)
                 if (assignment.leftHandExpression instanceof MethodCall) {
@@ -2350,6 +2462,18 @@ public class Rust implements Emitter<StringBuilder> {
                 // Use convertWithType so that a string constant returned from a String method
                 // gets .to_string() appended (avoids E0308 &str vs String).
                 String retExpr = convertWithType(ret.expression, currentMethodReturnType);
+                if (currentMethodReturnsSelfOptionValue && ret.expression instanceof Variable
+                        && !(currentMethodReturnType != null && isPrimitiveType(currentMethodReturnType))) {
+                    retExpr = retExpr + ".clone()";   // self is borrowed
+                } else if (currentMethodReturnsNullable && !(ret.expression instanceof Constant && ((Constant) ret.expression).constantType == Constant.ConstantType.NULL)) {
+                    retExpr = "Some(" + retExpr + ")";
+                } else if (currentMethodReturnType != null && "Box<dyn std::any::Any>".equals(convertTypeToRust(currentMethodReturnType))
+                        && ret.expression instanceof MethodCall
+                        && (((MethodCall) ret.expression).operatorKind == MethodCall.MethodCallKind.STATIC_METHOD_CALL
+                        || ((MethodCall) ret.expression).operatorKind == MethodCall.MethodCallKind.CONSTRUCTOR_CALL)) {
+                    // an Object returned from a call that builds a bean: boxed as an Any, as the other Object values are (T46: the subtypes' dispatcher)
+                    retExpr = "Box::new(" + retExpr + ")";
+                }
                 // When the return expression goes through a SUPER_METHOD_CALL delegation chain
                 // (e.g. self.inner_parent.as_ref().unwrap().get_delegator().get_counter_map()),
                 // the chain passes through as_ref() and the final call returns &Map/&List.
@@ -2536,10 +2660,26 @@ public class Rust implements Emitter<StringBuilder> {
 
             case THROW -> {
                 ThrowStatement throwStmt = (ThrowStatement) statement;
-                sb.append(indent)
-                        .append("panic! (\"")
-                        .append(convert(throwStmt.expression).replace("\"", "\\\""))
-                        .append("\");\n");
+                if (throwStmt.expression instanceof MethodCall
+                        && ((MethodCall) throwStmt.expression).operatorKind == MethodCall.MethodCallKind.CONSTRUCTOR_CALL
+                        && ((MethodCall) throwStmt.expression).arguments != null
+                        && ((MethodCall) throwStmt.expression).arguments.size() == 1) {
+                    // throw new X(message): a panic with the message (T46; the exception is unchecked in Java, so a panic here)
+                    Expression message = ((MethodCall) throwStmt.expression).arguments.get(0);
+                    sb.append(indent).append("panic!(");
+                    if (message instanceof Constant && ((Constant) message).constantType == Constant.ConstantType.STRING) {
+                        sb.append("\"").append(((Constant) message).value.toString().replace("\\", "\\\\").replace("\"", "\\\"")
+                                .replace("{", "{{").replace("}", "}}")).append("\"");
+                    } else {
+                        sb.append("\"{}\", ").append(convert(message));
+                    }
+                    sb.append(");\n");
+                } else {
+                    sb.append(indent)
+                            .append("panic! (\"")
+                            .append(convert(throwStmt.expression).replace("\"", "\\\""))
+                            .append("\");\n");
+                }
 
                 ClassName cn=(ClassName) throwStmt.expression.inferredType;
                 String modulePath = buildModulePath(cn.packge, cn.simpleName);
@@ -2797,6 +2937,26 @@ public class Rust implements Emitter<StringBuilder> {
     }
 
     /**
+     * True when the expression cannot be null in Rust (T46): a variable that holds a generated bean by value (a Rust parameter of a bean
+     * type is required, where Java's may be null), or a field of a bean that has an initialiser, so is a {@code T} and not an {@code Option<T>}.
+     */
+    private boolean neverNull(Expression e) {
+        if (isLocalFieldAccess(e)) return !isLocalFieldAccessProducingOption(e);
+        if (e instanceof Variable && ((Variable) e).field == Variable.VariableKind.LOCAL_VARIABLE && e.inferredType instanceof ClassName) {
+            ClassName cn = (ClassName) e.inferredType;
+            return classRegistry.get(toPascalCase(cn.simpleName)) != null && !isKnownTrait(cn);
+        }
+        return false;
+    }
+
+    /** A field of self, written as the variable or as {@code this.field}, that is an {@code Option<T>} (it has no initialiser). */
+    private boolean isSelfOptionFieldRef(Expression expr) {
+        if (isSelfOptionFieldAccess(expr)) return true;
+        return expr instanceof Variable && ((Variable) expr).field == Variable.VariableKind.FIELD_VARIABLE
+                && isOptionField(((Variable) expr).name);
+    }
+
+    /**
      * Returns true when {@code fieldName} is an instance field declared on the current
      * (abstract) class.  Used to translate direct field access to getter calls inside
      * trait default method bodies, where Rust does not allow field access.
@@ -3026,6 +3186,11 @@ public class Rust implements Emitter<StringBuilder> {
                 // Option<Vec<Box<dyn Any>>>), so != None won't compile.
                 if (bo.right instanceof Constant
                         && ((Constant) bo.right).constantType == Constant.ConstantType.NULL) {
+                    // a value that cannot be null in Rust (a bean held by value, a field that is a T): the comparison is known (T46)
+                    if (neverNull(bo.left)) {
+                        if ("!=".equals(bo.op)) return "true";
+                        if ("==".equals(bo.op)) return "false";
+                    }
                     if ("!=".equals(bo.op)) return convert(bo.left) + ".is_some()";
                     if ("==".equals(bo.op)) return convert(bo.left) + ".is_none()";
                 }
@@ -3232,7 +3397,7 @@ public class Rust implements Emitter<StringBuilder> {
                 }
 
                 String convertedObject = convertTraitReceiver(mc);
-                String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
+                String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(rustMethodName(mc.methodName)));
 
                 // Handle Option unwrapping for chained HashMap method calls.
                 // HashMap::get() returns Option<&V>; calling methods on Option directly won't compile.
@@ -3538,7 +3703,7 @@ public class Rust implements Emitter<StringBuilder> {
                 }
 
                 String convertedObject = convert(mc.object);
-                String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(mc.methodName));
+                String callMethodName = updateMethodNameIfOverloaded(mc, convertedObject, sanitizeName(rustMethodName(mc.methodName)));
 
                 // Resolve spec by original Java method name for per-argument treatment.
                 RustMethodSpec opVarSpec = METHOD_REGISTRY.resolveMethodGlobal(mc.methodName);
@@ -3600,7 +3765,12 @@ public class Rust implements Emitter<StringBuilder> {
                                 treatment = (opVarSpec != null)
                                         ? opVarSpec.argTreatment(i) : ArgTreatment.PASS_BY_VALUE;
                             }
-                            result.append(applyArgTreatment(treatment, arg));
+                            if (receiverIsTraitTypedLocal(mc) && treatment == ArgTreatment.PASS_BY_VALUE) {
+                                // a call of a trait's method on a variable of the trait's type: its bean parameters are &T (T46: a flow's rules)
+                                result.append(convertTraitCallArg(arg));
+                            } else {
+                                result.append(applyArgTreatment(treatment, arg));
+                            }
                         }
                     }
                 }
@@ -3615,6 +3785,20 @@ public class Rust implements Emitter<StringBuilder> {
                 if ("String".equals(className) && "valueOf".equals(mc.methodName)
                         && mc.arguments != null && mc.arguments.size() == 1) {
                     result.append(convert(mc.arguments.get(0))).append(".to_string()");
+                    return result.toString();
+                }
+                RustRuntimeCalls.Spec runtime = RustRuntimeCalls.lookup(className, mc.methodName);
+                if (runtime == null) addTypeImport(mc.className);   // the class the static method belongs to (T46)
+                if (runtime != null) {
+                    // a call to the runtime the Rust port has: borrowed arguments, the Result unwrapped (T46)
+                    imports.add(RustRuntimeCalls.CLASSES.get(className));
+                    result.append(className).append("::").append(runtime.rustName()).append("(");
+                    for (int i = 0; mc.arguments != null && i < mc.arguments.size(); i++) {
+                        if (i > 0) result.append(", ");
+                        result.append(runtime.borrowed(i) ? "&" : "").append(convert(mc.arguments.get(i)));
+                    }
+                    result.append(")");
+                    if (runtime.unwrap()) result.append(".unwrap()");
                     return result.toString();
                 }
                 result.append(className).append("::").append(sanitizeName(toSnakeCase(mc.methodName))).append("(");
@@ -3727,6 +3911,8 @@ public class Rust implements Emitter<StringBuilder> {
     private String convertLH(Expression leftHandExpression) {
         if (leftHandExpression instanceof Variable) {
             Variable ve = (Variable) leftHandExpression;
+            // a field of self written as a bare variable (a role mutator): self.field (T47)
+            if (ve.field == Variable.VariableKind.FIELD_VARIABLE) return "self." + sanitizeName(toSnakeCase(ve.name));
             return ve.name;
         } else if (leftHandExpression instanceof MethodCall) {
             MethodCall mc = (MethodCall) leftHandExpression;
@@ -3902,6 +4088,12 @@ public class Rust implements Emitter<StringBuilder> {
             }
         }
         return null;
+    }
+
+    /** True when the receiver of the call is a local variable (a parameter) whose type is a trait the generation knows. */
+    private boolean receiverIsTraitTypedLocal(MethodCall mc) {
+        return mc.object instanceof Variable && ((Variable) mc.object).field == Variable.VariableKind.LOCAL_VARIABLE
+                && mc.object.inferredType != null && isKnownTrait(mc.object.inferredType);
     }
 
     /** True when the method call receiver is a known-trait self-field (Option&lt;Box&lt;dyn Trait&gt;&gt;). */
@@ -4090,6 +4282,10 @@ public class Rust implements Emitter<StringBuilder> {
         if (isLocalFieldAccessProducingOption(arg)) {
             return convert(arg) + ".unwrap()";
         }
+        // an Option field of self, which is borrowed: passed as a copy (T46)
+        if (isSelfOptionFieldRef(arg)) {
+            return convert(arg) + ".clone()";
+        }
         return convert(arg);
     }
 
@@ -4208,6 +4404,14 @@ public class Rust implements Emitter<StringBuilder> {
                 return true;
             }
         }
+        // A call of the runtime whose result is an Option (the JSON text getters)
+        if (expr instanceof MethodCall && ((MethodCall) expr).operatorKind == MethodCall.MethodCallKind.STATIC_METHOD_CALL
+                && ((MethodCall) expr).className != null) {
+            RustRuntimeCalls.Spec runtime = RustRuntimeCalls.lookup(getSimpleName(convert(((MethodCall) expr).className)), ((MethodCall) expr).methodName);
+            if (runtime != null && runtime.resultIsOption()) return true;
+        }
+        // A field of self that is an Option<T> (no initialiser) is copied as it is, not wrapped again
+        if (isSelfOptionFieldRef(expr)) return true;
         // Chained inner-HashMap get: map.get(outerKey).get(innerKey) — emitter appends .copied() → Option<T>
         if (expr instanceof MethodCall) {
             MethodCall mc = (MethodCall) expr;

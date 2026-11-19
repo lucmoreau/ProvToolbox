@@ -85,7 +85,7 @@
             "additionalProperties": false
         },
         "SubtypeTemplateDescriptor": {
-            "description": "T36: a subtype of a simple template: its records are that template's records, with some inputs fixed and some in-JSON values carried. It adds nothing to the server side.",
+            "description": "EXPERIMENTAL (T36, T41, may change without notice). T36: a subtype of a simple template: its records are that template's records, with some inputs fixed and some in-JSON values carried. It adds nothing to the server side.",
             "type": "object",
             "properties": {
                 "@type": {
@@ -131,7 +131,7 @@
             "additionalProperties": false
         },
         "FlowTemplateDescriptor": {
-            "description": "T36 part E: the flow that connects the beans of a request (the user subtype `from`) to the beans of the backend's record (the subtype `to`): every input of each is accounted for exactly once, with one of six kinds. It adds nothing to the server side.",
+            "description": "EXPERIMENTAL (T36, T41, may change without notice). T36 part E: the flow that connects the beans of a request (the user subtype `from`) to the beans of the backend's record (the subtype `to`): every input of each is accounted for exactly once, with one of six kinds. It adds nothing to the server side.",
             "type": "object",
             "properties": {
                 "@type": { "type": "string" },
@@ -146,7 +146,7 @@
                     "additionalProperties": { "type": "object" }
                 },
                 "ask": { "description": "The user bean's own values: each {supplied: rule} or {constant: value}.", "type": "object" },
-                "record": { "description": "The backend's inputs not carried: asked, absent, {asked, as}, {carried: thing.value}, {constant}, {supplied}.", "type": "object" },
+                "record": { "description": "The backend's inputs not carried: asked, absent, {asked, as}, {carried: thing.value}, {constant}, {supplied}; for a map of other keys also {spread: userValue} (T45).", "type": "object" },
                 "carry": { "description": "Per stood thing, the values carried over unchanged: a list of names, or \"rest\" (for at most one thing).", "type": "object" },
                 "carryOpen": { "description": "Per carrier of the backend's bean, the stood thing whose other keys are carried.", "type": "object", "additionalProperties": { "type": "string" } },
                 "reply": { "description": "For answer, refused and failed: how each value of the reply is given.", "type": "object" }
@@ -288,11 +288,11 @@
             "type": "string"
         },
         "turtle": {
-            "description": "T36: the Turtle file describing the subtypes and the in-JSON values of the catalogue's templates; needs turtleNamespace.",
+            "description": "EXPERIMENTAL (T36, T41, may change without notice). T36: the Turtle file describing the subtypes and the in-JSON values of the catalogue's templates; needs turtleNamespace.",
             "type": "string"
         },
         "turtleNamespace": {
-            "description": "T36: the namespace (an IRI) of the terms of the Turtle file.",
+            "description": "EXPERIMENTAL (T36, T41, may change without notice). T36: the namespace (an IRI) of the terms of the Turtle file.",
             "type": "string"
         },
         "documentation": {

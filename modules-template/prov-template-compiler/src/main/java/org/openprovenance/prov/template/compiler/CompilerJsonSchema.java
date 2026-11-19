@@ -189,7 +189,7 @@ public class CompilerJsonSchema {
         properties.put(key, atype);
         atype.put("required", true);
 
-        jsonSchemaAsAMap.put("properties", Map.of("isA", Map.of("type", "string", "pattern", "^" + templateFullyQualifiedName + "$"))); // Luc Allow more templates
+        // the root's isA (T40) is set once the definition and its if/then block are added, below
 
 
         aSchema.put("required", requiredProperties);
@@ -204,7 +204,31 @@ public class CompilerJsonSchema {
         ifBlock.put("properties", Map.of("isA", Map.of("const", templateFullyQualifiedName)));
 
         ((List<Map<String,Object>>)jsonSchemaAsAMap.get("allOf")).add(ifThenBlock);
+        updateRootIsA();
 
+    }
+
+    /**
+     * T40: the root schema constrains {@code isA} to the name of any template or subtype of the catalogue so far, one alternative for each
+     * {@code if isA = name then $ref} block of {@code allOf}. It was the pattern of the last template written, so a record of any other template,
+     * or of a subtype, failed the root schema although it satisfied its own definition. An {@code isA} that no block selects still fails.
+     */
+    @SuppressWarnings("unchecked")
+    private void updateRootIsA() {
+        java.util.TreeSet<String> names = new java.util.TreeSet<>();
+        for (Map<String, Object> block : (List<Map<String, Object>>) jsonSchemaAsAMap.get("allOf")) {
+            Map<String, Object> isA = (Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) block.get("if")).get("properties")).get("isA");
+            names.add((String) isA.get("const"));
+        }
+        StringBuilder pattern = new StringBuilder("^(");
+        boolean first = true;
+        for (String name : names) {
+            if (!first) pattern.append("|");
+            first = false;
+            pattern.append(name.replace(".", "\\."));
+        }
+        pattern.append(")$");
+        jsonSchemaAsAMap.put("properties", Map.of("isA", Map.of("type", "string", "pattern", pattern.toString())));
     }
 
     private static Descriptor wrapInJson(org.openprovenance.prov.template.descriptors.InJsonValue v) {
@@ -264,6 +288,7 @@ public class CompilerJsonSchema {
         ifBlock.put("type", "object");
         ifBlock.put("properties", Map.of("isA", Map.of("const", st.fullyQualifiedName)));
         ((List<Map<String, Object>>) jsonSchemaAsAMap.get("allOf")).add(ifThenBlock);
+        updateRootIsA();
     }
 
     /** The property of an ordinary input kept by a subtype's typed bean (or request, or reply). */

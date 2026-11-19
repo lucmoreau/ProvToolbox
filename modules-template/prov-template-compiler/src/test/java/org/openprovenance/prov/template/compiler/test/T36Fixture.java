@@ -59,6 +59,9 @@ public abstract class T36Fixture extends TestCase {
         org.openprovenance.prov.template.compiler.configuration.SpecificationFile.resetCodeGenCoordinator();
     }
 
+    /** T33: keeps the {@code @escape} of the fixture's {@code order_note}, so that the generated loggers call {@code escapeCsv}. */
+    boolean keepEscape = false;
+
     ObjectNode bindings() throws Exception {
         ObjectNode b = (ObjectNode) om.readTree(new File(RES + "approval-base.json"));
         ObjectNode vars = (ObjectNode) b.get("var");
@@ -66,8 +69,8 @@ public abstract class T36Fixture extends TestCase {
         vars.set("unitCode", om.readTree("[[{\"@type\":\"xsd:string\",\"@documentation\":\"Unit\",\"@inJson\":\"customer_hash\",\"@inJson.key\":\"unit\"}]]"));
         vars.set("lineCount", om.readTree("[[{\"@type\":\"xsd:int\",\"@documentation\":\"Lines\",\"@inJson\":\"customer_hash\"}]]"));
         vars.set("payload", om.readTree("[[{\"@type\":\"json\",\"@documentation\":\"Any JSON\",\"@inJson\":\"customer_hash\"}]]"));
-        // no @escape in the fixture: a client project then depends on prov-model only because of a subtype
-        ((ObjectNode) vars.get("order_note").get(0).get(0)).remove("@escape");
+        // no @escape in the fixture: a client project then depends on prov-model only because of a subtype (keepEscape: T33 wants the field)
+        if (!keepEscape) ((ObjectNode) vars.get("order_note").get(0).get(0)).remove("@escape");
         // an integer input to fix a constant of another type
         vars.set("level", om.readTree("[[{\"@type\":\"xsd:int\",\"@documentation\":\"Level\",\"@input\":\"optional\"}]]"));
         return b;
@@ -90,7 +93,7 @@ public abstract class T36Fixture extends TestCase {
                 + "  \"description\": \"T36 stages 2 and 3\", \"version\": \"0.1.0\", \"integrator\": true,\n"
                 + "  \"root_package\": \"org.example.t36.catalogue\", \"jsweet\": false,\n"
                 + "  \"script\": \"t36_run\", \"script_dir\": \"" + dir + "libs/bin\",\n"
-                // no python_dir: an integrator catalogue's Python makes the emitter assert on CompilerIdentifierRegistry's super(...) call (T38), with or without subtypes
+                // no python_dir by default: most tests do not need Python (T36SubtypeTest.testAnIntegratorCatalogueGeneratesPython sets it)
                 + "  \"jsonschema\": \"schema.json\", \"sqlFile\": \"template.sql\", \"documentation\": \"doc.html\",\n"
                 + "  \"sql.tables\": {\"order_record\": {\"id\": \"SERIAL\"}},\n"
                 + "  \"templates\": [ ] }");
@@ -172,6 +175,41 @@ public abstract class T36Fixture extends TestCase {
         return new String[]{String.valueOf(p.waitFor()), out};
     }
 
+
+    /**
+     * T46: the Rust tree a generation wrote under {@code rustDir} (the generated files and the runtime beside them), as a crate with
+     * the module files the generated project writes and the given integration test, run by cargo. Null when cargo is not installed.
+     */
+    static String[] cargoTestGenerated(java.nio.file.Path rustDir, String crateName, String testResource) throws Exception {
+        java.nio.file.Path crate = java.nio.file.Path.of("target/" + crateName);
+        org.apache.commons.io.FileUtils.deleteDirectory(crate.toFile());
+        java.nio.file.Files.createDirectories(crate.resolve("src"));
+        java.nio.file.Files.createDirectories(crate.resolve("tests"));
+        java.nio.file.Files.writeString(crate.resolve("Cargo.toml"), "[package]\nname = \"t36_bean\"\nversion = \"0.0.0\"\nedition = \"2021\"\npublish = false\n\n[dependencies]\n"
+                + "serde = { version = \"1\", features = [\"derive\"] }\nserde_json = \"1\"\n");
+        try (java.util.stream.Stream<java.nio.file.Path> w = java.nio.file.Files.walk(rustDir)) {
+            for (java.nio.file.Path p : w.collect(java.util.stream.Collectors.toList())) {
+                java.nio.file.Path target = crate.resolve("src").resolve(rustDir.relativize(p).toString());
+                if (java.nio.file.Files.isDirectory(p)) java.nio.file.Files.createDirectories(target);
+                else java.nio.file.Files.copy(p, target);
+            }
+        }
+        List<java.nio.file.Path> dirs;
+        try (java.util.stream.Stream<java.nio.file.Path> w = java.nio.file.Files.walk(crate.resolve("src").resolve("org"))) {
+            dirs = w.filter(java.nio.file.Files::isDirectory).collect(java.util.stream.Collectors.toList());
+        }
+        for (java.nio.file.Path d : dirs) {
+            List<String> mods;
+            try (java.util.stream.Stream<java.nio.file.Path> w = java.nio.file.Files.list(d)) {
+                mods = w.map(p -> p.getFileName().toString()).filter(n -> !n.equals("mod.rs")).map(n -> n.endsWith(".rs") ? n.substring(0, n.length() - 3) : n)
+                        .sorted().collect(java.util.stream.Collectors.toList());
+            }
+            java.nio.file.Files.writeString(d.resolve("mod.rs"), mods.stream().map(m -> "pub mod " + m + ";\n").collect(java.util.stream.Collectors.joining()));
+        }
+        java.nio.file.Files.writeString(crate.resolve("src/lib.rs"), "pub mod org;\npub mod json_text;\npub mod json_text_serde;\n");
+        java.nio.file.Files.copy(java.nio.file.Path.of(testResource), crate.resolve("tests/convert.rs"));
+        return run(List.of("cargo", "test", "--offline", "--target-dir", "target/" + crateName + "-build"), crate.toFile());
+    }
 
     /** Compiles the given generated sources (paths below the client project's java directory) with what they refer to; null when JsonText is not on the class path. */
     ClassLoader compileSources(String id, List<String> relativePaths) throws Exception {

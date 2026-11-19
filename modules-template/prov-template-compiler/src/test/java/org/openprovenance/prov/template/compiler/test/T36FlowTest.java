@@ -30,6 +30,90 @@ public class T36FlowTest extends T36FlowFixture {
             "org/example/t36flow/actions/client/integrator/RepriceInputs.java", "org/example/t36flow/actions/client/integrator/RepriceRequest.java",
             "org/example/t36flow/actions/client/integrator/RepriceReply.java");
 
+    /**
+     * T46: the other shapes of flow (nothing stood, a record of another template, several records, no request, a composite record)
+     * are in Rust too and compile; the composite one is run by cargo with the Rust counterpart of
+     * {@link #testACompositeRecordIsBuiltInPartsAndTheApplicationLoops}.
+     */
+    @SuppressWarnings("unchecked")
+    public void testTheOtherShapesOfFlowAreInRust() throws Exception {
+        String[] r;
+        for (Object[] shape : new Object[][]{
+                {"rs_ns", List.of(LINE_CHANGE, REPRICE, FLOW_NS), "create_flow"},
+                {"rs_xt", List.of(LINE_CHANGE, ASK_SEND, SENDING, xt("t36.LineChange")), "send_flow"},
+                {"rs_mr", List.of(LINE_CHANGE, LINE_REGISTERING, REPRICE, FLOW_MR), "add_flow"},
+                {"rs_noask", List.of(LINE_CHANGE, ASK_SEND, SENDING, CONFIRM, FLOW_NOASK), "confirm_flow"}}) {
+            String id = (String) shape[0];
+            generate(id, (List<String>) shape[1], c -> c.put("rust_dir", OUT + id + "/libs/rust"));
+            Path dir = Path.of(OUT + id + "/libs/rust/org/example/t36flow/flows");
+            assertTrue(dir + " has the flow and its rules", Files.exists(dir.resolve(shape[2] + ".rs")) && Files.exists(dir.resolve(shape[2] + "_rules.rs")));
+            r = T36Fixture.cargoTestGenerated(Path.of(OUT + id + "/libs/rust"), "t36-" + id.replace('_', '-'), "src/test/resources/t36/rust-bean/compiles.rs");
+            if (r == null) {
+                System.out.println("[T36] cargo is not installed: the Rust flows are not compiled");
+                return;
+            }
+            assertEquals(id + ": " + r[1], "0", r[0]);
+        }
+        generate("rs_comp", List.of(LINE_CHANGE, CONFIRM, FLOW_COMPOSITE), c -> c.put("rust_dir", OUT + "rs_comp/libs/rust"));
+        r = T36Fixture.cargoTestGenerated(Path.of(OUT + "rs_comp/libs/rust"), "t36-rs-comp", "src/test/resources/t36/rust-bean/flow_composite.rs");
+        if (r == null) return;
+        assertEquals(r[1], "0", r[0]);
+        assertTrue(r[1], r[1].contains("test result: ok. 1 passed"));
+    }
+
+    /**
+     * T47: the role accessors of a bean (a variable that declares {@code @role}): the getter returns the field's {@code Option}, the setter
+     * is {@code &mut self} and writes {@code self.field}. They did not compile in Rust (found in the first application's catalogue).
+     */
+    public void testTheRoleAccessorsOfABeanCompileAndWorkInRust() throws Exception {
+        Path bindings = Path.of("target/t47/changing-roles.json");
+        Files.createDirectories(bindings.getParent());
+        ObjectNode b = (ObjectNode) om.readTree(Files.readString(Path.of(RES + "changing-bindings.json")));
+        ((ObjectNode) b.get("var").get("document1").get(0)).put("@role", "effect");
+        ((ObjectNode) b.get("var").get("changing").get(0)).put("@role", "general");
+        om.writerWithDefaultPrettyPrinter().writeValue(bindings.toFile(), b);
+        generate("roles", List.of(LINE_CHANGE, REPRICE, FLOW), c -> {
+            c.put("rust_dir", OUT + "roles/libs/rust");
+            for (tools.jackson.databind.JsonNode t : c.get("templates")) {
+                if (t.has("cbindings") && t.get("cbindings").asText().endsWith("/changing.json")) ((ObjectNode) t).put("cbindings", bindings.toString());
+            }
+        });
+        Path rustDir = Path.of(OUT + "roles/libs/rust");
+        String outputs = Files.readString(rustDir.resolve("org/example/t36flow/backend/client/integrator/changing_outputs.rs"));
+        assertTrue(outputs, outputs.contains("pub fn get_effect(&self) -> Option<String>"));
+        assertTrue(outputs, outputs.contains("pub fn set_effect(&mut self, value: &str)") && outputs.contains("self.document1 = Some(value.to_string());"));
+        String[] r = T36Fixture.cargoTestGenerated(rustDir, "t36-rust-roles", "src/test/resources/t36/rust-bean/roles.rs");
+        if (r == null) {
+            System.out.println("[T36] cargo is not installed: the role accessors are not compiled");
+            return;
+        }
+        assertEquals(r[1], "0", r[0]);
+        assertTrue(r[1], r[1].contains("test result: ok. 1 passed"));
+    }
+
+    /**
+     * T46: the flow and its rules are in Rust too: compiled, and run by cargo with the Rust counterparts of the three tests above
+     * (the origins, a changed request value, the guards) and of the reply's.
+     */
+    public void testTheRustFlowDoesWhatTheJavaOneDoes() throws Exception {
+        generate("flowrust", List.of(LINE_CHANGE, REPRICE, FLOW), c -> c.put("rust_dir", OUT + "flowrust/libs/rust"));
+        Path rustDir = Path.of(OUT + "flowrust/libs/rust");
+        String flow = Files.readString(rustDir.resolve("org/example/t36flow/flows/reprice_flow.rs"));
+        for (String f : List.of("pub fn ask(request: RepriceRequest, rules: impl RepriceFlowRules + 'static, document_made: ChangingOutputs) -> RepriceInputs",
+                "// SUPPLIED      agent: the application's rule caller", "// CHAINED       subject0:", "pub fn refused(mut asked: RepriceInputs, code: &str) -> RepriceReply")) {
+            assertTrue(f + " in " + flow, flow.contains(f));
+        }
+        String rules = Files.readString(rustDir.resolve("org/example/t36flow/flows/reprice_flow_rules.rs"));
+        assertTrue(rules, rules.contains("pub trait RepriceFlowRules") && rules.contains("fn caller(&self, asked: &RepriceInputs, document_made: &ChangingOutputs) -> String;"));
+        String[] r = T36Fixture.cargoTestGenerated(rustDir, "t36-rust-flow", "src/test/resources/t36/rust-bean/flow.rs");
+        if (r == null) {
+            System.out.println("[T36] cargo is not installed: the Rust flow is not compiled and run");
+            return;
+        }
+        assertEquals(r[1], "0", r[0]);
+        assertTrue(r[1], r[1].contains("test result: ok. 4 passed"));
+    }
+
     // ---- the generated Java, compiled and run ---------------------------------------------------------------------------------
 
     static Object make(ClassLoader l, String name, Object... fieldsAndValues) throws Exception {
@@ -232,6 +316,70 @@ public class T36FlowTest extends T36FlowFixture {
         } catch (IllegalArgumentException e) {
             assertTrue(e.getMessage(), e.getMessage().contains("addresses no document"));
         }
+    }
+
+    // ---- T45: spread ------------------------------------------------------------------------------------------------------------
+
+    static final String FLOW_SPREAD = FLOW.replace("\"attributesOther\":\"absent\"", "\"attributesOther\":{\"spread\":\"reason\"}");
+
+    @SuppressWarnings("unchecked")
+    public void testASpreadGivesTheMembersOfAJsonTextTheCallerGaveAsTheOtherKeys() throws Exception {
+        assertNotSame("the fixture's flow has the spread", FLOW, FLOW_SPREAD);
+        generate("spread", List.of(LINE_CHANGE, REPRICE, FLOW_SPREAD));
+        ClassLoader l = compile("spread", SOURCES);
+        if (l == null) return;
+        Class<?> flow = l.loadClass(FLOWS_PKG + "RepriceFlow");
+        Object rules = rules(l, new Calls());
+        Stood s = stood(l, "3", "D1");
+        Object asked = runAsk(l, flow, request(l, 3, 12.5), rules, s);
+        T36SubtypeTest.set(asked, "reason", "{\"colour\":\"red\",\"n\":2,\"nested\":{\"a\":[1]}}");
+        Object recorded = runRecord(l, flow, asked, rules, s);
+        Map<String, Object> other = (Map<String, Object>) T36SubtypeTest.get(recorded, "attributesOther");
+        assertEquals("the members of the object are the other keys", Map.of("colour", "red", "n", 2L, "nested", Map.of("a", List.of(1L))), other);
+
+        // an absent or blank text is no other key; a text that is no object is refused
+        T36SubtypeTest.set(asked, "reason", null);
+        assertEquals(Map.of(), T36SubtypeTest.get(runRecord(l, flow, asked, rules, s), "attributesOther"));
+        T36SubtypeTest.set(asked, "reason", "  ");
+        assertEquals(Map.of(), T36SubtypeTest.get(runRecord(l, flow, asked, rules, s), "attributesOther"));
+        T36SubtypeTest.set(asked, "reason", "[1,2]");
+        try {
+            runRecord(l, flow, asked, rules, s);
+            fail("an array is no object");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("JSON text is not an object"));
+        }
+
+        // said beside the assignment, in the table and in the Turtle's words
+        String java = read("spread", "java/" + FLOWS + "RepriceFlow.java");
+        assertTrue(java, java.contains("// SPREAD") && java.contains("attributesOther: the members of the JSON object in the user bean's reason: the other keys"));
+        assertTrue(java, java.contains("recorded.attributesOther=JsonText.read(asked.reason);"));
+    }
+
+    /** T45 in Rust: the same flow with a spread, compiled and run by cargo. */
+    public void testASpreadIsInTheRustFlowToo() throws Exception {
+        generate("rs_spread", List.of(LINE_CHANGE, REPRICE, FLOW_SPREAD), c -> c.put("rust_dir", OUT + "rs_spread/libs/rust"));
+        Path rustDir = Path.of(OUT + "rs_spread/libs/rust");
+        String flow = Files.readString(rustDir.resolve("org/example/t36flow/flows/reprice_flow.rs"));
+        assertTrue(flow, flow.contains("recorded.attributes_other = JsonText::read(&asked.reason).unwrap();"));
+        String[] r = T36Fixture.cargoTestGenerated(rustDir, "t36-rust-spread", "src/test/resources/t36/rust-bean/flow_spread.rs");
+        if (r == null) {
+            System.out.println("[T36] cargo is not installed: the Rust spread is not compiled and run");
+            return;
+        }
+        assertEquals(r[1], "0", r[0]);
+        assertTrue(r[1], r[1].contains("test result: ok. 3 passed"));
+    }
+
+    public void testASpreadIsRefusedWhereItCannotWork() throws Exception {
+        refused("a spread into a value that is no map of other keys", f -> obj(f, "record").set("agent", om.createObjectNode().put("spread", "reason")),
+                "record.agent.spread fills the map of other keys of a carrier");
+        refused("a spread of a value that is not there", f -> obj(f, "record").set("attributesOther", om.createObjectNode().put("spread", "nothing")),
+                "record.attributesOther.spread names nothing", "no request value or own value");
+        refused("a spread of a number", f -> obj(f, "record").set("attributesOther", om.createObjectNode().put("spread", "unitPrice")),
+                "holds no JSON text");
+        refused("a spread of a reply value", f -> obj(f, "record").set("attributesOther", om.createObjectNode().put("spread", "outcome")),
+                "record.attributesOther.spread names outcome");
     }
 
     // ---- the kind written beside each assignment, in every language -----------------------------------------------------------
@@ -883,6 +1031,7 @@ public class T36FlowTest extends T36FlowFixture {
         wellFormed("emitns", List.of(LINE_CHANGE, REPRICE, FLOW_NS), "CreateFlow", "CreateFlowRules");
         wellFormed("emitxt", List.of(LINE_CHANGE, ASK_SEND, SENDING, xt("t36.LineChange")), "SendFlow", "SendFlowRules");
         wellFormed("emitmr", List.of(LINE_CHANGE, LINE_REGISTERING, REPRICE, FLOW_MR), "AddFlow", "AddFlowRules");
+        wellFormed("emitsp", List.of(LINE_CHANGE, REPRICE, FLOW_SPREAD), "RepriceFlow", "RepriceFlowRules");
     }
 
     // ---- the generator's own type checker (T41, finding of the first application) --------------------------------------------------

@@ -53,14 +53,14 @@ public class AttributeDescriptor implements Descriptor {
     @JsonProperty("@unique")
     private boolean unique;
 
-    /** T36: the text variable (carrier) this value is encoded in, as a key of its JSON object. Never a bean field or a column. */
+    /** T36: the text variable (carrier) this value is encoded in, as a key of its JSON object. Never a bean field or a column. Experimental: may change without notice (T36, T41). */
     @JsonProperty("@inJson")
     private String inJson;
-    /** T36 (R2): the key in the carrier when it differs from the variable's name. */
+    /** T36 (R2): the key in the carrier when it differs from the variable's name. Experimental: may change without notice (T36, T41). */
     @JsonProperty("@inJson.key")
     private String inJsonKey;
 
-    /** T36 part D (R12, R14): {@code "request"} or {@code "reply"}: whose content this value is. Absent: the service's own. Checked by {@link PerformativeChecker}. */
+    /** T36 part D (R12, R14): {@code "request"} or {@code "reply"}: whose content this value is. Absent: the service's own. Checked by {@link PerformativeChecker}. Experimental: may change without notice (T36, T41). */
     @JsonProperty("@performative")
     private String performative;
 

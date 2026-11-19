@@ -122,6 +122,18 @@ public class T36JsonTextTest extends TestCase {
         }
     }
 
+    /** T42: doubles given by their bits, written by the RFC 8785 rule and as plain text. */
+    public void testNumberVectors() throws Exception {
+        Class<?> c = runtime();
+        if (c == null) return;
+        for (JsonNode e : om.readTree(new File(VECTORS)).get("numbers")) {
+            String title = e.get("title").asText();
+            Double d = Double.longBitsToDouble(Long.parseUnsignedLong(e.get("bits").asText(), 16));
+            assertEquals(title + " (canonical)", e.get("canonical").asText(), call(c, "toText", d));
+            assertEquals(title + " (text)", e.get("text").asText(), call(c, "text", d));
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public void testMergeOthersAndSame() throws Exception {
         Class<?> c = runtime();

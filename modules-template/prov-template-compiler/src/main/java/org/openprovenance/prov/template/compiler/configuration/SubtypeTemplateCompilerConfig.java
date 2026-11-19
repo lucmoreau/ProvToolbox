@@ -10,6 +10,7 @@ import java.util.Map;
  * <p>
  * In the catalogue: {@code {"@type": "subtype", "name": …, "fullyQualifiedName": …, "package": …, "refines": …,
  * "fixed": {"atype": "ex:Repricing"}, "carries": {"unitPrice": "required", "note": "optional"}}}.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class SubtypeTemplateCompilerConfig extends ClientSideTemplateCompilerConfig {
 

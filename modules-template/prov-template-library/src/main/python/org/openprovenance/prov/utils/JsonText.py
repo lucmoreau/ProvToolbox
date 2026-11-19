@@ -1,3 +1,4 @@
+# EXPERIMENTAL: in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality; this module may change without notice.
 import json
 from decimal import Decimal
 

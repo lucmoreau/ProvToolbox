@@ -10,6 +10,8 @@ import org.openprovenance.prov.template.compiler.past.Expression;
 import org.openprovenance.prov.template.compiler.past.Field;
 import org.openprovenance.prov.template.compiler.past.Method;
 import org.openprovenance.prov.template.compiler.past.Statement;
+import org.openprovenance.prov.template.compiler.past.annotations.RustFieldType;
+import org.openprovenance.prov.template.compiler.past.emitter.RustRuntimeCalls;
 import org.openprovenance.prov.template.compiler.past.type.ClassName;
 import org.openprovenance.prov.template.compiler.past.type.TypeName;
 import org.openprovenance.prov.template.descriptors.*;
@@ -42,6 +44,7 @@ import static org.openprovenance.prov.template.compiler.past.type.ClassName.*;
  * <p>
  * A subtype adds nothing to the server side (design §5.1): these classes are client beans, in the package of the refined
  * template's input bean, and convert from and to that bean.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class CompilerSubtype {
 
@@ -171,7 +174,9 @@ public class CompilerSubtype {
             }
             pastClass.FIELDS(FIELD(otherKeysField(e.getKey()), MAP_STRING_OBJECT).MODIFIERS(Modifier.PUBLIC)
                     .COMMENT("The other keys of $N: its members that no value of this subtype declares (the carrier is open).\n", e.getKey())
-                    .INITIALIZER(METHOD_CALL(JSON_TEXT, "newObject", List.of())));
+                    .INITIALIZER(METHOD_CALL(JSON_TEXT, "newObject", List.of()))
+                    // in Rust an Object of the runtime (json_text.rs): it can be cloned, compared and serialised, a HashMap of Box<dyn Any> cannot
+                    .ANNOTATION(new RustFieldType("Object", "crate::json_text_serde", "crate::json_text::Object")));
         }
 
         pastClass.METHOD(toGeneral(st, general, schema, ordinary, carried, where));
@@ -179,39 +184,32 @@ public class CompilerSubtype {
         generated.add(pastClass);
 
         String packge = typed.packge;
-        // Rust: the typed fields and no conversions (R4): the registry maps no static call to the runtime class
-        Class rustClass = withoutMethods(pastClass);
+        // Rust (T46): the whole class, with the runtime (json_text.rs, json_text_serde.rs) written beside the generated files
         String directory = locations.convertToDirectory(packge);
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packge, locations, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
         Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, stackTraceElement);
-        Supplier<Boolean> rustGenerator = () -> generateRust(rustClass, packge, locations, stackTraceElement);
+        Supplier<Boolean> rustGenerator = () -> { writeRustRuntime(locations); return generateRust(pastClass, packge, locations, stackTraceElement); };
         return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
     }
 
     /**
-     * The class as Rust gets it (R4): the typed fields and the subtype's name, and no conversion. Neither is the constant
-     * {@code refines} (Rust has no {@code String} constant) nor the maps of other keys (their {@code Object} values would
-     * take the derives of the struct away), which only the conversions use.
+     * Writes the Rust runtime that the generated typed beans use ({@code json_text.rs}, {@code json_text_serde.rs}) at the root of the
+     * Rust sources, where the generated {@code use crate::json_text::...} finds it. The project declares them as modules
+     * ({@code pub mod json_text; pub mod json_text_serde;}) next to {@code pub mod org;}.
      */
-    private Class withoutMethods(Class c) {
-        return withoutMethods(c, "The conversions $N and $N, the constant $N and the maps of other keys are not in Rust: its registry maps no static call to the JSON text runtime (T36, R4).\n",
-                "toGeneral", "fromGeneral", REFINES);
-    }
-
-    /** The class with its fields and no method, and the given comment saying why. */
-    private Class withoutMethods(Class c, String why, Object... arguments) {
-        Class r = compilerUtil.getPastFactory().CLASS(c.name).MODIFIERS(c.modifiers.toArray(new Modifier[0]));
-        r.comments.addAll(c.comments);
-        r.COMMENT(why, arguments);
-        for (Field f : c.fields) {
-            if (f.modifiers.contains(Modifier.STATIC) || f.name.endsWith(OTHER_SUFFIX)) continue;
-            Field g = FIELD(f.name, f.type).MODIFIERS(f.modifiers.toArray(new Modifier[0]));
-            g.comments.addAll(f.comments);
-            if (f.initialiser != null) g.INITIALIZER(f.initialiser);
-            r.FIELDS(g);
+    static void writeRustRuntime(Locations locations) {
+        if (locations.rust_dir == null) return;
+        for (String file : RustRuntimeCalls.RUNTIME_FILES) {
+            try (java.io.InputStream in = CompilerSubtype.class.getResourceAsStream("/rs/" + file)) {
+                if (in == null) throw new IllegalStateException("the Rust runtime file /rs/" + file + " is not on the classpath");
+                java.nio.file.Path target = java.nio.file.Path.of(locations.rust_dir, file);
+                java.nio.file.Files.createDirectories(target.getParent());
+                java.nio.file.Files.write(target, in.readAllBytes());
+            } catch (java.io.IOException e) {
+                throw new java.io.UncheckedIOException(e);
+            }
         }
-        return r;
     }
 
     // ---- toGeneral -----------------------------------------------------------------------------------------------------
@@ -455,7 +453,8 @@ public class CompilerSubtype {
         }
         for (String carrier : otherCarriers) {
             pastClass.FIELDS(FIELD(otherKeysField(carrier), MAP_STRING_OBJECT).MODIFIERS(Modifier.PUBLIC)
-                    .COMMENT("The other keys of $N: its members that no value of the subtype declares. Every value the template declares in $N is of the request, so the caller may add keys (the carrier is open).\n", carrier, carrier));
+                    .COMMENT("The other keys of $N: its members that no value of the subtype declares. Every value the template declares in $N is of the request, so the caller may add keys (the carrier is open).\n", carrier, carrier)
+                    .ANNOTATION(new RustFieldType("Object", "crate::json_text_serde::option", "crate::json_text::Object")));   // an Option<Object>: it has no initialiser
         }
 
         Method into = METHOD("into").MODIFIERS(Modifier.PUBLIC).RETURNS(typed).PARAMETER(typed, TYPED)
@@ -493,10 +492,8 @@ public class CompilerSubtype {
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packge, locations, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
         Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, stackTraceElement);
-        // Rust: the fields only. The Rust emitter writes the assignment of one bean's field to another's as Some(x.to_string()) or Some(x),
-        // which does not compile when the field is an Option, as every field of a bean is (checked with cargo on the generated file), and it is not extended here.
-        Class rustClass = withoutMethods(pastClass, "The methods $N and $N are not in Rust: its emitter does not write the copy of one bean's field into another's correctly (T36 part D). The map of other keys is not either.\n", "into", "of");
-        Supplier<Boolean> rustGenerator = () -> generateRust(rustClass, packge, locations, stackTraceElement);
+        // Rust (T46): the whole class, with the runtime beside the generated files
+        Supplier<Boolean> rustGenerator = () -> { writeRustRuntime(locations); return generateRust(pastClass, packge, locations, stackTraceElement); };
         return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
     }
 
@@ -563,7 +560,8 @@ public class CompilerSubtype {
         Supplier<Boolean> pythonGenerator = () -> generatePython(pastClass, packge, locations, stackTraceElement);
         Supplier<Boolean> javaGenerator = () -> generateJava(pastClass, packge, configs, directory, stackTraceElement, compilerUtil);
         Supplier<Boolean> jsGenerator = () -> generateJavaScript(pastClass, packge, locations, stackTraceElement);
-        // Rust (R4): every method calls a conversion, and the conversions are not in Rust
-        return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, emptyGenerator);
+        // Rust (T46): the dispatcher is Subtypes.which<Template> (an Option<String>) and fromGeneral<Template> (a Box<dyn Any>)
+        Supplier<Boolean> rustGenerator = () -> { writeRustRuntime(locations); return generateRust(pastClass, packge, locations, stackTraceElement); };
+        return new SpecificationFile(javaGenerator, pythonGenerator, jsGenerator, rustGenerator);
     }
 }

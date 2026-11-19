@@ -45,5 +45,16 @@ for (const e of vectors.text) {
   const ok = (e.result === null) ? (got === null || got === undefined) : got === e.result;
   if (!ok) fail(e.title, 'got ' + JSON.stringify(got) + ', expected ' + JSON.stringify(e.result));
 }
+const dv = new DataView(new ArrayBuffer(8));
+for (const e of vectors.numbers) {
+  run++;
+  dv.setBigUint64(0, BigInt('0x' + e.bits));
+  const d = dv.getFloat64(0);
+  let got;
+  try { got = JsonText.toText(d); } catch (x) { fail(e.title, 'raised ' + x); continue; }
+  if (got !== e.canonical) fail(e.title, 'wrote ' + got + ', expected ' + e.canonical);
+  try { got = JsonText.text(d); } catch (x) { fail(e.title, 'raised ' + x); continue; }
+  if (got !== e.text) fail(e.title, 'text ' + got + ', expected ' + e.text);
+}
 console.log('vectors: ' + run + ' run, ' + failed + ' failed');
 process.exit(failed ? 1 : 0);

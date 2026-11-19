@@ -31,7 +31,7 @@ class RepriceFlow:
         # AS ASKED      line, unitPrice, reason: the request's values
         asked = request.into(RepriceInputs())
         # CHAINED       subject0: the document as it stood: document1 of the record that made it
-        if documentMade != 0:
+        if documentMade is not None:
             asked.subject0 = documentMade.document1
         # SUPPLIED      agent: the application's rule caller
         asked.agent = rules.caller(asked, documentMade)
@@ -45,7 +45,7 @@ class RepriceFlow:
     @staticmethod
     def record(asked, document, documentMade, line, lineMade, rules):
         # GUARD         the document the request addresses is the one the previous record made
-        if asked.subject0 == 0:
+        if asked.subject0 is None:
             raise IllegalArgumentException("T36: flow org.example.t36flow.flows.RepriceFlow: the request addresses no document")
         if JsonText.same(asked.subject0, documentMade.document1) == False:
             raise IllegalArgumentException("T36: flow org.example.t36flow.flows.RepriceFlow: the request addresses another document than the one the previous record made")
@@ -84,7 +84,7 @@ class RepriceFlow:
         # CARRIED OVER  partQuantity: the line's partQuantity, unchanged
         recorded.partQuantity = line.partQuantity
         # CARRIED OVER  pattributesOther: the line's pattributesOther, unchanged
-        if line.pattributesOther != 0:
+        if line.pattributesOther is not None:
             recorded.pattributesOther = JsonText.others(line.pattributesOther, [])
         # CONSTANT      atype: the constant Repricing
         recorded.atype = "Repricing"
@@ -104,7 +104,7 @@ class RepriceFlow:
     @staticmethod
     def answer(asked, recorded, made):
         # AS MADE       outcome: accepted when the store made document1, otherwise failed
-        if made.document1 == 0:
+        if made.document1 is None:
             asked.outcome = "failed"
         else:
             asked.outcome = "accepted"

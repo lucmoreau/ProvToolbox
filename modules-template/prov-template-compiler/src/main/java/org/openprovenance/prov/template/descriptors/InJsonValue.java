@@ -4,6 +4,7 @@ package org.openprovenance.prov.template.descriptors;
  * T36: a value a template keeps inside a JSON text variable (its <em>carrier</em>), declared by {@code @inJson} on the
  * value's descriptor. It is not a variable of the template's beans, SQL or PROV document: the bindings schema holds it
  * apart from the ordinary variables ({@link TemplateBindingsSchema#getInJson()}).
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class InJsonValue {
     private final String name;

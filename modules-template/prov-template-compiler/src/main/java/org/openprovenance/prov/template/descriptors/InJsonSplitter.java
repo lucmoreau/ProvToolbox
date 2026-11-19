@@ -8,6 +8,7 @@ import java.util.*;
  * T36, and {@link TemplateBindingsSchema#getInJson()} holds the in-JSON values in the order of the file.
  * <p>
  * Every refusal names the bindings file and the variable.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class InJsonSplitter {
 

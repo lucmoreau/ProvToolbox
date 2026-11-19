@@ -1,7 +1,7 @@
 # ProvToolbox TODO — Outstanding Work
 
-> **🔢 LAST ALLOCATED TASK NUMBER: T45** — the highest task id ever assigned (whether still open here or retired to
-> `DONE.md`). **When allocating a new task, take the NEXT number (T46) and bump this line.** Do NOT reuse a number
+> **🔢 LAST ALLOCATED TASK NUMBER: T48** — the highest task id ever assigned (whether still open here or retired to
+> `DONE.md`). **When allocating a new task, take the NEXT number (T49) and bump this line.** Do NOT reuse a number
 > freed by retirement. T22–T25 were placeholders never filled (removed 2026-10-16); their numbers stay taken.
 >
 > Completed tasks are in `DONE.md`. Paths are relative to the repository root unless stated.
@@ -21,18 +21,9 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 | # | Task | Priority | Category | Section |
 |---|---|---|---|---|
-| T45 | A flow cannot spread a JSON object the person gives into a carrier's open keys: a `spread` origin (a seventh kind: as asked, through a parse) would merge its members, refusing a key the subtype declares. | ⬜ BACKLOG | Template compiler / Flow | [T45 section](#-t45-a-flow-cannot-spread-a-given-json-object-into-open-keys) |
-| T44 | A `ClassNotFoundException` for `org.openprovenance.prov.interop.InteropFramework` is logged while the template compiler generates a library; the generated classes compile and run, the build succeeds. | ⬜ BACKLOG | Template compiler | [T44 section](#-t44-classnotfoundexception-for-interopframework-during-generation) |
-| T43 | Compiling an annotated copy of a template (to add `@inJson` to a template of another library) also writes that template's own beans, which the application's jar then has to exclude. | ⬜ BACKLOG | Template compiler | [T43 section](#-t43-an-annotated-copy-of-a-template-writes-the-templates-own-beans) |
-| T42 | `JsonText.text` of a number writes the exponent forms of RFC 8785 (`1e+21`, `1e-7`) where the first application expected plain digits. | ⬜ BACKLOG | Template compiler / Runtime | [T42 section](#-t42-jsontext-text-writes-exponent-forms) |
+| T48 | The python tests of `prov-template-library` (`test.py`, `test2.py`) fail, with the original compiler and with this one: the Python emitter writes Java's static calls literally (`int.valueOf(...)`, 205 times in the library's generated Python, `str.concat`, `str.valueOf`, `float.valueOf`), and the tests are stale (a commented-out `Logger` import; `processorConverter`, which the overloading rename gives other names). Nothing runs them (the pom's `python.test` is commented out). The compiler module's two python tests also have a stale import in one. | ⬜ BACKLOG | Template compiler / Python / Tests | [T48 section](#-t48-the-python-tests-of-the-template-library-fail) |
 | T41 | The `flow` entry of T36 expresses one request that makes one record on a previous record of the same template. Extend it: a flow with nothing that stood, a stood record made by another template, and several records in one flow; and the compiler findings of the first application. | ⬜ BACKLOG | Template compiler / Flow | [T41 section](#-t41-the-flow-entry-expresses-more-requests) |
-| T40 | The catalogue's root JSON schema constrains `isA` to the pattern of the last template written, so a record of any other template (and of a subtype) fails the root schema. | ⬜ BACKLOG | Template compiler / JSON schema | [T40 section](#-t40-the-root-json-schema-keeps-the-isa-pattern-of-the-last-template) |
-| T39 | `CompilerTest` fails when another test of the module generates before it: it does not reset the compiler's static coordinators (`SpecificationFile`), so it depends on running first in a fresh JVM. | ⬜ BACKLOG | Template compiler / Tests | [T39 section](#-t39-compilertest-depends-on-running-first) |
-| T38 | For an `integrator` catalogue, the Python emitter asserts (`mc.methodName!=null`, `Python.java`, SUPER_METHOD_CALL) on `CompilerIdentifierRegistry`'s `super(...)` call, which has a null method name; seen with assertions on, as in the tests, on a catalogue with no subtype. | ⬜ BACKLOG | Template compiler / Python | [T38 section](#-t38-python-emitter-asserts-on-a-super-constructor-call) |
-| T37 | The bindings JSON schema in `prov-template` (`jsonschema/bindings-schema.json`, used by the plugin's `validate-bindings`) lacks most members the compiler reads: `@escape`, `@unique`, `@sql.foreign`, `@role`, `@sql.new.inputs`, `@sql.also.outputs`, `@semantic.type`, `@transient`, `@pseudonym`. | ⬜ BACKLOG | Template compiler / Tools | [T37 section](#-t37-the-bindings-json-schema-lacks-members-the-compiler-reads) |
 | T36 | `@inJson` declares the values a template keeps inside a JSON text variable, and a `subtype` of a template gets a typed bean generated from PAST for each target language; the Turtle says how each subtype relates to its general template. | ⬜ BACKLOG | Template compiler | [T36 section](#-t36-injson-values-and-template-subtypes) |
-| T34 | The jsweet build the compiler generates for a client project transpiles nothing: it predates provenance-templates-library's way of running jsweet (antrun `mvn -f pom-jsweet.xml` with `--add-opens`, the POM at the project's root). | ⬜ BACKLOG | Template compiler / JavaScript | [T34 section](#-t34-the-generated-jsweet-build-transpiles-nothing) |
-| T33 | The Python emitter writes Java's `null` as `0`, so a generated Python client never sees an absent value: it logs `None`, and an absent `@escape` field crashes the placeholder `escapeCsv`. | ⬜ BACKLOG | Template compiler / Python | [T33 section](#-t33-the-python-emitter-writes-null-as-0) |
 | T30 | ttf execution: the `dot` runs left after T29 — one run per layout for the png and svg of a document; `validate-ttf` one `ajv` run per batch; `dot`'s stderr drained. | ⬜ BACKLOG | Template / Build | [T30 section](#-t30-ttf-execution-one-dot-run-per-layout) |
 | T28 | The Browser tab checks every listed record's hash at once — with ~2,000 records the browser drops ~400 checks and rows on screen can show no verdict. | 🟡 MEDIUM | Service / Dashboard | [T28 section](#-t28-the-browser-tab-checks-every-records-hash-at-once) |
 | T26 | log2prov cannot read composite template records (null builder slots in the generated Init, FQN vs name key, literal `\n` between the composite's records). | 🟡 MEDIUM | Template compiler / log2prov | [T26 section](#-t26-log2prov-cannot-read-composite-template-records) |
@@ -49,43 +40,28 @@ attempt history — belongs in the task's `###` section under `## Tasks` below, 
 
 ## Tasks
 
-### ⬜ T45: A flow cannot spread a given JSON object into open keys
+### ⬜ T48: The python tests of the template library fail
 
-**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Flow.  **Filed 2026-11-17** with T41 (Luc: "File `spread` as a ticket (Recommended)"), from a finding of the first application.
+**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Python / Tests.  **Found 2026-11-19** (Luc: "The provenance template library has got some tests in python, they will need to be tried").
 
-A request value of type `json` is text; the map of other keys of a carrier is filled from other keys only, so the application passes a given object's fields in a supplied map. **Proposed**: a `{"spread": value}` origin for `<carrier>Other`, which reads the text as an object (`JsonText.parse`, in the three ports) and merges its members, refusing a key the subtype declares. Not built.
+**What was run.** `modules-template/prov-template-library/src/test/python/test.py` and `test2.py` (Makefile targets `test.py` and `test.py2`: `PYTHONPATH=target/generated-python:src/main/python`), against the Python the library's own build generates (`tp_plead`, `tp_ptm`, `tp_pg`: 309 files), generated twice in a scratch copy of the module: with the compiler installed before T38–T47 (the original `2.6.0-SNAPSHOT` jar) and with this branch's compiler. **Both fail identically in both**, so none of it is caused by this branch's changes. The two generated trees differ only in the examplar timestamps and in three lines (below). Also run: the compiler module's `src/test/python/test.py` and `test2.py` (Makefile `py`, `py2`; `PYTHONPATH=target/libs/python:src/test/python:../prov-template-library/src/main/python`, the last for the `past` package, which the Makefile does not say): `test.py` passes; `test2.py` fails at its first import.
 
----
+**The failures.**
+1. `test.py` (library): `NameError: name 'Logger' is not defined`: line 2 is `#from ….plead.client.logger.Logger import Logger`, commented out, and the body calls `Logger.logPlead_approving`. With the import enabled (a scratch copy) it passes.
+2. `test2.py` (library): `AttributeError: type object 'int' has no attribute 'valueOf'` in `Plead_approvingBuilder.examplar()`: the Python emitter writes a Java static call as written. In the library's generated Python: `int.valueOf(` 205 times, `str.concat(` 16, `str.replace(` 12 (works as `str.replace(x, a, b)`), `float.valueOf(` 4, `str.valueOf(` 3. With `int(`/`float(` substituted (a scratch copy) the test goes on to fail at: `'Plead_approvingBuilder' object has no attribute 'processorConverter'`: Python has no overloading, so the emitter names the overloads `processorConverter_function` and `processorConverter_plead_approving_processor`; the test calls the Java name.
+3. compiler module `test2.py`: `ModuleNotFoundError: org.example.templates.block.logger`: the generated Logger is `org.example.templates.catalogue.client.logger.Logger`; with the path corrected (a scratch copy) it passes.
 
-### ⬜ T44: ClassNotFoundException for InteropFramework during generation
+**Found on the way, and fixed by T38**: with the original compiler the library's three `LocalEnactor.py` (pg, ptm, plead) had `super().unknown(BeanLocalEnactor3(...), List())`; they now have `super().__init__(...)`. No other difference in the generated Python.
 
-**Priority**: ⬜ BACKLOG.  **Category**: Template compiler.  **Found 2026-11-16** by the first application, reported with T41.
-
-Generating a library prints a `java.lang.ClassNotFoundException: org.openprovenance.prov.interop.InteropFramework`; the generated classes compile and run and the build succeeds. **Not investigated**: where the class is looked up, and whether the lookup is needed.
-
-**Diagnosed and fixed (2026-11-19, Claude; not retired, Luc's word is needed).** *Cause*: `CompilerUtil.readDocumentFromFile` looked the interop framework up by name for every template it read, and printed the stack trace of the failure before falling back on the provn reader. `prov-interop` is not a dependency of `prov-template-compiler` (only `prov-model`, `prov-n`, `prov-template`), so an application's generation, which runs with the compiler's classpath, always failed the lookup: two traces for a run of two catalogues (seen in an application's `compiler.log`; the module's own tests have it on their classpath and do not show it). The fallback was right for provn, which is what the libraries' templates are, so nothing broke. *Latent*: the compiler prefers `jsonld`, then `provn`, then `json`; without the framework, the fallback gave any of them to the provn parser, so a `.jsonld` template failed as a parse error of the provn grammar, not as the missing module. *Fix*: the lookup is made once and silently (`interopFrameworkAvailable()`, `protected` so a test can say it is absent); with the framework, the same read as before; without, a `.provn` template is read by the provn reader (stream now closed), and any other extension is refused with `ClassNotFoundException("cannot read <file>: without org.openprovenance.prov.interop.InteropFramework on the classpath (module prov-interop) only .provn templates are read")`. `writeDocument` (log2prov's `Runner`) is unchanged: it needs the framework and still fails with it missing. *Test*: `T44InteropLookupTest` (a provn template read with the framework absent, nothing on the error stream; `.jsonld` and `.json` refused with the message; the same statements with or without). The module's 256 tests pass. **Not verified**: the trace is gone from an application's generation (the application builds with the compiler of another worktree, not rebuilt here); a `.jsonld` template read with the framework present (as before, not touched).
-
----
-
-### ⬜ T43: An annotated copy of a template writes the template's own beans
-
-**Priority**: ⬜ BACKLOG.  **Category**: Template compiler.  **Found 2026-11-16** by the first application, reported with T41.
-
-A library that adds `@inJson` to a template of another library compiles an annotated copy of its declaration; the compiler then also writes that template's own beans (`client` classes in the other library's package), which the application's jar excludes. **Proposed**: a catalogue option that leaves the template's own beans out, or generates only the subtype's. Not decided.
-
-**Built (2026-11-19, Claude; not retired, Luc's word is needed).** *Decision (Luc)*: a catalogue option, and the application's own exclusion meanwhile. *Option*: `"external": true` on a simple or composite entry (schema, `TemplateCompilerConfig`). The compiler still writes the template's classes, which the catalogue's own classes import, but under `src/external/java` of the generated `_cli` and `_l2p` modules and not `src/main/java`, routed by package in `Locations` (the package of an external entry and what is under it; the three `convertTo…Directory` methods), and lists the packages, one a line as a directory, in `<library>/external-packages.txt`. An entry that is not external, or the catalogue's root package, inside an external package is refused (its classes would be written with the other library's). The generated modules' POMs add `src/external/java` as a source root (build-helper `add-source`), so a generated module compiles as it did; their jars still carry the classes, because `_l2p` compiles against `_cli`'s jar. An application that builds its own jar (the first application's pom moves `src/main/java` and adds it as a source) leaves the external root out, and compiles against the other library's jar, which it has as a dependency, or adds the root; the file is what its build reads to check the jar. Nothing changes without the flag (a test). *Java modules*: nothing here uses `module-info` for the generated libraries (the compiler and `prov-template` have one, the generated modules do not, and the first application's and nextgen's template jars have neither a descriptor nor an `Automatic-Module-Name`), so today a second copy of a package is a silent shadowing, first on the class path wins. On the module path it would be a split package, an error at start for any module that reads both. An external package left to the other library is what would make the libraries modular; `external-packages.txt` is the list a future `requires` would be generated from. *Test*: `T43ExternalTest` (the same files with the same contents with and without the flag, the package's moved; the list; the POMs; a clash refused; nothing without the flag); it fails with the routing disabled. The module's 259 tests pass. **Used by the first application (2026-11-19)**: its generator marks the 34 entries of nextgen's templates (31 simple, 3 composite) external; with the compiler of this branch installed, a clean build of its library writes 399 classes under `src/external/java` (all 399 are also in nextgen's templates jar, which the library now depends on), compiles none of them, and its jar has 631 classes of its own and none under `com/provmind/chron` or `com/provmind/accounting` (a check at `verify` fails the build otherwise); the application's 65 tests pass against nextgen's classes. Found on the way, in the application and not the compiler: two dead imports of removed acts, hidden by stale class files, had made its build depend on an earlier build. **Not verified**: whether the annotated copies' classes equal nextgen's in every signature (the application compiles and runs against nextgen's, which says only that what it uses is compatible); a generated module built by Maven; Python, JavaScript and Rust output of an external template (unchanged, still written with the others); stale classes of a template newly marked external, left in `src/main/java` of an earlier build (build clean).
+**Not run by the build**: the library pom's `python.test` execution is commented out, so nothing ever ran them since the PAST emitter replaced the earlier Python writer. **Proposed**: (a) map the Java static calls the library's templates use in the Python emitter (`Integer.valueOf` → `int(...)`, `Double.valueOf`/`Float.valueOf` → `float(...)`, `String.valueOf` → `str(...)`, `String.concat` → `+`), with a test that compiles and imports the generated Python; (b) update the tests (the imports, the overload names), or retire them; (c) decide whether `python.test` runs in the library's build. Related: T33 (fixed): the shape is now `None if record[5] is None else int.valueOf(...)`. **Not done**: any of it.
 
 ---
 
-### ⬜ T42: JsonText.text writes exponent forms
 
-**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Runtime.  **Found 2026-11-16** by the first application, reported with T41.
 
-`JsonText.text` (the conversion "as text" of a flow, T36 E4) writes a number by the RFC 8785 rule (T36 R5), so a very large or very small number is `1e+21` or `1e-7` where plain digits were expected by the first application's hand-written conversion. A price never reaches those magnitudes. Changing it changes a ruling of T36 (plain digits for `text` only, in the three ports and the shared vectors). **Not decided**: Luc, 2026-11-16, chose to file it and not to fix it in T41.
 
-**Built (2026-11-19, Claude; not retired, Luc's word is needed).** *Rule*: `text` writes a number in plain digits, never with an exponent: where RFC 8785 gives `1e+21` or `1e-7` (a magnitude from 1e21, or under 1e-6), `text` gives `1000000000000000000000` or `0.0000001`; every other number is the same text as before. `write` (canonical) is unchanged, so the T36 ruling R5 stands for what is stored in a JSON text, and only the conversion "as text" of a flow (E4) moves, as this ticket proposed. *How*: one string algorithm in the three ports, which shifts the decimal point of RFC 8785's text by its exponent (`JsonText.plain` in `prov-model`, `JsonText._plain` in the Python port, `plain` in the jsweet candy, whose `dist` JavaScript is regenerated); integers, booleans and strings are untouched. *Vectors*: eight added to `json-text-vectors.json` (1e21, 1.2345e25, the largest double, 1e-7, -1.5e-7, 1e-300, and 1e-6 and 1.5e20 as unchanged), which failed in Python and in node before the change (six of eight) and pass in all three ports; `T36SubtypeTest` now expects 79 vectors. The module's 259 tests pass, and the first application's 62 tests, which use `prov-model`'s `JsonText` at run time, pass. **Found, not fixed (outside T42)**: Java's canonical writer gives `4.9E-324` for the smallest double (`Double.MIN_VALUE`) and `4.9e-323` for 5e-323, where RFC 8785, JavaScript and Python give `5e-324` and `5e-323`: `Double.toString` picks the closest two-digit decimal when one digit is the shortest. Only the smallest subnormals are affected, and a vector for it would fail in Java. **Not verified**: Rust (no `JsonText` there, R4), a `BigDecimal` value (not a type `text` writes), and JavaScript beyond the node run.
 
----
+
 
 ### ⬜ T41: The flow entry expresses more requests
 
@@ -110,62 +86,9 @@ T36's `flow` entry (design §13) came from one example: one request, one previou
 
 ---
 
-### ⬜ T40: The root JSON schema keeps the isA pattern of the last template
 
-**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / JSON schema.  **Found 2026-11-16**, while testing T36's schema for subtypes.
 
-`CompilerJsonSchema.generateJSonSchema` ends with `jsonSchemaAsAMap.put("properties", Map.of("isA", Map.of("type", "string", "pattern", "^" + templateFullyQualifiedName + "$")))`
-("Luc Allow more templates"), which each template overwrites: the root schema of a catalogue constrains `isA` to the pattern of the template written last. A record of any
-other template, and of a subtype (T36), fails the root schema although it satisfies its own definition (`if isA = <name> then $ref`). Seen on T36's fixture: a record of the subtype
-`t31.approval_big` against the root schema: "/isA: does not match the regex pattern ^t31.Approval$". Not compared with the base commit. T36's test checks a record against its definition for that reason.
-**Proposed**: no `pattern` at the root (the `if`/`then` blocks already select the definition), or an alternation of all the templates' names; either changes every catalogue's `schema.json`, so it is its own ticket.
 
----
-
-### ⬜ T39: CompilerTest depends on running first
-
-**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Tests.  **Found 2026-11-16**, while adding T36's tests.
-
-`CompilerTest.testCompiler1` calls the generators directly and does not reset the compiler's static state
-(`SpecificationFile.resetTypeCheckCoordinator()` and `resetCodeGenCoordinator()`, which `processTemplateGenerationConfig` and
-T31's tests call). When a test that generates ran before it in the same JVM (surefire's order follows the file system, so it
-changes when test classes are added), it fails with `NullPointerException: … "type" is null` in the Python emitter. T36's tests reset
-the coordinators in `tearDown`, which leaves the state as a fresh JVM has it; the cause is left as it is. **Proposed**: reset in
-`CompilerTest`'s `setUp`.
-
----
-
-### ⬜ T38: Python emitter asserts on a super constructor call
-
-**Priority**: ⬜ BACKLOG.  **Category**: Template compiler / Python.  **Found 2026-11-16**, while adding T36's tests.
-
-With assertions on (as in the tests), generating an `integrator` catalogue with `python_dir` set fails: `CompilerIdentifierRegistry`
-(around line 311) builds `SUPER_METHOD_CALL(null, …)`, and `Python.convertMethodCall` asserts `mc.methodName!=null` for that kind.
-Seen on T31's approval fixture with `"integrator": true` and no subtype. Not compared with the base commit. With assertions off the
-emitter would write `super().None(`; not tried. T36's integrator catalogues therefore leave `python_dir` out. **Proposed**: emit
-`super().__init__(…)` for a null method name.
-
----
-
-### ⬜ T37: The bindings JSON schema lacks members the compiler reads
-
-**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler / Tools.
-**Found 2026-11-16**, while adding `@inJson` to it for T36 (which added `@inJson` and `@inJson.key` and nothing else).
-
-`modules-template/prov-template/src/main/resources/jsonschema/bindings-schema.json` is what the Maven plugin's
-`validate-bindings` goal (`BindingsSchemaValidator`) hands to `ajv`. Its descriptor definitions are
-`additionalProperties: false` and name none of `@escape`, `@unique`, `@sql.foreign`, `@role`, `@sql.new.inputs`,
-`@sql.also.outputs`, `@semantic.type`, `@transient`, `@pseudonym` (counted by name in the file on 2026-11-16), all of which
-`NameDescriptor` and `AttributeDescriptor` read. T31's edit of the bindings schema went to the specification
-repository's copy (`prov-template/schemas/bindings-schema.json`), not to this one.
-
-**Not verified**: whether `validate-bindings` is run on a library that uses those members, and so whether it fails or only
-warns (the plugin has a `warning` switch); whether this copy is meant to follow the specification's.
-
-**Proposed**: bring the file level with `AttributeDescriptor` and `NameDescriptor`, or generate it from them; decide
-whether it or the specification's copy is the source.
-
----
 
 ### ⬜ T36: `@inJson` values and template subtypes
 
@@ -203,7 +126,7 @@ changes no table and no bean. Nothing declares those keys, and every caller writ
 - **The descriptions**: documentation, JSON schema, and a Turtle file declaring each subtype as a subclass of its
   general template with what it fixes and carries.
 
-**Touches**: T33 (Python writes `null` as `0`: an absent optional value) and T34 (the generated jsweet build); Rust
+**Touches**: T33 (Python wrote `null` as `0`: an absent optional value; fixed and retired 2026-11-19) and T34 (the generated jsweet build; fixed and retired 2026-11-19); Rust
 has no mapping for a static runtime call.
 
 **DoD.**
@@ -285,7 +208,7 @@ has no mapping for a static runtime call.
   - Emitters (PAST, for every emitter that needed it): the Python and JavaScript emitters no longer import the class being emitted (a typed bean that makes one, or whose static method calls its own class,
     imported itself: a circular import in Python, a redeclared `const` in JavaScript). Nothing else changes: see the comparison below.
   - The emitted Python of the two typed beans and the dispatcher, run with python3 against the port (`check_typed_beans.py`): conversions, round trip with an undeclared key, nested `json`, clash, fixed-value mismatch, wrong type, dispatcher.
-    **Blocked by T33**, said by the test (`[T36] BLOCKED T33 …`, not a failure): an absent required value is not detected (`x == 0`), an absent optional value is written as `null`, and the dispatcher's "none" is `0`.
+    **Was blocked by T33, fixed 2026-11-19 (no `BLOCKED` line is printed now)**, said by the test (`[T36] BLOCKED T33 …`, not a failure): an absent required value is not detected (`x == 0`), an absent optional value is written as `null`, and the dispatcher's "none" is `0`.
     **Blocked by T38**: the whole pipeline cannot write Python for a subtype catalogue with assertions on (an integrator catalogue is needed for subtypes), so the test emits the generated PAST classes with the Python emitter directly.
   - The emitted JavaScript of the typed bean parses (`node --check`). Its `require` of `org/openprovenance/prov/utils/JsonText.js` is provided by nothing, as for any static call of the PAST JavaScript route (`escapeCsv` is no different).
   - The jsweet route, checked by hand (not a test): the generated Java of the typed beans and the dispatcher, with the candy and a stand-in general bean, transpiled by jsweet 3.1.0 in a scratch project (the candy's own `pom-jsweet.xml`, with
@@ -342,7 +265,7 @@ has no mapping for a static runtime call.
   - Tests: `T36FlowTest` (12) and `T36FlowFixture`: the generated Java compiled and run against stand-in rules and previous records (each kind, the open keys copied and the act's not, the guards, the replies, a changed price changes exactly the two values that came from it), the kinds beside the assignments in Java, Python and JavaScript, the Python and JavaScript parsed, the documentation, the Turtle read by rdflib, a catalogue without the entry unchanged but for the documentation, 37 refusals. `T36NodeAndPackageTest` has a fixed `xsd:int` node.
   - The real case: the first application's flow, written in this declaration against a copy of its catalogue in a scratch directory, generates the 31 assignments of the hand pattern and compiles against the beans generated for it.
 - **Verified, stage 9**: T31's 25 cases (2410 files) and `CompilerTest`'s catalogue (93 files) equal the base commit's (a worktree at 0a8d9f4b1, same normalisations and method as above); the module's 226 tests pass.
-- **Not verified, stage 9**: the emitted Python and JavaScript flows are parsed, not run (T33 spoils the Python guards, T34 stops a JavaScript client); the flow was not run against a store; `of` on a stood thing, two flows in one catalogue and a user subtype with no reply value are not tested; the Turtle with another parser than rdflib; the table in a browser; the specification page rendered by ReSpec.
+- **Not verified, stage 9**: the emitted Python and JavaScript flows are parsed, not run (T33 spoiled the Python guards and T34 stopped a JavaScript client: both fixed and retired 2026-11-19; still parsed, not run); the flow was not run against a store; `of` on a stood thing, two flows in one catalogue and a user subtype with no reply value are not tested; the Turtle with another parser than rdflib; the table in a browser; the specification page rendered by ReSpec.
 - **Verified, stage 4**: catalogues without a subtype are unchanged, Python files included (T31's 25 cases, 2410 files, and `CompilerTest`'s 93 source and Python files, against the base commit, as above).
 - **Not verified, stage 4**: the generated jsweet client project built as a whole (T34); numbers beyond 2^53 (the vectors avoid them: Java and Python read them exactly, JavaScript cannot); a JavaScript or Python `float` for `xsd:float` (they have one number type; Java's `Float`
   writes its own shortest digits).
@@ -366,64 +289,7 @@ has no mapping for a static runtime call.
 
 ---
 
-### ⬜ T34: The generated jsweet build transpiles nothing
 
-**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler / JavaScript.
-**Filed 2026-11-11** (Luc), from T31's finding F7.
-
-**What happens.** For a catalogue with `jsweet: true`, `CompilerMaven` (`makeSubPom` → `addJsweetCall`, and the code
-writing `jsweet/jsweet-pom.xml` and `jsweet/jsweet.sh`) gives the client project a jsweet build that, as generated,
-transpiles nothing (seen on T31's case A6 regenerated with `jsweet: true`):
-- antrun runs `${project.basedir}/jsweet/jsweet.sh`, which sets `JAVA_HOME` to a JDK 12 (`java12.home`, read from
-  `compiler.properties`; here written as the literal `${java12.home}`, a bash "bad substitution") and calls
-  `mvn -f jsweet/jsweet-pom.xml jsweet:jsweet` with no `--add-opens`: jsweet 3.1.0 then fails on a recent JDK with
-  "An API incompatibility was encountered";
-- `jsweet-pom.xml` lives in `jsweet/`, so its base directory is `jsweet/` and jsweet looks for `jsweet/src/main/java`:
-  "transpilation successfully completed", with no output;
-- the run is gated on `<target if="${java12Exists}">`, which is true even when the property is unset;
-- the nested `mvn` doesn't get the caller's options (e.g. `-Dmaven.repo.local`), so it reads and writes `~/.m2`.
-
-**The current way** (Luc), in provenance-templates-library: its `pom.xml` runs, from antrun at `generate-sources`,
-`mvn -f pom-jsweet.xml jsweet:jsweet` with `MAVEN_OPTS` = `--add-opens jdk.compiler/com.sun.tools.javac.{api,code,
-file,model,parser,tree,util}=ALL-UNNAMED`; its `pom-jsweet.xml`, at the project's root, sets
-`compileSourceRootsOverride`, `outDir`, `tsOut`, `candiesJsOut`, `module` `commonjs`, `bundle`, `declaration` and
-`dtsOut`. `prov-jsweet-candy-java` runs jsweet the same way. Run like that (the generated POM from `t31_cli/`, with
-those `MAVEN_OPTS`), the generated client transpiles with no errors, and runs in node with the candy.
-
-**Fix (proposed).** Generate the client's jsweet build on the library's pattern: the `MAVEN_OPTS` exec from antrun, the
-jsweet POM at the client project's root (or with `compileSourceRootsOverride` pointing at `src/main/java`), bundled
-output copied to `dist` as now; drop `jsweet.sh`, `java12.home` and the `java12Exists` gate; pass `-Dmaven.repo.local`
-through when set.
-
-**DoD.** A catalogue generated with `jsweet: true` builds with `mvn package` on a recent JDK, producing the client's
-bundle in `dist`, and that bundle, loaded in node with the candy, writes a record through the generated builder.
-
----
-
-### ⬜ T33: The Python emitter writes null as 0
-
-**Priority**: ⬜ BACKLOG (not yet ruled).  **Category**: Template compiler / Python.
-**Filed 2026-11-11** (Luc), from T31's finding F6.
-
-**What happens.** `past/emitter/Python.java`, `convertConstant`, maps the PAST `NULL` constant to `"0"`
-(`case NULL -> "0"`, since af3fa56ec). The generated Python client's logger tests each value with `if x == 0:` where
-the Java writes `if (x == null)`, so `None` is never absent. Run on T31's case A6:
-- an absent unescaped field is written as the string `None` (`…,"n",None`), where Java and JavaScript write nothing;
-- an absent `@escape` field reaches `StringEscapeUtils.escapeCsv(None)` and crashes (`TypeError: can only concatenate
-  str (not "NoneType") to str`);
-- the Python `escapeCsv` (`prov-template-library/src/main/python/org/openprovenance/apache/commons/lang/
-  StringEscapeUtils.py`) is a placeholder ("PLACEHOLDER TO FIX") that always quotes, `'"' + x + '"'`, where Java's
-  quotes only a value with a comma, quote or line break.
-
-Any other generated Python comparing with `null`, or assigning it, is affected the same way.
-
-**Fix (proposed).** Emit `None` for `NULL`, and `is None` / `is not None` for comparisons with it; port `escapeCsv` as
-Java's (quote only when needed, double embedded quotes), with shared test vectors as T31's conformance vectors are.
-
-**DoD.** The generated Python client writes the same record as the Java client for the same values, absent ones
-included, on a template with `@escape` fields; `escapeCsv` gives Java's answers on a shared set of values.
-
----
 
 ### ⬜ T30: ttf execution: one dot run per layout
 

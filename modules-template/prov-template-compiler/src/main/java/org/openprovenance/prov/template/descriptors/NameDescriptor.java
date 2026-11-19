@@ -69,11 +69,11 @@ public class NameDescriptor implements Descriptor {
     @JsonProperty("@unique")
     private boolean unique;
 
-    /** T36: read only to refuse it with a clear message: {@code @inJson} is for a value, not a node. */
+    /** T36: read only to refuse it with a clear message: {@code @inJson} is for a value, not a node. Experimental: may change without notice (T36, T41). */
     @JsonProperty("@inJson")
     private String inJson;
 
-    /** T36 part D: read only to refuse it with a clear message: {@code @performative} is for a value, not a node. */
+    /** T36 part D: read only to refuse it with a clear message: {@code @performative} is for a value, not a node. Experimental: may change without notice (T36, T41). */
     @JsonProperty("@performative")
     private String performative;
 

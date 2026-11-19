@@ -955,6 +955,11 @@ public class Python implements Emitter<StringBuilder> {
                 if (bo.op.equals(INSTANCEOF)) {
                     throw new IllegalArgumentException("Unexpected use of instanceof operator in binary operation. Use the dedicated INSTANCEOF expression kind instead.");
                 } else {
+                    // a comparison with null (T33): is None, is not None
+                    if (("==".equals(bo.op) || "!=".equals(bo.op)) && (isNullConstant(bo.right) || isNullConstant(bo.left))) {
+                        Expression other = isNullConstant(bo.right) ? bo.left : bo.right;
+                        return convert(other) + ("==".equals(bo.op) ? " is None" : " is not None");
+                    }
                     return convert(bo.left) + " " + convertOp(bo.op) + " " + convert(bo.right);
                 }
             }
@@ -982,6 +987,10 @@ public class Python implements Emitter<StringBuilder> {
             default:
                throw new IllegalArgumentException("Unsupported expression type " + expression);
         }
+    }
+
+    private static boolean isNullConstant(Expression e) {
+        return e instanceof Constant && ((Constant) e).constantType == Constant.ConstantType.NULL;
     }
 
     private String convertOp(String op) {
@@ -1037,7 +1046,7 @@ public class Python implements Emitter<StringBuilder> {
             case FLOAT -> c.value.toString();
             case DOUBLE -> c.value.toString();
             case BOOLEAN -> c.value.toString();
-            case NULL -> "0";
+            case NULL -> "None";   // T33: it was 0, so that a value tested against null was tested against 0 and none was ever absent
             case BOOL -> capitalise(c.value.toString());
         };
     }
@@ -1128,8 +1137,8 @@ public class Python implements Emitter<StringBuilder> {
                 return result.toString();
             }
             case SUPER_METHOD_CALL -> {
-                assert mc.methodName!=null;
-                result.append("super().").append(sanitizeName(mc.methodName)).append("(");
+                // no method name: the call of the superclass's constructor, super(...) (T38), as Rust and JavaScript write it
+                result.append("super().").append(mc.methodName == null ? "__init__" : sanitizeName(mc.methodName)).append("(");
                 if (mc.arguments != null) {
                     result.append(mc.arguments.stream()
                             .map(this::convert)

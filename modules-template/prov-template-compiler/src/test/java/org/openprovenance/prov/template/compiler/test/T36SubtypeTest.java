@@ -168,6 +168,197 @@ public class T36SubtypeTest extends T36Fixture {
         assertFalse(new File(OUT + "plain/libs/t36/t36_cli/src/main/java/org/example/t36/catalogue/common/Subtypes.java").exists());
     }
 
+    /** A record of a definition of the schema: each required property given a value of its type. */
+    ObjectNode recordOf(JsonNode definition, String isA) {
+        ObjectNode r = om.createObjectNode();
+        for (JsonNode name : definition.get("required")) {
+            String p = name.asText();
+            if (p.equals("isA")) { r.put(p, isA); continue; }
+            String type = definition.get("properties").get(p).get("type").asText();
+            switch (type) {
+                case "integer": r.put(p, 1); break;
+                case "number": r.put(p, 1.5); break;
+                case "object": r.set(p, om.createObjectNode()); break;
+                default: r.put(p, "x");
+            }
+        }
+        return r;
+    }
+
+    /**
+     * T40: the root schema accepts a record of any template or subtype of the catalogue, and refuses an {@code isA} that none of them has.
+     * It had the pattern of the last template written, so a record of any other failed.
+     */
+    public void testTheRootSchemaAcceptsARecordOfAnyTemplateOrSubtype() throws Exception {
+        String s1 = subtype("approval_big", "{\"approver_name\":\"Admin\"}", "{\"priceBefore\":\"required\",\"unitCode\":\"optional\"}");
+        String s2 = subtype("approval_small", "{\"approver_name\":\"Other\",\"level\":1}", "{\"lineCount\":\"required\"}");
+        generate("t40", false, List.of(), List.of(s1, s2));
+        Path schemaFile = Path.of(OUT + "t40/libs/t36/t36_cli/src/main/resources/schema.json");
+        JsonNode schema = om.readTree(Files.readString(schemaFile));
+        assertEquals("one alternative for each definition that has an if/then block, in order, the dots escaped",
+                "^(t31\\.Approval|t31\\.approval_big|t31\\.approval_small)$", schema.get("properties").get("isA").get("pattern").asText());
+        assertEquals(3, schema.get("allOf").size());
+
+        Map<String, String> records = new LinkedHashMap<>();
+        for (String name : List.of("t31.Approval", "t31.approval_big", "t31.approval_small")) {
+            Path rec = Path.of(OUT + "t40/" + name + ".json");
+            Files.writeString(rec, recordOf(schema.get("definitions").get(name), name).toString());
+            records.put(name, rec.toString());
+        }
+        ObjectNode unknown = recordOf(schema.get("definitions").get("t31.Approval"), "t31.nothing");
+        Path unknownFile = Path.of(OUT + "t40/unknown.json");
+        Files.writeString(unknownFile, unknown.toString());
+
+        List<String> command = new ArrayList<>(List.of("node", RES.replace("t31/", "t36/") + "validate_schema.js", schemaFile.toString()));
+        command.addAll(records.values());
+        command.add(unknownFile.toString());
+        String[] r = run(command, new File("."));
+        if (r == null || r[1].startsWith("NO-AJV")) {
+            System.out.println("[T36] node or ajv is not installed: the root schema is not run against records");
+            return;
+        }
+        for (Map.Entry<String, String> e : records.entrySet()) {
+            assertTrue("a record of " + e.getKey() + " satisfies the root schema: " + r[1], r[1].contains(e.getValue() + " valid"));
+        }
+        assertTrue("an isA that is no template's fails: " + r[1], r[1].contains(unknownFile + " invalid") && r[1].contains(".isA should match pattern"));
+    }
+
+    /**
+     * T38: an integrator catalogue with {@code python_dir} set. The generated {@code LocalEnactor}'s constructor calls its superclass's
+     * constructor ({@code super(...)}, a super call with no method name), on which the Python emitter asserted; it writes
+     * {@code super().__init__(...)}, and every file written is valid Python.
+     */
+    public void testAnIntegratorCatalogueGeneratesPython() throws Exception {
+        generate("t38", false, List.of(), List.of(), c -> c.put("python_dir", OUT + "t38/libs/python"));
+        Path python = Path.of(OUT + "t38/libs/python");
+        List<Path> files;
+        try (java.util.stream.Stream<Path> w = Files.walk(python)) {
+            files = w.filter(p -> p.toString().endsWith(".py")).collect(java.util.stream.Collectors.toList());
+        }
+        assertFalse("python files are written", files.isEmpty());
+        Path enactor = files.stream().filter(p -> p.getFileName().toString().equals("LocalEnactor.py")).findFirst().orElseThrow(() -> new AssertionError("no LocalEnactor.py in " + files));
+        String text = Files.readString(enactor);
+        assertTrue(text, text.contains("super().__init__("));
+        assertFalse(text, text.contains("super().None"));
+        List<String> command = new ArrayList<>(List.of("python3", "-m", "py_compile"));
+        files.forEach(p -> command.add(p.toString()));
+        String[] r = run(command, null);
+        if (r == null) {
+            System.out.println("[T36] python3 is not installed: the generated Python is not compiled");
+            return;
+        }
+        assertEquals("py_compile: " + r[1], "0", r[0]);
+    }
+
+    /**
+     * T34: the JSweet build of a client project, which transpiled nothing ({@code jsweet/jsweet-pom.xml} had {@code jsweet/} for its base directory,
+     * and a script set {@code JAVA_HOME} to a JDK 12). It is {@code pom-jsweet.xml} at the project's root, run by antrun with the {@code --add-opens}
+     * jsweet needs on a recent JDK. The generated project is built with Maven (when Maven, the jsweet plugin and j4ts are available offline), which
+     * transpiles it into {@code dist}, and the bundle, loaded in node with j4ts and the candy, writes a record through the generated builder.
+     */
+    public void testTheJsweetBuildOfAClientTranspilesAndTheBundleRunsInNode() throws Exception {
+        generate("t34", false, List.of(), List.of(), c -> c.put("jsweet", true));
+        Path libs = Path.of(OUT + "t34/libs/t36");
+        Path cli = libs.resolve("t36_cli");
+        assertTrue("the jsweet POM is at the project's root", Files.exists(cli.resolve("pom-jsweet.xml")));
+        assertFalse("no script, no jsweet directory", Files.exists(cli.resolve("jsweet")));
+        String pom = Files.readString(cli.resolve("pom.xml")), root = Files.readString(libs.resolve("pom.xml")), jsweet = Files.readString(cli.resolve("pom-jsweet.xml"));
+        assertFalse("no JDK 12: " + pom, pom.contains("java12") || root.contains("java12") || pom.contains("jsweet.sh"));
+        assertTrue(pom, pom.contains("--add-opens jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED") && pom.contains("-f pom-jsweet.xml") && pom.contains("-Dmaven.repo.local=${settings.localRepository}"));
+        assertTrue(jsweet, jsweet.contains("<compileSourceRootsOverride>${project.basedir}/src/main/java</compileSourceRootsOverride>") && jsweet.contains("<bundle>true</bundle>")
+                && jsweet.contains("<module>none</module>") && jsweet.contains("<artifactId>j4ts</artifactId>") && jsweet.contains("<artifactId>prov-jsweet-candy-java</artifactId>"));
+
+        Path repo = Path.of(System.getProperty("maven.repo.local", System.getProperty("user.home") + "/.m2/repository"));
+        Path j4tsJar = repo.resolve("org/jsweet/j4ts/2.0.0/j4ts-2.0.0.jar");
+        Path candy = Path.of("../prov-jsweet-candy-java/dist/prov-jsweet-candy-java.js");
+        if (!Files.exists(repo.resolve("org/jsweet/jsweet-maven-plugin/3.1.0")) || !Files.exists(j4tsJar) || !Files.exists(candy)) {
+            System.out.println("[T36] the jsweet plugin, j4ts or the candy's dist is not available: the generated client is not built with jsweet");
+            return;
+        }
+        String[] build = run(List.of("mvn", "-o", "-pl", "t36_cli", "package", "-DskipTests", "-Djsweet.mvn.options=-o", "-Dmaven.repo.local=" + repo.toAbsolutePath()), libs.toFile());
+        if (build == null) {
+            System.out.println("[T36] mvn is not installed: the generated client is not built with jsweet");
+            return;
+        }
+        assertEquals("the generated project builds: " + build[1], "0", build[0]);
+        assertTrue(build[1], build[1].contains("transpilation successfully completed"));
+        Path bundle = cli.resolve("dist/t36_cli.js");
+        assertTrue("the bundle is in dist", Files.exists(bundle) && Files.size(bundle) > 10000);
+        assertTrue("and its typings", Files.size(cli.resolve("dist/t36_cli.d.ts")) > 1000);
+
+        Path j4ts = Path.of("target/t34/j4ts-bundle.js");
+        Files.createDirectories(j4ts.getParent());
+        try (java.util.zip.ZipFile z = new java.util.zip.ZipFile(j4tsJar.toFile())) {
+            Files.copy(z.getInputStream(z.getEntry("META-INF/resources/webjars/j4ts/2.0.0/bundle.js")), j4ts, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        }
+        String[] node = run(List.of("node", RES.replace("t31/", "t36/") + "run_client_bundle.js", j4ts.toString(), candy.toString(), bundle.toString()), new File("."));
+        if (node == null) {
+            System.out.println("[T36] node is not installed: the bundle is not run");
+            return;
+        }
+        assertEquals("the bundle runs: " + node[1], "0", node[0]);
+        assertTrue(node[1], node[1].contains("log: t31.Approval,a1,ex:agent,Ann,ref-1,o1,a note,{\"k\":1},3"));
+    }
+
+    /**
+     * T33: the Python emitter wrote Java's {@code null} as {@code 0}, so a generated Python logger, which tests each value with {@code if (x == null)}
+     * in Java, tested it against 0: an absent value was written as the text {@code None}, and an absent {@code @escape} value reached
+     * {@code escapeCsv(None)} and crashed. It writes {@code None} and {@code is None}. The generated Python logger writes the records the generated Java
+     * one writes, absent values and an escaped one included, and the Python and JavaScript {@code escapeCsv} give Java's answers on shared vectors.
+     */
+    public void testTheGeneratedPythonLoggerWritesTheRecordsTheJavaOneDoes() throws Exception {
+        keepEscape = true;
+        String s1 = subtype("approval_big", "{\"approver_name\":\"Admin\"}", "{\"priceBefore\":\"required\",\"unitCode\":\"optional\",\"payload\":\"optional\"}");
+        String s2 = subtype("approval_small", "{\"approver_name\":\"Other\",\"level\":1}", "{\"lineCount\":\"required\"}");
+        generate("t33", false, List.of(), List.of(s1, s2), c -> c.put("python_dir", OUT + "t33/libs/python"));
+        String python = Files.readString(Path.of(OUT + "t33/libs/python/org/example/t36/approval/client/common/ApprovalBuilder.py"));
+        assertTrue(python, python.contains("if approving is None:") && python.contains("StringEscapeUtils.escapeCsv(order_note)"));
+        assertFalse("null is no longer 0: " + python, python.contains("approving == 0") || python.contains("level == 0"));
+        assertTrue("record2bean tests for an absent value", python.contains("None if record[8] is None else"));
+
+        String absent = "t31.Approval,,ex:agent,,,o1,,,3";
+        String present = "t31.Approval,a1,ex:agent,Ann,ref-1,o1,\"a, \"\"note\"\"\",{},3";
+        String[] r = run(List.of("python3", RES.replace("t31/", "t33/") + "run_python_logger.py", "../prov-template-library/src/main/python", OUT + "t33/libs/python"), new File("."));
+        if (r == null) {
+            System.out.println("[T33] python3 is not installed: the generated Python logger is not run");
+        } else {
+            assertEquals(r[1], "0", r[0]);
+            assertTrue(r[1], r[1].contains("absent: " + absent + "\n") && r[1].contains("present: " + present + "\n"));
+        }
+
+        // the Java client writes the same
+        ClassLoader l = compileSources("t33", List.of("org/example/t36/catalogue/client/logger/Logger.java"));
+        if (l != null) {
+            Class<?> logger = l.loadClass("org.example.t36.catalogue.client.logger.Logger");
+            Method m = logger.getMethod("logApproval", String.class, String.class, String.class, String.class, String.class, String.class, String.class, Integer.class);
+            assertEquals(absent, m.invoke(null, null, "ex:agent", null, null, "o1", null, null, 3));
+            assertEquals(present, m.invoke(null, "a1", "ex:agent", "Ann", "ref-1", "o1", "a, \"note\"", "{}", 3));
+        }
+    }
+
+    /** T33: the Python and JavaScript escapeCsv, and Java's (Commons Lang's, prov-model's), give the answers of the shared vectors. */
+    public void testEscapeCsvGivesJavasAnswersInEveryPort() throws Exception {
+        String vectors = RES.replace("t31/", "t33/") + "escape-csv-vectors.json";
+        JsonNode list = om.readTree(Files.readString(Path.of(vectors))).get("vectors");
+        for (JsonNode v : list) {
+            assertEquals("Java: " + v.get("title").asText(), v.get("output").asText(), org.openprovenance.apache.commons.lang.StringEscapeUtils.escapeCsv(v.get("input").asText()));
+        }
+        assertNull("Java: null is null", org.openprovenance.apache.commons.lang.StringEscapeUtils.escapeCsv(null));
+        String[] py = run(List.of("python3", RES.replace("t31/", "t33/") + "run_escape_vectors.py", "../prov-template-library/src/main/python", vectors), new File("."));
+        if (py == null) System.out.println("[T33] python3 is not installed: the Python escapeCsv is not run against the vectors");
+        else {
+            assertEquals(py[1], "0", py[0]);
+            assertTrue(py[1], py[1].contains("escape vectors: " + (list.size() + 1) + " run, 0 failed"));
+        }
+        File candy = new File("../prov-jsweet-candy-java/dist/prov-jsweet-candy-java.js");
+        String[] js = candy.exists() ? run(List.of("node", RES.replace("t31/", "t33/") + "run_escape_vectors.js", candy.getPath(), vectors), new File(".")) : null;
+        if (js == null) System.out.println("[T33] node or the candy's dist is missing: the JavaScript escapeCsv is not run against the vectors");
+        else {
+            assertEquals(js[1], "0", js[0]);
+            assertTrue(js[1], js[1].contains("escape vectors: " + list.size() + " run, 0 failed"));
+        }
+    }
+
     public void testAnIllDeclaredSubtypeStopsGeneration() throws Exception {
         try {
             generate("stopped", false, List.of(), List.of(subtype("x", "{\"level\":\"three\"}", "{}")));
@@ -177,8 +368,13 @@ public class T36SubtypeTest extends T36Fixture {
         }
     }
 
-    public void testTheRustBeanHasTheFieldsAndNoConversions() throws Exception {
-        String s1 = subtype("approval_big", "{\"approver_name\":\"Admin\"}", "{\"priceBefore\":\"required\",\"unitCode\":\"optional\"}");
+    /**
+     * T46: the Rust typed bean of a subtype has its conversions, the runtime is written beside it, and the whole is compiled and run by
+     * cargo with the Rust counterpart of {@link #testTypedBeansConvertToTheGeneralBeanAndBack} (same values and texts).
+     */
+    public void testTheRustBeanConvertsAsTheJavaOneDoes() throws Exception {
+        String s1 = subtype("approval_big", "{\"approver_name\":\"Admin\"}",
+                "{\"priceBefore\":\"required\",\"unitCode\":\"optional\",\"payload\":\"optional\"}");
         ObjectNode c = catalogue("rust", false, List.of(), List.of(s1));
         c.put("rust_dir", OUT + "rust/libs/rust");
         String dir = OUT + "rust/";
@@ -195,20 +391,30 @@ public class T36SubtypeTest extends T36Fixture {
                 System.setErr(err);
             }
         }
+        Path rustDir = Path.of(dir + "libs/rust");
         List<Path> rs;
-        try (Stream<Path> w = Files.walk(Path.of(dir + "libs/rust"))) {
+        try (Stream<Path> w = Files.walk(rustDir)) {
             rs = w.filter(p -> p.getFileName().toString().equals("approval_big_inputs.rs")).collect(Collectors.toList());
         }
         assertEquals(rs.toString(), 1, rs.size());
         String rust = Files.readString(rs.get(0));
-        for (String f : List.of("pub is_a", "pub approver", "pub price_before: Option<f64>", "pub unit_code: Option<String>", "pub level: Option<i32>")) {
+        for (String f : List.of("pub is_a", "pub approver", "pub price_before: Option<f64>", "pub unit_code: Option<String>", "pub level: Option<i32>",
+                "pub customer_hash_other: Object", "#[serde(with = \"crate::json_text_serde\")]", "pub fn to_general(&self) -> ApprovalInputs",
+                "pub fn from_general(general: ApprovalInputs) -> ApprovalBigInputs", "pub const REFINES: &str = \"t31.Approval\";")) {
             assertTrue(f + " in " + rust, rust.contains(f));
         }
-        assertFalse("no conversion", rust.contains("fn to_general") || rust.contains("fn from_general"));
-        assertFalse("no constant, no map of other keys", rust.contains("REFINES") && rust.contains("pub const") || rust.contains("customer_hash_other"));
         assertTrue("it derives, as the other beans do: " + rust, rust.contains("#[derive(Debug, Clone, Serialize, Deserialize)]"));
-        assertTrue("says why the conversions are missing: " + rust, rust.contains("are not in Rust"));
-        assertTrue("no dispatcher in Rust", Files.walk(Path.of(dir + "libs/rust")).noneMatch(p -> p.getFileName().toString().toLowerCase().contains("subtypes")));
+        assertFalse("says nothing of missing conversions: " + rust, rust.contains("are not in Rust"));
+        assertTrue("the runtime is beside the generated files", Files.exists(rustDir.resolve("json_text.rs")) && Files.exists(rustDir.resolve("json_text_serde.rs")));
+        assertTrue("the dispatcher is in Rust", Files.walk(rustDir).anyMatch(p -> p.getFileName().toString().equals("subtypes.rs")));
+
+        String[] r = cargoTestGenerated(rustDir, "t36-rust-bean", RES.replace("t31/", "t36/") + "rust-bean/convert.rs");
+        if (r == null) {
+            System.out.println("[T36] cargo is not installed: the Rust typed bean is not compiled and run");
+            return;
+        }
+        assertEquals(r[1], "0", r[0]);
+        assertTrue(r[1], r[1].contains("test result: ok. 8 passed"));
     }
 
     // ---- the typed beans, compiled and run --------------------------------------------------------------------------------
@@ -491,7 +697,19 @@ public class T36SubtypeTest extends T36Fixture {
             return;
         }
         assertEquals(r[1], "0", r[0]);
-        assertTrue(r[1], r[1].contains("vectors: 79 run, 0 failed"));
+        assertTrue(r[1], r[1].contains("vectors: 123 run, 0 failed"));
+    }
+
+    /** T42: the Rust port (src/main/resources/rs/json_text.rs, standard library only) runs the same vectors, by cargo, in a crate of its own. */
+    public void testTheRustPortConformsToTheVectors() throws Exception {
+        String[] r = run(List.of("cargo", "test", "--offline", "--manifest-path", RES.replace("t31/", "t36/") + "rust/Cargo.toml",
+                "--target-dir", "target/t36-rust", "--", "--nocapture"), new File("."));
+        if (r == null) {
+            System.out.println("[T36] cargo is not installed: the Rust port is not run against the vectors");
+            return;
+        }
+        assertEquals(r[1], "0", r[0]);
+        assertTrue(r[1], r[1].contains("vectors: 123 run, 0 failed"));
     }
 
     public void testTheJsweetCandyConformsToTheVectors() throws Exception {
@@ -502,7 +720,7 @@ public class T36SubtypeTest extends T36Fixture {
             return;
         }
         assertEquals(r[1], "0", r[0]);
-        assertTrue(r[1], r[1].contains("vectors: 79 run, 0 failed"));
+        assertTrue(r[1], r[1].contains("vectors: 123 run, 0 failed"));
     }
 
     static void FileUtils_deleteQuietly(Path p) {

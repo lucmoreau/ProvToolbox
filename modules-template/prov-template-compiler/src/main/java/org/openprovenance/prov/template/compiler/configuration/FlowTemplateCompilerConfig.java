@@ -11,6 +11,7 @@ import java.util.Map;
  * names one twice. It adds nothing to the server side: a flow generates one client-side class and one interface of rules.
  * <p>
  * The members keep the JSON the catalogue gives: {@code FlowChecker} reads them into a model the generator and the descriptions share.
+ * <p><b>Experimental:</b> in-JSON values, subtypes, performatives and flows (T36, T41) are experimental functionality: their declarations, the classes generated from them and this class may change without notice.
  */
 public class FlowTemplateCompilerConfig extends ClientSideTemplateCompilerConfig {
 

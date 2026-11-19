@@ -28,7 +28,6 @@ t3:
 
 fam:
 	$(PROVCONVERT) -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.pdf
-	$(PROVCONVERT) -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.provx
 	$(PROVCONVERT) -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.dot
 	$(PROVCONVERT) -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.ttl
 	$(PROVCONVERT) -infile ../prov-n/src/test/resources/prov/prov-family.provn -outfile  target/prov-family.rdf
@@ -151,7 +150,7 @@ issue.209:
 	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime UTC
 	curl --silent https://gist.githubusercontent.com/lucmoreau/28632ef5bbe37b109300870c445772cc/raw/a711ebff4c433dd2f655bc4772e07b1e2809289e/gistfile1.jsonld | $(PROVCONVERT) -infile - -informat jsonld -outfile - -outformat provn -dateTime SYSTEM
 
-mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provx test.issue.209.provn test.default test.pgo test.metrics
+mvn.test: test.issue.209.jsonld test.issue.209.json test.issue.209.provn test.default test.pgo test.metrics
 
 test.issue.209.jsonld:
 	@echo "- jsonld input: testing dateTime PRESERVE"
@@ -185,17 +184,6 @@ test.issue.209.json:
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime TIMEZONE -timeZone Australia/Melbourne | jq --exit-status '.activity["ex:a"]["prov:endTime"]=="2023-10-16T09:35:06.793+11:00"'   > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.json -outfile - -outformat json -dateTime TIMEZONE -timeZone Asia/Shanghai       | jq --exit-status '.activity["ex:a"]["prov:endTime"]=="2023-10-16T06:35:06.793+08:00"'   > /dev/null
 
-test.issue.209.provx:
-	@echo "- provx input: testing dateTime PRESERVE"
-	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].startTime=="2023-09-08T20:12:45.109-04:00"' > /dev/null
-	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T20:35:06.793-02:00"' > /dev/null
-	@echo "- provx input: testing dateTime UTC"
-	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime UTC | jq --exit-status '.["@graph"][0].startTime=="2023-09-09T00:12:45.109Z"' > /dev/null
-	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime UTC | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T22:35:06.793Z"' > /dev/null
-	@echo "- provx input: testing dateTime TIMEZONE"
-	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Japan               | jq --exit-status '.["@graph"][0].startTime=="2023-09-09T09:12:45.109+09:00"' > /dev/null
-	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provx -outfile - -outformat jsonld -dateTime TIMEZONE -timeZone Morocco             | jq --exit-status '.["@graph"][0].endTime=="2023-10-15T22:35:06.793Z"'        > /dev/null
-
 test.issue.209.provn:
 	@echo "- provn input: testing dateTime PRESERVE"
 	@$(PROVCONVERT) -infile src/test/resources/dates/date_with_tz_offset.provn -outfile - -outformat jsonld -dateTime PRESERVE | jq --exit-status '.["@graph"][0].startTime=="2023-09-08T20:12:45.109-04:00"' > /dev/null
@@ -214,8 +202,6 @@ test.default.jsonld:
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.provn  -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@base"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.jsonld -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@base"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=jsonld | jq --exit-status '.["@context"][0]["@base"]=="https://www.bbc.co.uk/"' > /dev/null
-	@echo "- testing default namespace: PROVX -> JSONLD (lost default namespace)"
-	@$(PROVCONVERT) -infile src/test/resources/default/default1.provx  -outfile - -outformat=jsonld | jq --exit-status '.["@graph"][0]["@id"]=="bbc:e"' > /dev/null
 
 test.default.json:
 	@echo "- testing default namespace: PROVN, JSONLD, JSON -> JSON"
@@ -224,8 +210,6 @@ test.default.json:
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.jsonld -outfile - -outformat=json | jq --exit-status '.["prefix"]["default"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=json  | jq --exit-status '.["prefix"]["default"]=="https://www.bbc.co.uk/"' > /dev/null
 	@$(PROVCONVERT) -infile src/test/resources/default/default1.json   -outfile - -outformat=json  | jq --exit-status '.["entity"]["e"]=={}' > /dev/null
-	@echo "- testing default namespace: PROVX -> JSONLD (lost default namespace)"
-	@$(PROVCONVERT) -infile src/test/resources/default/default1.provx  -outfile - -outformat=json | jq --exit-status '.["entity"]["bbc:e"]=={}' > /dev/null
 
 test.tmpl.init:
 	@$(PROVCONVERT) -infile "$(INFILE)" -log2prov $(INIT_LIB) -outfile "$(OUTFILE)"
